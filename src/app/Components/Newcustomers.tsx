@@ -7,7 +7,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { Status } from "@/Constants/Framerdata";
 type NewcustomersProps = {
   hidedetailssection: () => void;
-  setDetailsSection: () => boolean;
+  setDetailsSection:  React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function Newcustomers({
   hidedetailssection,
@@ -77,7 +77,7 @@ export default function Newcustomers({
         "Customer details"
       );
       //  alert("Data Added!");
-      setDetailsSection();
+      setDetailsSection(false);
     }
   };
 
@@ -231,7 +231,7 @@ export default function Newcustomers({
                 </div>
               )}
             </div>
-            <div>6</div>
+            {/* <div>6</div>
             <div>7</div>
             <div>8</div>
             <div>9</div>
@@ -242,10 +242,10 @@ export default function Newcustomers({
             <div>14</div>
             <div>15</div>
             <div>16</div>
-            <div>17</div>
+            <div>17</div> */}
           </div>
           <div className="flex justify-between px-2">
-            <div>1</div>
+            <div></div>
             <div>
               <button
                 onClick={addcustomerdetails}
