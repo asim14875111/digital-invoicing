@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoChevronUp } from "react-icons/io5";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { customerreceivables } from "@/Constants/Framerdata";
 import { ToastContainer, toast } from "react-toastify";
 import { Status } from "@/Constants/Framerdata";
+import { Country, ICountry } from "country-state-city";
 type NewcustomersProps = {
   hidedetailssection: () => void;
-  setDetailsSection:  React.Dispatch<React.SetStateAction<boolean>>;
+  setDetailsSection: React.Dispatch<React.SetStateAction<boolean>>;
 };
 export default function Newcustomers({
   hidedetailssection,
@@ -22,20 +23,41 @@ export default function Newcustomers({
   const [customerreceivable, setData] = useState<string>("");
   const [status, SetStatus] = useState<string>("");
   const [name, setName] = useState("");
+  const [address, setAddress] = useState("");
+  const [shippingaddress, setShippingAddress] = useState("");
   const [description, setDescription] = useState("");
   const [CNIC, setCnic] = useState("");
+  const [Phonenumber, setPhonenumber] = useState("");
+  const [mobileNumber, setmobileNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [website, setWebsite] = useState("");
+//   const [countries, SetAllCountries] = useState();
+//   const allCountries =   SetAllCountries(allCountries);
+//   console.log(allCountries, "All countries");
   const [inputsdata, SetinputsData] = useState<{
     customerreceivable: string;
     name: string;
     description: string;
-    CNIC: number;
+    CNIC: string;
     status: string;
+    address: string;
+    shippingaddress: string;
+    Phonenumber: string;
+    mobileNumber: string;
+    email: string;
+    website: string;
   }>({
-    customerreceivable: "",
-    name: "",
-    description: "",
-    CNIC: 0,
-    status: "",
+    customerreceivable: customerreceivable,
+    name: name,
+    description: description,
+    CNIC: CNIC,
+    status: status,
+    address: address,
+    shippingaddress: shippingaddress,
+    Phonenumber: Phonenumber,
+    mobileNumber: mobileNumber,
+    email: email,
+    website: website,
   });
 
   const showcustomerreceivables = (): void => {
@@ -62,22 +84,26 @@ export default function Newcustomers({
   };
 
   const addcustomerdetails = (): void => {
-    SetinputsData({
-      customerreceivable: customerreceivable,
-      name: name,
-      description: description,
-      CNIC: 0,
-      status: status,
-    });
+    const inputsData = {
+      customerreceivable,
+      name,
+      description,
+      CNIC,
+      status,
+      address,
+      shippingaddress,
+      Phonenumber,
+      mobileNumber,
+      email,
+      website,
+    };
     if (!customerreceivable || !name || !CNIC || !status) {
       toast.error("Please fill in all required fields!");
     } else {
-      console.log(
-        { customerreceivable, name, description, CNIC },
-        "Customer details"
-      );
+      console.log({ inputsData }, "  details");
       //  alert("Data Added!");
       setDetailsSection(false);
+      SetinputsData(inputsData);
     }
   };
 
@@ -85,6 +111,16 @@ export default function Newcustomers({
     let inpvalue = e.target.value.replace(/\D/g, "");
     if (inpvalue.length > 13) inpvalue = inpvalue.slice(0, 13);
     setCnic(inpvalue);
+  };
+  const handlephonenumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inpvalue = e.target.value.replace(/\D/g, "");
+    if (inpvalue.length > 10) inpvalue = inpvalue.slice(0, 10);
+    setPhonenumber(inpvalue);
+  };
+  const handlemobilenumber = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let inpvalue = e.target.value.replace(/\D/g, "");
+    if (inpvalue.length > 11) inpvalue = inpvalue.slice(0, 11);
+    setmobileNumber(inpvalue);
   };
 
   const showstatus = () => {
@@ -196,7 +232,6 @@ export default function Newcustomers({
                 maxLength={13}
               />
             </div>
-
             <div className="border relative w-9/12 h-fit border-gray-400 rounded-sm pb-0">
               <label htmlFor="" className="text-sm pl-1 text-gray-900">
                 <span className="text-red-400">*</span> E Status
@@ -231,18 +266,75 @@ export default function Newcustomers({
                 </div>
               )}
             </div>
-            {/* <div>6</div>
-            <div>7</div>
-            <div>8</div>
-            <div>9</div>
-            <div>10</div>
-            <div>11</div>
-            <div>12</div>
-            <div>13</div>
-            <div>14</div>
-            <div>15</div>
-            <div>16</div>
-            <div>17</div> */}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span> Address{" "}
+              </label>
+              <input
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                type="text"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span>Shipping Address{" "}
+              </label>
+              <input
+                value={shippingaddress}
+                onChange={(e) => setShippingAddress(e.target.value)}
+                type="text"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span>Phone Number{" "}
+              </label>
+              <input
+                value={Phonenumber}
+                onChange={handlephonenumber}
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span>Mobile Number{" "}
+              </label>
+              <input
+                value={mobileNumber}
+                onChange={handlemobilenumber}
+                type="tel"
+                pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span>Email{" "}
+              </label>
+              <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                type="email"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+              <label className="text-sm pl-2 text-gray-900">
+                <span className="text-red-400"></span>Website{" "}
+              </label>
+              <input
+                value={website}
+                onChange={(e) => setWebsite(e.target.value)}
+                type="text"
+                className="py-1 pl-3 border-none outline-0"
+              />
+            </div>{" "}
+            <div className="border flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1"></div>
           </div>
           <div className="flex justify-between px-2">
             <div></div>
