@@ -126,3 +126,31 @@ export const Status = [
     value: "Retail Consumer",
   },
 ];
+
+export const Sites = [
+  {
+    id: 1,
+    title: "Site 1",
+    value: "Site 1",
+  },
+  {
+    id: 2,
+    title: "Site 2",
+    value: "Site 2",
+  },
+  {
+    id: 3,
+    title: "Site 3",
+    value: "Site 3",
+  },
+  {
+    id: 4,
+    title: "Site 4",
+    value: "Site 4",
+  },
+  {
+    id: 5,
+    title: "Site 5",
+    value: "Site 5",
+  },
+];

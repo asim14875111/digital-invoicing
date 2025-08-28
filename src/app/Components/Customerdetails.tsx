@@ -80,35 +80,40 @@ export default function Customerdetails() {
   return (
     <>
       <div className="flex gap-2">
-        <div className="border flex flex-col bg-gray-200 rounded-sm px-3 py-1 border-gray-400 w-fit">
-          <label className="text-sm text-gray-700">*Transaction Date</label>
+        <div className="  flex flex-col  rounded-sm px-3 py-1 w-fit">
+          <label className="text-sm text-gray-700">
+            <span className="text-red-400">* </span>Transaction Date
+          </label>
           <input
             value={date}
-            className="cursor-pointer"
+            className="py-[5px] px-3 w-[200px]  text-gray-500 text-sm  shadow-md ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-2 rounded-md outline-0"
             onChange={(e) => setDate(e.target.value)}
             type="date"
           />
         </div>
-        <div className="border flex flex-col bg-gray-200 rounded-sm px-3 py-1 border-gray-400 w-fit">
+        <div className=" flex flex-col  rounded-sm px-3 py-1 w-fit">
           <div>
-            <p>*Transaction Type</p>
+            <p className="text-sm text-[#364153]">
+              {" "}
+              <span className="text-red-400">* </span>Transaction Type
+            </p>
           </div>
           <div className="relative">
             <p
               onClick={() => showtransactiontypes()}
-              className="cursor-pointer w-[210px] flex justify-between gap-2 items-center hover:bg-gray-400 bg-gray-300 px-2 border border-gray-400 rounded-sm"
+              className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
-              <span className="line-clamp-1">
+              <span className="line-clamp-1 text-gray-600 text-sm py-1">
                 {types ? types : "Select Transaction Type"}
               </span>
 
               {chevrondown && (
-                <span>
+                <span className="text-gray-500">
                   <IoChevronDownOutline />
                 </span>
               )}
               {chevronup && (
-                <span>
+                <span className="text-gray-500">
                   <IoChevronUp />
                 </span>
               )}
@@ -141,23 +146,25 @@ export default function Customerdetails() {
             )}
           </div>
         </div>
-        <div className="border flex flex-col bg-gray-200 rounded-sm px-3 py-1 border-gray-400 w-fit">
+        <div className="flex flex-col rounded-sm px-3 py-1  w-fit">
           <div>
-            <p>*Customer Details</p>
+            <p className="text-sm text-[#364153]">
+              <span className="text-red-400">* </span>Customer Details
+            </p>
           </div>
           <div className="relative">
             <p
               onClick={() => showcustomerdetails()}
-              className="cursor-pointer w-[210px] flex justify-between gap-2 items-center hover:bg-gray-400 bg-gray-300 px-2 border border-gray-400 rounded-sm"
+              className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
-              <span className="line-clamp-1">Select Customer</span>
+              <span className="line-clamp-1 text-gray-600 py-1 text-sm">Select Customer</span>
               {visible && (
-                <span>
+                <span className="text-gray-500">
                   <IoChevronDownOutline />
                 </span>
               )}
               {unvisible && (
-                <span>
+                <span className="text-gray-500">
                   <IoChevronUp />
                 </span>
               )}
@@ -184,7 +191,10 @@ export default function Customerdetails() {
         </button>
       </div>
       {detailssection && (
-        <Newcustomers hidedetailssection={hidedetailssection} setDetailsSection={setDetailsSection} />
+        <Newcustomers
+          hidedetailssection={hidedetailssection}
+          setDetailsSection={setDetailsSection}
+        />
       )}
     </>
   );

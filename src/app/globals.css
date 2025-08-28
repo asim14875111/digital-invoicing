@@ -1,2 +1,40 @@
 @import "tailwindcss";
+body{
+      font-family: "Nunito", sans-serif;
 
+}
+
+.css-13cymwt-control{
+    /* padding: 0 !important; */
+    /* margin: 0 !important; */
+    /* border: none !important; */
+    /* border-bottom: none !important; */
+    background-color: #f3f4f6b4 !important;
+    min-height: 0 !important;
+    cursor: pointer;
+    /* background: #d1d6dc !important; */
+    /* height:auto; */
+    
+ }
+.css-hlgwow{
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.css-1xc3v61-indicatorContainer{
+     padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.css-19bb58m{
+    margin: 0 !important;
+}
+
+.css-1jqq78o-placeholder{
+    font-size: 14px !important;
+}
+
+.css-13cymwt-control:focus{
+ border: 0 !important;
+ min-height: 0 !important;
+}

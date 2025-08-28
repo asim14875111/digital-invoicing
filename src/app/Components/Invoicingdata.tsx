@@ -19,24 +19,24 @@ export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
             <p className="text-2xl">Digital Invoicing</p>
           </div>
           <div className="flex gap-2 pb-4">
-            <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
-              <label className="text-gray-600">SubTotal</label>
+            <div className="flex flex-col bg-[#f3f4f6] pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+              <label className="text-[#4a5565] text-sm">SubTotal</label>
               <p>0</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
-              <label className="text-gray-600">Total Tax</label>
+              <label className="text-[#4a5565] text-sm">Total Tax</label>
               <p>0</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
-              <label className="text-gray-600">Net Amount</label>
+              <label className="text-[#4a5565] text-sm">Net Amount</label>
               <p>0</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
-              <label className="text-gray-600">Fbr Invoice No.</label>
+              <label className="text-[#4a5565] text-sm">Fbr Invoice No.</label>
               <p></p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
-              <label className="text-gray-600">Transaction No.</label>
+              <label className="text-[#4a5565] text-sm">Transaction No.</label>
               <p></p>
             </div>
           </div>
