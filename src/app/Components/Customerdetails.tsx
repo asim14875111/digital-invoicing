@@ -25,7 +25,7 @@ export default function Customerdetails() {
   const [detailssection, setDetailsSection] = useState<boolean>(false);
   const { Customerdetails } = useCustomer();
   const { Itemdetails, setItemsData } = useItems();
- 
+
   const [alldata, setAlldata] = useState({});
   // const [itemsdetails, setITemsDetails] = useState<any[]>([]);
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
@@ -100,7 +100,6 @@ export default function Customerdetails() {
     // console.log({ date, types }, "Complete Data");
   };
 
-  //just comment
   useEffect(() => {
     console.log(alldata, "Data of all forms");
   }, [alldata]);
@@ -111,6 +110,10 @@ export default function Customerdetails() {
   const deleteitem = (i: number): void => {
     const updatedItems = Itemdetails.filter((_, idx) => idx !== i);
     setItemsData(updatedItems);
+  };
+
+  const edititem = (): void => {
+    setInvoiceSection(true);
   };
 
   return (
@@ -243,10 +246,16 @@ export default function Customerdetails() {
                 <p className="text-gray-600">{item.itemname}</p>
               </div>
               <div className="flex gap-2 items-center">
-                <div className="text-gray-600 cursor-pointer hover:scale-105 transition">
+                <div
+                  className="text-gray-600 cursor-pointer hover:scale-105 transition"
+                  onClick={edititem}
+                >
                   <FaRegEdit />
                 </div>
-                <div className="text-red-500  cursor-pointer hover:scale-105 transition" onClick={() => deleteitem(i)}>
+                <div
+                  className="text-red-500  cursor-pointer hover:scale-105 transition"
+                  onClick={() => deleteitem(i)}
+                >
                   <RiDeleteBin6Line />
                 </div>
               </div>
