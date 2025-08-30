@@ -100,6 +100,7 @@ export default function Customerdetails() {
     // console.log({ date, types }, "Complete Data");
   };
 
+  //just comment
   useEffect(() => {
     console.log(alldata, "Data of all forms");
   }, [alldata]);
