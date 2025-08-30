@@ -2,8 +2,16 @@ import { IoChevronUp } from "react-icons/io5";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoIosSearch } from "react-icons/io";
 import { transactiondata } from "../../Constants/Framerdata";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Newcustomers from "./Newcustomers";
+import { useCustomer } from "@/Contexts/MyContext";
+import { ToastContainer, toast } from "react-toastify";
+import { MdOutlineAdd } from "react-icons/md";
+import Invoiceitems from "./Invoiceitems";
+import { RiDeleteBin6Line } from "react-icons/ri";
+import { useItems } from "@/Contexts/ItemsContext";
+import { FaRegEdit } from "react-icons/fa";
+
 export default function Customerdetails() {
   const [date, setDate] = useState("");
   const [types, setTypes] = useState("");
@@ -12,13 +20,25 @@ export default function Customerdetails() {
   const [chevronup, setChevronup] = useState<boolean>(false);
   const [chevrondown, setChevrondown] = useState<boolean>(true);
   const [filteredData, setFilteredData] = useState(transactiondata);
-  const [visible, setIsVisible] = useState(true);
-  const [unvisible, setIsUnvisible] = useState(false);
-  const [detailssection, setDetailsSection] = useState(false);
-  const [data, setData] = useState<{ date: string; types: string }>({
-    date: "",
-    types,
-  });
+  const [visible, setIsVisible] = useState<boolean>(true);
+  const [unvisible, setIsUnvisible] = useState<boolean>(false);
+  const [detailssection, setDetailsSection] = useState<boolean>(false);
+  const { Customerdetails } = useCustomer();
+  const { Itemdetails, setItemsData } = useItems();
+ 
+  const [alldata, setAlldata] = useState({});
+  // const [itemsdetails, setITemsDetails] = useState<any[]>([]);
+  const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
+  const [remarks, setRemarks] = useState("");
+  // const [data, setData] = useState<{
+  //   date: string;
+  //   types: string;
+  //   remarks: string;
+  // }>({
+  //   date: "",
+  //   types,
+  //   remarks: "",
+  // });
   const savevalue = (value: string): void => {
     setTransactionTypes(false);
     setTypes(value);
@@ -70,11 +90,27 @@ export default function Customerdetails() {
   };
 
   const submitdata = () => {
-    setData({
-      date: date,
-      types: types,
-    });
-    console.log({ date, types }, "Complete Data");
+    const Transactiondatendtype = { date, types, remarks };
+    if (!date || !types || !customerdetails) {
+      toast.error("Please make sure all mandatory fields are filled in.");
+    } else {
+      setAlldata({ Transactiondatendtype, Customerdetails, Itemdetails });
+      toast.success("Data Added");
+    }
+    // console.log({ date, types }, "Complete Data");
+  };
+
+  useEffect(() => {
+    console.log(alldata, "Data of all forms");
+  }, [alldata]);
+  const showdetailssection = (): void => {
+    setInvoiceSection(true);
+  };
+
+  // Delete item by index
+  const deleteitem = (i: number): void => {
+    const updatedItems = Itemdetails.filter((_, idx) => idx !== i);
+    setItemsData(updatedItems);
   };
 
   return (
@@ -125,9 +161,9 @@ export default function Customerdetails() {
                   <input
                     type="text"
                     onChange={handlefilterdata}
-                    className="outline-none -mr-3"
+                    className="outline-none -mr-3 w-full"
                   />
-                  <p className="bg-white">
+                  <p className="bg-white pr-2">
                     <IoIosSearch />
                   </p>
                 </div>
@@ -157,7 +193,9 @@ export default function Customerdetails() {
               onClick={() => showcustomerdetails()}
               className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
-              <span className="line-clamp-1 text-gray-600 py-1 text-sm">Select Customer</span>
+              <span className="line-clamp-1 text-gray-600 py-1 text-sm">
+                Select Customer
+              </span>
               {visible && (
                 <span className="text-gray-500">
                   <IoChevronDownOutline />
@@ -181,8 +219,61 @@ export default function Customerdetails() {
             )}
           </div>
         </div>
+        <div className="flex flex-col rounded-sm px-3 py-1  w-fit">
+          <div>
+            <p className="text-sm text-[#364153]">
+              <span className="text-red-400"></span> Remarks
+            </p>
+          </div>
+          <div>
+            <input
+              value={remarks}
+              onChange={(e) => setRemarks(e.target.value)}
+              type="text"
+              className="py-[4px] pl-3  shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-2 rounded-md outline-0"
+            />
+          </div>
+        </div>
       </div>
-      <div className="self-end">
+      <div className="pt-5">
+        {Itemdetails.map((item, i) => (
+          <div className="bg-gray  px-2 py-2 rounded-md" key={i}>
+            <div className="w-full bg-gray-100 mt-2 flex justify-between border rounded-md px-2 border-gray-300">
+              <div>
+                <p className="text-gray-600">{item.itemname}</p>
+              </div>
+              <div className="flex gap-2 items-center">
+                <div className="text-gray-600 cursor-pointer hover:scale-105 transition">
+                  <FaRegEdit />
+                </div>
+                <div className="text-red-500  cursor-pointer hover:scale-105 transition" onClick={() => deleteitem(i)}>
+                  <RiDeleteBin6Line />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between pt-10">
+        <div>
+          <button
+            onClick={showdetailssection}
+            className="bg-blue-800 flex gap-2 items-center px-4 py-1.5 cursor-pointer hover:bg-blue-900 rounded-md text-white "
+          >
+            <span className="text-red-600">*</span> Add Invoice item{" "}
+            <span className="text-white">
+              <MdOutlineAdd />
+            </span>{" "}
+          </button>
+          <div>
+            {/* {Array.isArray(Itemdetails) && */}
+            {/* {Itemdetails.map((item, idx) => (
+            <div className="text-black" key={idx}>
+              <p>{item.itemname}</p>
+            </div>} */}
+            {/* ))} */}
+          </div>
+        </div>
         <button
           onClick={submitdata}
           className="bg-blue-800 py-1 rounded-md cursor-pointer hover:bg-blue-900 text-white px-6"
@@ -190,12 +281,14 @@ export default function Customerdetails() {
           Post
         </button>
       </div>
+      {invoiceSection && <Invoiceitems setInvoiceSection={setInvoiceSection} />}
       {detailssection && (
         <Newcustomers
           hidedetailssection={hidedetailssection}
           setDetailsSection={setDetailsSection}
         />
       )}
+      <ToastContainer />
     </>
   );
 }

@@ -1,13 +1,15 @@
-import React, { use, useEffect, useState } from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoChevronUp } from "react-icons/io5";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { customerreceivables } from "@/Constants/Framerdata";
 import { ToastContainer, toast } from "react-toastify";
 import { Status } from "@/Constants/Framerdata";
+import { useCustomer } from "@/Contexts/MyContext";
 import { Sites } from "@/Constants/Framerdata";
 // import CountryList from "country-list-with-dial-code-and-flag";
-import { IoIosSearch } from "react-icons/io";
+// import { IoIosSearch } from "react-icons/io";
 import Select from "react-select";
 import {
   Country,
@@ -28,13 +30,13 @@ export default function Newcustomers({
   setDetailsSection,
 }: NewcustomersProps) {
   // const countries = CountryList.getAll();
-  const [allCountries, setAllCountries] = useState<boolean>(false);
+  // const [allCountries, setAllCountries] = useState<boolean>(false);
   // const [country, setCountry] = useState("");
   const [chevronDown, setchevronDown] = useState<boolean>(true);
   const [chevronup, setChevronup] = useState<boolean>(false);
   const [chevronDown2, setchevronDown2] = useState<boolean>(true);
-  const [chevronDown3, setchevronDown3] = useState<boolean>(true);
-  const [chevronDown4, setchevronDown4] = useState<boolean>(false);
+  // const [chevronDown3, setchevronDown3] = useState<boolean>(true);
+  // const [chevronDown4, setchevronDown4] = useState<boolean>(false);
   const [chevronup2, setChevronup2] = useState<boolean>(false);
   const [receivablesData, setreceivablesData] = useState<boolean>(false);
   const [StautsData, setStautsData] = useState<boolean>(false);
@@ -59,46 +61,47 @@ export default function Newcustomers({
   const [States, setSelectedState] = useState<IState | null>(null);
   const [city, setSelectedCity] = useState<ICity | null>(null);
   const [Site, SetSite] = useState<string>("");
+  const { inputsdata, setInputsdata } = useCustomer();
   // const allCountries =   SetAllCountries(allCountries);
   // console.log(allCountries, "All countries");
 
-  const [inputsdata, SetinputsData] = useState<{
-    customerreceivable: string;
-    name: string;
-    description: string;
-    CNIC: string;
-    status: string;
-    address: string;
-    shippingaddress: string;
-    Phonenumber: string;
-    mobileNumber: string;
-    email: string;
-    website: string;
-    country: ICountry | null;
-    States: IState | null;
-    city: ICity | null;
-    contactperson: string;
-    creditLimit: string;
-    Site: string;
-  }>({
-    customerreceivable: customerreceivable,
-    name: name,
-    description: description,
-    CNIC: CNIC,
-    status: status,
-    address: address,
-    shippingaddress: shippingaddress,
-    Phonenumber: Phonenumber,
-    mobileNumber: mobileNumber,
-    email: email,
-    website: website,
-    country: country,
-    States: States,
-    city: city,
-    contactperson: contactperson,
-    creditLimit: creditLimit,
-    Site: Site,
-  });
+  // const [inputsdata, SetinputsData] = useState<{
+  //   customerreceivable: string;
+  //   name: string;
+  //   description: string;
+  //   CNIC: string;
+  //   status: string;
+  //   address: string;
+  //   shippingaddress: string;
+  //   Phonenumber: string;
+  //   mobileNumber: string;
+  //   email: string;
+  //   website: string;
+  //   country: ICountry | null;
+  //   States: IState | null;
+  //   city: ICity | null;
+  //   contactperson: string;
+  //   creditLimit: string;
+  //   Site: string;
+  // }>({
+  //   customerreceivable: customerreceivable,
+  //   name: name,
+  //   description: description,
+  //   CNIC: CNIC,
+  //   status: status,
+  //   address: address,
+  //   shippingaddress: shippingaddress,
+  //   Phonenumber: Phonenumber,
+  //   mobileNumber: mobileNumber,
+  //   email: email,
+  //   website: website,
+  //   country: country,
+  //   States: States,
+  //   city: city,
+  //   contactperson: contactperson,
+  //   creditLimit: creditLimit,
+  //   Site: Site,
+  // });
 
   const showcustomerreceivables = (): void => {
     if (chevronDown) {
@@ -159,10 +162,10 @@ export default function Newcustomers({
       // console.log({ inputsData }, "  details");
       //  alert("Data Added!");
       // const intervalid = setInterval(() => {
-        setDetailsSection(false);
+      setDetailsSection(false);
       // }, 100);
       // clearInterval(intervalid);
-      SetinputsData(inputsData);
+      setInputsdata(inputsData);
     }
   };
   useEffect(() => {
