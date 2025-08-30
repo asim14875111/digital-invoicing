@@ -107,7 +107,6 @@ export default function Customerdetails() {
     setInvoiceSection(true);
   };
 
-  // Delete item by index
   const deleteitem = (i: number): void => {
     const updatedItems = Itemdetails.filter((_, idx) => idx !== i);
     setItemsData(updatedItems);
