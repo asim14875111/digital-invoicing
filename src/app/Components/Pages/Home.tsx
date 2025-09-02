@@ -42,6 +42,7 @@ export default function Home() {
                 </>
               )}
             </div>
+            {/* Just comment */}
 
             {/* {display && ( */}
               <div className="flex flex-col gap-4 px-10 h-10/12 justify-center  py-6">
