@@ -111,6 +111,7 @@ export default function Home() {
                               {data.Itemdetails?.[0]?.price}
                             </p>
                           </div>
+                          {/* Just comment */}
                           <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Status:
