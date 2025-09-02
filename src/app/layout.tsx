@@ -11,7 +11,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [allusersData, setAllUsersData] = useState([]);
+  const [allusersData, setAllUsersData] = useState<import("@/Contexts/DataContext").AllUsersDataType[]>([]);
   return (
     <html lang="en">
       <head>

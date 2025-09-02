@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useState } from "react";
 
-type InputsData = {
+export type InputsData = {
   itemname: string;
   barcode: string;
   order: string;

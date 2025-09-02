@@ -7,7 +7,8 @@ import { Datacontext } from "@/Contexts/DataContext";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
-  const { allusersData } = useContext(Datacontext);
+  const context = useContext(Datacontext);
+  const allusersData = context?.allusersData ?? [];
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
     number | null
   >(null);

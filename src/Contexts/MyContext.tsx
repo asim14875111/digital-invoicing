@@ -2,7 +2,7 @@
 import { ICity, ICountry, IState } from "country-state-city";
 import React, { createContext, useContext, useState } from "react";
 
-type InputsData = {
+export type InputsData = {
   customerreceivable: string;
   name: string;
   description: string;
