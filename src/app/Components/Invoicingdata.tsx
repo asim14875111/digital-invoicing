@@ -6,7 +6,7 @@ type InvoicingdataProps = {
 }
 export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
   return (
-      <div className="flex flex-col bg-gray-50 shadow-xl shadow-gray-200 w-[90%] justify-self-center rounded-sm mt-6 px-10 py-4">
+      <div className="flex flex-col bg-gray-50 shadow-xl shadow-gray-200 w-[90%] justify-self-center rounded-sm mt-0 px-10 py-4">
         <div className="flex justify-between items-center py-2">
           <div className="flex flex-row gap-2 items-center">
             <p

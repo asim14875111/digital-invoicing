@@ -34,6 +34,9 @@ export default function Customerdetails({
   type ItemType = {
     itemname: string;
   };
+
+  console.log(Customerdetails.name);
+
   const [edititems, setEditItems] = useState<ItemType | null>(null);
   const [alldata] = useState({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
@@ -45,6 +48,8 @@ export default function Customerdetails({
   const savevalue = (value: string): void => {
     setTransactionTypes(false);
     setTypes(value);
+    setChevronup(false);
+    setChevrondown(true);
   };
 
   const showcustomerdetails = () => {
@@ -105,10 +110,12 @@ export default function Customerdetails({
         hidedetailsection();
       }, 1000);
       if (setAllUsersData) {
-        setAllUsersData((prev: import("@/Contexts/DataContext").AllUsersDataType[]) => [
-          ...prev,
-          { Transactiondatendtype, Customerdetails, Itemdetails },
-        ]);
+        setAllUsersData(
+          (prev: import("@/Contexts/DataContext").AllUsersDataType[]) => [
+            ...prev,
+            { Transactiondatendtype, Customerdetails, Itemdetails },
+          ]
+        );
       }
       toast.success("Data Added");
       // clearInterval(interval);
@@ -208,7 +215,8 @@ export default function Customerdetails({
         <div className="flex flex-col rounded-sm px-3 py-1  w-fit">
           <div>
             <p className="text-sm text-[#364153]">
-              <span className="text-red-400">* </span>Customer Details
+              <span className="text-red-400">* </span>
+              Customer Details
             </p>
           </div>
           <div className="relative">
@@ -217,7 +225,7 @@ export default function Customerdetails({
               className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
               <span className="line-clamp-1 text-gray-600 py-1 text-sm">
-                Select Customer
+                {Customerdetails ? Customerdetails.name :  "Select Customer"}
               </span>
               {visible && (
                 <span className="text-gray-500">

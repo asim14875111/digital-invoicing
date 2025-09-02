@@ -2,11 +2,11 @@ import Navbarlogo from "../../../assests/images/ChatGPT Image Sep 2, 2025, 06_29
 import Image from "next/image";
 export default function Navbar() {
   return (
-    <div className="flex px-2 py-2 justify-between items-center bg-gray-50 shadow-md shadow-gray-200">
+    <div className="flex px-10 py-2 justify-between items-center bg-gray-50 shadow-md shadow-gray-200">
       <div className="flex items-center h-[40px] pt-2">
         <Image src={Navbarlogo} alt="navbar-logo" width={150} height={150} />
       </div>
-      <div className="flex gap-6 items-center pr-4">
+      <div className="flex gap-6 items-center pr-6.5">
         <a className="text-[15px] font-medium text-gray-600 cursor-pointer hover:text-blue-600 transition">
           About Us
         </a>
