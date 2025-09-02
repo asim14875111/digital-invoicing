@@ -31,7 +31,7 @@ export default function Home() {
 
   return (
     <div>
-      <div className="flex justify-end px-10">
+      <div className="flex flex-col justify-between px-10">
         {display && (
           <>
             <Addnewdata showhiddendiv={showhiddendiv} />
@@ -80,14 +80,14 @@ export default function Home() {
                       className="border  border-gray-300 rounded-md p-3"
                     >
                       <div className="flex justify-between items-center">
-                        <div className="flex gap-5">
-                          <div className="flex gap-1 items-center">
+                        <div className="flex gap-15">
+                          <div className="flex flex-col gap-1 ">
                             <label className="font-bold text-gray-600">
-                              Voucher:
+                              Voucher
                             </label>
                             <p className="text-sm"> 09765567</p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Date:
                             </label>
@@ -95,7 +95,7 @@ export default function Home() {
                               {data.Transactiondatendtype?.date}
                             </p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Customer:
                             </label>
@@ -103,7 +103,7 @@ export default function Home() {
                               {data.Customerdetails?.name}
                             </p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Amount:
                             </label>
@@ -111,19 +111,19 @@ export default function Home() {
                               {data.Itemdetails?.[0]?.price}
                             </p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Status:
                             </label>
                             <p className="text-sm">post/ un-post</p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Validate:
                             </label>
                             <p className="text-sm">Valid/In-valid</p>
                           </div>
-                          <div className="flex gap-1 items-center">
+                          <div className="flex flex-col gap-1">
                             <label className="font-bold text-gray-600">
                               Fbr invoice No:
                             </label>
