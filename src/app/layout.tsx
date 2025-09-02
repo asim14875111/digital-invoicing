@@ -11,7 +11,9 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [allusersData, setAllUsersData] = useState<import("@/Contexts/DataContext").AllUsersDataType[]>([]);
+  const [allusersData, setAllUsersData] = useState<
+    import("@/Contexts/DataContext").AllUsersDataType[]
+  >([]);
   return (
     <html lang="en">
       <head>
@@ -26,7 +28,7 @@ export default function RootLayout({
         <CustomerProvider>
           <ItemsProvider>
             <Datacontext.Provider value={{ allusersData, setAllUsersData }}>
-              <div className="min-h-screen bg-gray-200 flex flex-col">
+              <div className="min-h-screen  flex flex-col">
                 <Navbar />
                 <div className="flex-1">{children}</div>
                 <Footer />

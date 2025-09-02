@@ -1,18 +1,16 @@
-"use client"
+"use client";
 import React from "react";
 import { IoMdAdd } from "react-icons/io";
 type AddnewdataProps = {
   showhiddendiv: () => void;
 };
 export default function Addnewdata({ showhiddendiv }: AddnewdataProps) {
-
   return (
     <>
       <button
         onClick={() => showhiddendiv()}
-        className="bg-green-700 flex items-center gap-2 w-fit self-end cursor-pointer hover:bg-green-800 text-white  px-4 py-1 rounded-sm"
+        className="bg-gray-700 flex items-center gap-2 w-fit self-end cursor-pointer hover:bg-gray-800 text-white  px-2 py-2  rounded-full"
       >
-        Add New
         <IoMdAdd />
       </button>
     </>
