@@ -39,7 +39,8 @@ export default function Customerdetails({
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
   const [remarks, setRemarks] = useState("");
-  const { setAllUsersData } = useContext(Datacontext);
+  const context = useContext(Datacontext);
+  const setAllUsersData = context?.setAllUsersData;
 
   const savevalue = (value: string): void => {
     setTransactionTypes(false);
@@ -103,10 +104,12 @@ export default function Customerdetails({
       setTimeout(() => {
         hidedetailsection();
       }, 1000);
-      setAllUsersData((prev: unknown[]) => [
-        ...prev,
-        { Transactiondatendtype, Customerdetails, Itemdetails },
-      ]);
+      if (setAllUsersData) {
+        setAllUsersData((prev: import("@/Contexts/DataContext").AllUsersDataType[]) => [
+          ...prev,
+          { Transactiondatendtype, Customerdetails, Itemdetails },
+        ]);
+      }
       toast.success("Data Added");
       // clearInterval(interval);
     }
