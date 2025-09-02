@@ -41,7 +41,7 @@ export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
             </div>
           </div>
         </div>
-        <Customerdetails />
+        <Customerdetails hidedetailsection={hidedetailsection} />
       </div>
   );
 }

@@ -8,8 +8,6 @@ import { ToastContainer, toast } from "react-toastify";
 import { Status } from "@/Constants/Framerdata";
 import { useCustomer } from "@/Contexts/MyContext";
 import { Sites } from "@/Constants/Framerdata";
-// import CountryList from "country-list-with-dial-code-and-flag";
-// import { IoIosSearch } from "react-icons/io";
 import Select from "react-select";
 import {
   Country,
@@ -19,8 +17,6 @@ import {
   IState,
   ICity,
 } from "country-state-city";
-
-// import { useCountries } from 'react-countries';
 type NewcustomersProps = {
   hidedetailssection: () => void;
   setDetailsSection: React.Dispatch<React.SetStateAction<boolean>>;
@@ -29,14 +25,9 @@ export default function Newcustomers({
   hidedetailssection,
   setDetailsSection,
 }: NewcustomersProps) {
-  // const countries = CountryList.getAll();
-  // const [allCountries, setAllCountries] = useState<boolean>(false);
-  // const [country, setCountry] = useState("");
   const [chevronDown, setchevronDown] = useState<boolean>(true);
   const [chevronup, setChevronup] = useState<boolean>(false);
   const [chevronDown2, setchevronDown2] = useState<boolean>(true);
-  // const [chevronDown3, setchevronDown3] = useState<boolean>(true);
-  // const [chevronDown4, setchevronDown4] = useState<boolean>(false);
   const [chevronup2, setChevronup2] = useState<boolean>(false);
   const [receivablesData, setreceivablesData] = useState<boolean>(false);
   const [StautsData, setStautsData] = useState<boolean>(false);
@@ -56,53 +47,11 @@ export default function Newcustomers({
   const [website, setWebsite] = useState<string>("");
   const [sitechvrnup, setSitechvrnup] = useState<boolean>(false);
   const [sitechvrndwn, setSitechvrndwn] = useState<boolean>(true);
-  // const [filteredData, setFilteredData] = useState<typeof countries>(countries);
   const [country, setSelectedCountry] = useState<ICountry | null>(null);
   const [States, setSelectedState] = useState<IState | null>(null);
   const [city, setSelectedCity] = useState<ICity | null>(null);
   const [Site, SetSite] = useState<string>("");
-  const { inputsdata, setInputsdata } = useCustomer();
-  // const allCountries =   SetAllCountries(allCountries);
-  // console.log(allCountries, "All countries");
-
-  // const [inputsdata, SetinputsData] = useState<{
-  //   customerreceivable: string;
-  //   name: string;
-  //   description: string;
-  //   CNIC: string;
-  //   status: string;
-  //   address: string;
-  //   shippingaddress: string;
-  //   Phonenumber: string;
-  //   mobileNumber: string;
-  //   email: string;
-  //   website: string;
-  //   country: ICountry | null;
-  //   States: IState | null;
-  //   city: ICity | null;
-  //   contactperson: string;
-  //   creditLimit: string;
-  //   Site: string;
-  // }>({
-  //   customerreceivable: customerreceivable,
-  //   name: name,
-  //   description: description,
-  //   CNIC: CNIC,
-  //   status: status,
-  //   address: address,
-  //   shippingaddress: shippingaddress,
-  //   Phonenumber: Phonenumber,
-  //   mobileNumber: mobileNumber,
-  //   email: email,
-  //   website: website,
-  //   country: country,
-  //   States: States,
-  //   city: city,
-  //   contactperson: contactperson,
-  //   creditLimit: creditLimit,
-  //   Site: Site,
-  // });
-
+  const { Customerdetails, setInputsdata } = useCustomer();
   const showcustomerreceivables = (): void => {
     if (chevronDown) {
       setchevronDown(false);
@@ -159,18 +108,13 @@ export default function Newcustomers({
     ) {
       toast.error("Please fill in all required fields!");
     } else {
-      // console.log({ inputsData }, "  details");
-      //  alert("Data Added!");
-      // const intervalid = setInterval(() => {
       setDetailsSection(false);
-      // }, 100);
-      // clearInterval(intervalid);
       setInputsdata(inputsData);
     }
   };
   useEffect(() => {
-    console.log(inputsdata, "-All inputs data");
-  }, [inputsdata]);
+    console.log(Customerdetails, "-All inputs data");
+  }, [Customerdetails]);
 
   const handlechange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let inpvalue = e.target.value.replace(/\D/g, "");
@@ -226,33 +170,6 @@ export default function Newcustomers({
     SetStatus(value);
   };
 
-  // const showcountries = (): void => {
-  //   if (chevronDown3) {
-  //     setchevronDown3(false);
-  //     setchevronDown4(true);
-  //     setAllCountries(true);
-  //   } else {
-  //     setchevronDown4(false);
-  //     setAllCountries(false);
-  //     setchevronDown3(true);
-  //   }
-  // };
-
-  // const searchcountry = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const searchTerm = e.target.value;
-  //   const filteritems = countries.filter((data) =>
-  //     data.name.toLocaleLowerCase().includes(searchTerm.toLowerCase())
-  //   );
-  //   setFilteredData(filteritems);
-  // };
-
-  // const selectcountry = (name: string) => {
-  //   console.log(name, "--Selected country");
-  //   setCountry(name);
-  //   setAllCountries(false);
-  //   setchevronDown4(false);
-  //   setchevronDown3(true);
-  // };
 
   return (
     <div className="">

@@ -1,13 +1,17 @@
+"use client";
 import "./globals.css";
 import Navbar from "./Components/Common/Navbar";
 import Footer from "./Components/Common/Footer";
 import { CustomerProvider } from "@/Contexts/MyContext";
 import { ItemsProvider } from "@/Contexts/ItemsContext";
+import { Datacontext } from "@/Contexts/DataContext";
+import { useState } from "react";
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [allusersData, setAllUsersData] = useState([]);
   return (
     <html lang="en">
       <head>
@@ -25,11 +29,13 @@ export default function RootLayout({
       <body>
         <CustomerProvider>
           <ItemsProvider>
-            <div className="min-h-screen bg-gray-200 flex flex-col">
-              <Navbar />
-              <div className="flex-1">{children}</div>
-              <Footer />
-            </div>
+            <Datacontext.Provider value={{ allusersData, setAllUsersData }}>
+              <div className="min-h-screen bg-gray-200 flex flex-col">
+                <Navbar />
+                <div className="flex-1">{children}</div>
+                <Footer />
+              </div>
+            </Datacontext.Provider>
           </ItemsProvider>
         </CustomerProvider>
       </body>

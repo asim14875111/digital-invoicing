@@ -1,8 +1,9 @@
+"use client";
 import { IoChevronUp } from "react-icons/io5";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoIosSearch } from "react-icons/io";
 import { transactiondata } from "../../Constants/Framerdata";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Newcustomers from "./Newcustomers";
 import { useCustomer } from "@/Contexts/MyContext";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,8 +12,13 @@ import Invoiceitems from "./Invoiceitems";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useItems } from "@/Contexts/ItemsContext";
 import { FaRegEdit } from "react-icons/fa";
-
-export default function Customerdetails() {
+import { Datacontext } from "@/Contexts/DataContext";
+type InvoicingdataProps = {
+  hidedetailsection: () => void;
+};
+export default function Customerdetails({
+  hidedetailsection,
+}: InvoicingdataProps) {
   const [date, setDate] = useState("");
   const [types, setTypes] = useState("");
   const [transactionTypes, setTransactionTypes] = useState<boolean>(false);
@@ -25,20 +31,16 @@ export default function Customerdetails() {
   const [detailssection, setDetailsSection] = useState<boolean>(false);
   const { Customerdetails } = useCustomer();
   const { Itemdetails, setItemsData } = useItems();
-
-  const [alldata, setAlldata] = useState({});
-  // const [itemsdetails, setITemsDetails] = useState<any[]>([]);
+  type ItemType = {
+    itemname: string;
+  };
+  const [edititems, setEditItems] = useState<ItemType | null>(null);
+  const [alldata] = useState({});
+  const [editIndex, setEditIndex] = useState<number | null>(null);
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
   const [remarks, setRemarks] = useState("");
-  // const [data, setData] = useState<{
-  //   date: string;
-  //   types: string;
-  //   remarks: string;
-  // }>({
-  //   date: "",
-  //   types,
-  //   remarks: "",
-  // });
+  const { setAllUsersData } = useContext(Datacontext);
+
   const savevalue = (value: string): void => {
     setTransactionTypes(false);
     setTypes(value);
@@ -94,16 +96,29 @@ export default function Customerdetails() {
     if (!date || !types || !customerdetails) {
       toast.error("Please make sure all mandatory fields are filled in.");
     } else {
-      setAlldata({ Transactiondatendtype, Customerdetails, Itemdetails });
+      const postbtn = document.getElementById("posting-data");
+      if (postbtn) {
+        postbtn.innerHTML = "Posting...";
+      }
+      setTimeout(() => {
+        hidedetailsection();
+      }, 1000);
+      setAllUsersData((prev: unknown[]) => [
+        ...prev,
+        { Transactiondatendtype, Customerdetails, Itemdetails },
+      ]);
       toast.success("Data Added");
+      // clearInterval(interval);
     }
-    // console.log({ date, types }, "Complete Data");
   };
-
+  // useEffect(() => {
+  // }, [allusersData])/;
   useEffect(() => {
     console.log(alldata, "Data of all forms");
+    // setAllUsersData(alldata);
   }, [alldata]);
   const showdetailssection = (): void => {
+    setEditItems(null);
     setInvoiceSection(true);
   };
 
@@ -112,8 +127,10 @@ export default function Customerdetails() {
     setItemsData(updatedItems);
   };
 
-  const edititem = (): void => {
+  const edititem = (item: ItemType, i: number): void => {
     setInvoiceSection(true);
+    setEditItems(item);
+    setEditIndex(i);
   };
 
   return (
@@ -248,7 +265,7 @@ export default function Customerdetails() {
               <div className="flex gap-2 items-center">
                 <div
                   className="text-gray-600 cursor-pointer hover:scale-105 transition"
-                  onClick={edititem}
+                  onClick={() => edititem(item, i)}
                 >
                   <FaRegEdit />
                 </div>
@@ -263,6 +280,7 @@ export default function Customerdetails() {
           </div>
         ))}
       </div>
+      <ToastContainer />
       <div className="flex justify-between pt-10">
         <div>
           <button
@@ -274,30 +292,30 @@ export default function Customerdetails() {
               <MdOutlineAdd />
             </span>{" "}
           </button>
-          <div>
-            {/* {Array.isArray(Itemdetails) && */}
-            {/* {Itemdetails.map((item, idx) => (
-            <div className="text-black" key={idx}>
-              <p>{item.itemname}</p>
-            </div>} */}
-            {/* ))} */}
-          </div>
+          <div></div>
         </div>
         <button
+          id="posting-data"
           onClick={submitdata}
           className="bg-blue-800 py-1 rounded-md cursor-pointer hover:bg-blue-900 text-white px-6"
         >
           Post
         </button>
       </div>
-      {invoiceSection && <Invoiceitems setInvoiceSection={setInvoiceSection} />}
+      {invoiceSection && (
+        <Invoiceitems
+          editIndex={editIndex}
+          edititems={edititems}
+          deleteitem={deleteitem}
+          setInvoiceSection={setInvoiceSection}
+        />
+      )}
       {detailssection && (
         <Newcustomers
           hidedetailssection={hidedetailssection}
           setDetailsSection={setDetailsSection}
         />
       )}
-      <ToastContainer />
     </>
   );
 }

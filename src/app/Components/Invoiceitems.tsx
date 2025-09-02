@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useItems } from "@/Contexts/ItemsContext";
 import { toast, ToastContainer } from "react-toastify";
@@ -18,9 +18,17 @@ import { sro } from "@/Constants/Framerdata";
 import { sroitemno } from "@/Constants/Framerdata";
 type itemsProps = {
   setInvoiceSection: React.Dispatch<React.SetStateAction<boolean>>;
+  edititems: any;
+  deleteitem: (i: number) => void;
+  editIndex: number | null;
 };
 
-export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
+export default function Invoiceitems({
+  setInvoiceSection,
+  edititems,
+  deleteitem,
+  editIndex,
+}: itemsProps) {
   const [itemname, setItemName] = useState<string>("");
   const [barcode, setBarCode] = useState<string>("");
   const [order, setOrderLevel] = useState<string>("");
@@ -75,7 +83,7 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
   const [rate, setRate] = useState<string>("");
   const [SRO, setSRO] = useState<string>("");
   const [SroItemNO, setSroItemNO] = useState<string>("");
-  const [remarks,setRemarks] = useState<string>("")
+  const [remarks, setRemarks] = useState<string>("");
   const [price, setprice] = useState<string>("");
   const { Itemdetails, setItemsData } = useItems();
   const closeitemssection = () => {
@@ -102,8 +110,9 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
       rate,
       SRO,
       SroItemNO,
-      remarks
+      remarks,
     };
+    // Check mandatory fields
     if (
       !itemname ||
       !category ||
@@ -117,12 +126,43 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
       !price
     ) {
       toast.error("Please fill all the mandatory fields");
-    } else {
-      setInvoiceSection(false);
+      return;
     }
-  setItemsData(prev => [...prev, inputsdata]);
+    // Check for duplicate item name
+    setItemsData((prev) => [...prev, inputsdata]);
+    setInvoiceSection(false);
     console.log(inputsdata);
   };
+
+  useEffect(() => {
+    if (edititems) {
+      setItemName(edititems.itemname || itemname);
+      setBarCode(edititems.barcode || barcode);
+      setOrderLevel(edititems.order || order);
+      setmaxorder(edititems.maxorder || maxorder);
+      setreorderLevel(edititems.reorderLevel || reorderLevel);
+      setFilteredData(edititems.filtereddata || filtereddata);
+      setFilteredUom(edititems.filtereduom || filtereduom);
+      setfilteredrevenue(edititems.filteredrevenue || filteredrevenue);
+      setfilteredassest(edititems.filteredassest || filteredassest);
+      setFilterhscode(edititems.filterhscode || filterhscode);
+      setfiltercogs(edititems.filtercogs || filtercogs);
+      setfiltersevice(edititems.filterservice || filterservice);
+      setassestAccount(edititems.assestAccount || assestAccount);
+      setCategoroies(edititems.category || category);
+      setHsCode(edititems.HsCode || hsCode);
+      setrevenueAccount(edititems.revenueAccount || revenueAccount);
+      setcogsAccount(edititems.cogsAccount || cogsAccount);
+      setserviceAccount(edititems.serviceAccount || serviceAccount);
+      setUom(edititems.Uom || Uom);
+      setQuantity(edititems.quantity || quantity);
+      setRate(edititems.rate || rate);
+      setSRO(edititems.SRO || SRO);
+      setSroItemNO(edititems.SroItemNO || SroItemNO);
+      setRemarks(edititems.remarks || remarks);
+      setprice(edititems.price || price);
+    }
+  }, [edititems]);
 
   const showcategories = (): void => {
     if (chevrondwn) {
@@ -393,7 +433,7 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
                 </button>
               </div>
             </div>
-            <div className="flex flex-col h-140 overflow-auto py-4 px-2">
+            <div className="flex flex-col h-[90vh] overflow-auto py-4 px-2">
               <div className="px-2">
                 <div className="flex justify-between">
                   <label>Items Details</label>
@@ -666,7 +706,7 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
                       </div>
 
                       {RevenueData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
+                        <div className="absolute z-50 top-8 bg-gray-50 w-full rounded-b-md ">
                           <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
                             <input
                               type="text"
@@ -930,16 +970,6 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
 
                       {taxdata && (
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          {/* <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filterdata}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div> */}
                           <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
                             {rates.map((category) => (
                               <div
@@ -1015,6 +1045,10 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
                             <IoChevronDownOutline />
                           </span>
                         )}
+
+
+
+
                         {chevronup10 && (
                           <span className="text-gray-500">
                             <IoChevronUp />
@@ -1045,8 +1079,6 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
                       Tax amount
                     </label>
                     <input
-                      // value={quantity}
-                      // onChange={(e) => setQuantity(e.target.value)}
                       type="text"
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
@@ -1057,8 +1089,6 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
                       Net amount
                     </label>
                     <input
-                      // value={quantity}
-                      // onChange={(e) => setQuantity(e.target.value)}
                       type="text"
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
@@ -1082,11 +1112,33 @@ export default function Invoiceitems({ setInvoiceSection }: itemsProps) {
 
           <div className="self-end py-4 px-4 absolute bottom-0">
             <button
-              onClick={additemsdetails}
-              className="bg-blue-600 cursor-pointer hover:bg-blue-800 text-white px-6 py-1 rounded-md"
+              onClick={() => {
+                if (edititems && editIndex !== null) {
+                  deleteitem(editIndex);
+                  additemsdetails();
+                } else {
+                  additemsdetails();
+                }
+              }}
+              className={`bg-blue-600 text-white px-6 py-1 rounded-md ${
+                (!itemname || !category || !HsCode || !Uom || !revenueAccount || !assestAccount || !cogsAccount || !serviceAccount || !quantity || !price)
+                  ? 'opacity-50 cursor-not-allowed'
+                  : 'cursor-pointer hover:bg-blue-800'
+              }`}
+              disabled={
+                !itemname ||
+                !category ||
+                !HsCode ||
+                !Uom ||
+                !revenueAccount ||
+                !assestAccount ||
+                !cogsAccount ||
+                !serviceAccount ||
+                !quantity ||
+                !price
+              }
             >
-              {" "}
-              Add
+              {edititems ? "Update" : "Add"}
             </button>
           </div>
         </div>
