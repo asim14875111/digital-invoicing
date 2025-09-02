@@ -18,7 +18,34 @@ import { sro } from "@/Constants/Framerdata";
 import { sroitemno } from "@/Constants/Framerdata";
 type itemsProps = {
   setInvoiceSection: React.Dispatch<React.SetStateAction<boolean>>;
-  edititems: any;
+  edititems: {
+    itemname?: string;
+    barcode?: string;
+    order?: string;
+    maxorder?: string;
+    reorderLevel?: string;
+    filtereddata?: typeof categories;
+    filtereduom?: typeof uomdata;
+    filteredrevenue?: typeof revenuedata;
+    filteredassest?: typeof assestdata;
+    filterhscode?: typeof codes;
+    filtercogs?: typeof cogsdata;
+    filterservice?: typeof servicedata;
+    assestAccount?: string;
+    category?: string;
+    HsCode?: string;
+    revenueAccount?: string;
+    cogsAccount?: string;
+    serviceAccount?: string;
+    Uom?: string;
+    quantity?: string;
+    rate?: string;
+    SRO?: string;
+    SroItemNO?: string;
+    remarks?: string;
+    price?: string;
+    file?: File | null;
+  } | null;
   deleteitem: (i: number) => void;
   editIndex: number | null;
 };
@@ -85,7 +112,7 @@ export default function Invoiceitems({
   const [SroItemNO, setSroItemNO] = useState<string>("");
   const [remarks, setRemarks] = useState<string>("");
   const [price, setprice] = useState<string>("");
-  const { Itemdetails, setItemsData } = useItems();
+  const { setItemsData } = useItems();
   const closeitemssection = () => {
     setInvoiceSection(false);
   };
@@ -112,8 +139,7 @@ export default function Invoiceitems({
       SroItemNO,
       remarks,
     };
-    // Check mandatory fields
-    if (
+     if (
       !itemname ||
       !category ||
       !HsCode ||
@@ -128,8 +154,7 @@ export default function Invoiceitems({
       toast.error("Please fill all the mandatory fields");
       return;
     }
-    // Check for duplicate item name
-    setItemsData((prev) => [...prev, inputsdata]);
+     setItemsData((prev) => [...prev, inputsdata]);
     setInvoiceSection(false);
     console.log(inputsdata);
   };
@@ -150,7 +175,9 @@ export default function Invoiceitems({
       setfiltersevice(edititems.filterservice || filterservice);
       setassestAccount(edititems.assestAccount || assestAccount);
       setCategoroies(edititems.category || category);
-      setHsCode(edititems.HsCode || hsCode);
+      setHsCode(
+        typeof edititems.HsCode === "string" ? edititems.HsCode : HsCode
+      );
       setrevenueAccount(edititems.revenueAccount || revenueAccount);
       setcogsAccount(edititems.cogsAccount || cogsAccount);
       setserviceAccount(edititems.serviceAccount || serviceAccount);
@@ -162,7 +189,34 @@ export default function Invoiceitems({
       setRemarks(edititems.remarks || remarks);
       setprice(edititems.price || price);
     }
-  }, [edititems]);
+  }, [
+    edititems,
+    itemname,
+    barcode,
+    order,
+    maxorder,
+    reorderLevel,
+    filtereddata,
+    filtereduom,
+    filteredrevenue,
+    filteredassest,
+    filterhscode,
+    filtercogs,
+    filterservice,
+    assestAccount,
+    category,
+    HsCode,
+    revenueAccount,
+    cogsAccount,
+    serviceAccount,
+    Uom,
+    quantity,
+    rate,
+    SRO,
+    SroItemNO,
+    remarks,
+    price,
+  ]);
 
   const showcategories = (): void => {
     if (chevrondwn) {
@@ -1046,9 +1100,6 @@ export default function Invoiceitems({
                           </span>
                         )}
 
-
-
-
                         {chevronup10 && (
                           <span className="text-gray-500">
                             <IoChevronUp />
@@ -1121,9 +1172,18 @@ export default function Invoiceitems({
                 }
               }}
               className={`bg-blue-600 text-white px-6 py-1 rounded-md ${
-                (!itemname || !category || !HsCode || !Uom || !revenueAccount || !assestAccount || !cogsAccount || !serviceAccount || !quantity || !price)
-                  ? 'opacity-50 cursor-not-allowed'
-                  : 'cursor-pointer hover:bg-blue-800'
+                !itemname ||
+                !category ||
+                !HsCode ||
+                !Uom ||
+                !revenueAccount ||
+                !assestAccount ||
+                !cogsAccount ||
+                !serviceAccount ||
+                !quantity ||
+                !price
+                  ? "opacity-50 cursor-not-allowed"
+                  : "cursor-pointer hover:bg-blue-800"
               }`}
               disabled={
                 !itemname ||
