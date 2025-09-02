@@ -34,7 +34,7 @@ export default function Home() {
     <div className="">
       <div className="px-16.5 pt-20">
         {display && (
-          <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-[300px] rounded-sm justify-self-center">
+          <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
             <div className="flex flex-col justify-between px-4 pt-3">
               {display && (
                 <>
@@ -44,7 +44,7 @@ export default function Home() {
             </div>
 
             {/* {display && ( */}
-              <div className="flex flex-col gap-4 px-10 h-10/12 justify-center ">
+              <div className="flex flex-col gap-4 px-10 h-10/12 justify-center  py-6">
                 {Array.isArray(allusersData) && allusersData.length > 0 ? (
                   allusersData.map(
                     (
@@ -291,7 +291,7 @@ export default function Home() {
                     )
                   )
                 ) : (
-                  <p className="text-center text-gray-500 flex text-lg  items-center gap-2 self-center">
+                  <p className="text-center text-gray-500 flex text-lg py-20  items-center gap-2 self-center">
                     No Customer Data Found!
                     <Image src={searching} alt="searching..." width={55} height={55}/>
                   </p>

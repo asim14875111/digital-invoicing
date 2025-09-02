@@ -91,6 +91,9 @@ export default function Customerdetails({
   };
   const addcustomerdetails = () => {
     setDetailsSection(true);
+    setCustomerDetails(false);
+    setIsUnvisible(false);
+    setIsVisible(true);
   };
 
   const hidedetailssection = () => {
@@ -225,7 +228,9 @@ export default function Customerdetails({
               className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
               <span className="line-clamp-1 text-gray-600 py-1 text-sm">
-                {Customerdetails ? Customerdetails.name :  "Select Customer"}
+                - {Customerdetails.name
+                  ? Customerdetails.name
+                  : "Select Customer"}
               </span>
               {visible && (
                 <span className="text-gray-500">

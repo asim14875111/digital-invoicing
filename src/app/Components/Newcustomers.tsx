@@ -96,16 +96,7 @@ export default function Newcustomers({
       Site,
     };
 
-    if (
-      !customerreceivable ||
-      !name ||
-      !CNIC ||
-      !status ||
-      !country ||
-      !States ||
-      !city ||
-      !Site
-    ) {
+    if (!customerreceivable || !name || !CNIC || !status || !country || !Site) {
       toast.error("Please fill in all required fields!");
     } else {
       setDetailsSection(false);
@@ -169,7 +160,6 @@ export default function Newcustomers({
     setchevronDown2(true);
     SetStatus(value);
   };
-
 
   return (
     <div className="">
@@ -433,7 +423,7 @@ export default function Newcustomers({
                   htmlFor=""
                   className="text-sm pb-1 flex gap-1 text-[#4a5565] font-semibold"
                 >
-                  <span className="text-red-400">*</span>State/Province
+                  <span className="text-red-400"></span>State/Province
                 </label>{" "}
                 <div>
                   <Select
@@ -453,7 +443,7 @@ export default function Newcustomers({
                   htmlFor=""
                   className="text-sm  flex gap-1 pb-1 text-[#4a5565] font-semibold"
                 >
-                  <span className="text-red-400">*</span>City
+                  <span className="text-red-400"></span>City
                 </label>{" "}
                 <div>
                   <Select
@@ -502,7 +492,24 @@ export default function Newcustomers({
               <div>
                 <button
                   onClick={addcustomerdetails}
-                  className="bg-gray-700 text-white px-8 py-1 rounded-sm hover:bg-gray-800 cursor-pointer"
+                  className={`bg-blue-600 text-white px-6 py-1 rounded-md  ${
+                    !customerreceivable ||
+                    !name ||
+                    !CNIC ||
+                    !status ||
+                    !country ||
+                    !Site
+                      ? "opacity-50 cursor-not-allowed"
+                      : "cursor-pointer hover:bg-blue-800"
+                  } `}
+                  disabled={
+                    !customerreceivable ||
+                    !name ||
+                    !CNIC ||
+                    !status ||
+                    !country ||
+                    !Site
+                  }
                 >
                   {" "}
                   Add
