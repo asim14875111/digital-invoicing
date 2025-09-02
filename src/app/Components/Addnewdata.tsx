@@ -10,6 +10,7 @@ export default function Addnewdata({ showhiddendiv }: AddnewdataProps) {
       <button
         onClick={() => showhiddendiv()}
         className="bg-gray-700 flex items-center gap-2 w-fit self-end text-sm cursor-pointer hover:bg-gray-800 text-white  px-1.5 py-1.5  rounded-full"
+      // Just comment
       >
         <IoMdAdd />
       </button>
