@@ -161,62 +161,33 @@ export default function Invoiceitems({
 
   useEffect(() => {
     if (edititems) {
-      setItemName(edititems.itemname || itemname);
-      setBarCode(edititems.barcode || barcode);
-      setOrderLevel(edititems.order || order);
-      setmaxorder(edititems.maxorder || maxorder);
-      setreorderLevel(edititems.reorderLevel || reorderLevel);
-      setFilteredData(edititems.filtereddata || filtereddata);
-      setFilteredUom(edititems.filtereduom || filtereduom);
-      setfilteredrevenue(edititems.filteredrevenue || filteredrevenue);
-      setfilteredassest(edititems.filteredassest || filteredassest);
-      setFilterhscode(edititems.filterhscode || filterhscode);
-      setfiltercogs(edititems.filtercogs || filtercogs);
-      setfiltersevice(edititems.filterservice || filterservice);
-      setassestAccount(edititems.assestAccount || assestAccount);
-      setCategoroies(edititems.category || category);
-      setHsCode(
-        typeof edititems.HsCode === "string" ? edititems.HsCode : HsCode
-      );
-      setrevenueAccount(edititems.revenueAccount || revenueAccount);
-      setcogsAccount(edititems.cogsAccount || cogsAccount);
-      setserviceAccount(edititems.serviceAccount || serviceAccount);
-      setUom(edititems.Uom || Uom);
-      setQuantity(edititems.quantity || quantity);
-      setRate(edititems.rate || rate);
-      setSRO(edititems.SRO || SRO);
-      setSroItemNO(edititems.SroItemNO || SroItemNO);
-      setRemarks(edititems.remarks || remarks);
-      setprice(edititems.price || price);
+      setItemName(edititems.itemname || "");
+      setBarCode(edititems.barcode || "");
+      setOrderLevel(edititems.order || "");
+      setmaxorder(edititems.maxorder || "");
+      setreorderLevel(edititems.reorderLevel || "");
+      setFilteredData(edititems.filtereddata || categories);
+      setFilteredUom(edititems.filtereduom || uomdata);
+      setfilteredrevenue(edititems.filteredrevenue || revenuedata);
+      setfilteredassest(edititems.filteredassest || assestdata);
+      setFilterhscode(edititems.filterhscode || codes);
+      setfiltercogs(edititems.filtercogs || cogsdata);
+      setfiltersevice(edititems.filterservice || servicedata);
+      setassestAccount(edititems.assestAccount || "");
+      setCategoroies(edititems.category || "");
+      setHsCode(typeof edititems.HsCode === "string" ? edititems.HsCode : "");
+      setrevenueAccount(edititems.revenueAccount || "");
+      setcogsAccount(edititems.cogsAccount || "");
+      setserviceAccount(edititems.serviceAccount || "");
+      setUom(edititems.Uom || "");
+      setQuantity(edititems.quantity || "");
+      setRate(edititems.rate || "");
+      setSRO(edititems.SRO || "");
+      setSroItemNO(edititems.SroItemNO || "");
+      setRemarks(edititems.remarks || "");
+      setprice(edititems.price || "");
     }
-  }, [
-    edititems,
-    itemname,
-    barcode,
-    order,
-    maxorder,
-    reorderLevel,
-    filtereddata,
-    filtereduom,
-    filteredrevenue,
-    filteredassest,
-    filterhscode,
-    filtercogs,
-    filterservice,
-    assestAccount,
-    category,
-    HsCode,
-    revenueAccount,
-    cogsAccount,
-    serviceAccount,
-    Uom,
-    quantity,
-    rate,
-    SRO,
-    SroItemNO,
-    remarks,
-    price,
-  ]);
+  }, [edititems]);
 
   const showcategories = (): void => {
     if (chevrondwn) {
@@ -1164,11 +1135,37 @@ export default function Invoiceitems({
           <div className="self-end py-4 px-4 absolute bottom-0">
             <button
               onClick={() => {
+                const inputsdata = {
+                  itemname,
+                  barcode,
+                  order,
+                  maxorder,
+                  reorderLevel,
+                  category,
+                  HsCode,
+                  Uom,
+                  revenueAccount,
+                  assestAccount,
+                  cogsAccount,
+                  serviceAccount,
+                  file,
+                  quantity,
+                  price,
+                  rate,
+                  SRO,
+                  SroItemNO,
+                  remarks,
+                };
                 if (edititems && editIndex !== null) {
-                  deleteitem(editIndex);
-                  additemsdetails();
+                  setItemsData((prev) => {
+                    const updated = [...prev];
+                    updated[editIndex] = inputsdata;
+                    return updated;
+                  });
+                  setInvoiceSection(false);
                 } else {
-                  additemsdetails();
+                  setItemsData((prev) => [...prev, inputsdata]);
+                  setInvoiceSection(false);
                 }
               }}
               className={`bg-blue-600 text-white px-6 py-1 rounded-md ${

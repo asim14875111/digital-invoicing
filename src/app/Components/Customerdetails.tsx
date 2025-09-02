@@ -31,6 +31,7 @@ export default function Customerdetails({
   const [detailssection, setDetailsSection] = useState<boolean>(false);
   const { Customerdetails } = useCustomer();
   const { Itemdetails, setItemsData } = useItems();
+  // const [invoiceNo, setInvoiveNo] = useState<number | null>(null);
   type ItemType = {
     itemname: string;
   };
@@ -102,12 +103,25 @@ export default function Customerdetails({
 
   const submitdata = () => {
     const Transactiondatendtype = { date, types, remarks };
-    if (!date || !types || !customerdetails) {
+    if (
+      !date ||
+      !types ||
+      !Customerdetails?.name ||
+      !Itemdetails[0]?.itemname
+    ) {
       toast.error("Please make sure all mandatory fields are filled in.");
     } else {
       const postbtn = document.getElementById("posting-data");
       if (postbtn) {
         postbtn.innerHTML = "Posting...";
+      }
+      const length = 10;
+      const charset = "0123456789";
+      // let invoiceno = ""
+      for (let i = 0; i < length; i++) {
+        const randominvoice = Math.floor(Math.random() * charset.length);
+        // setInvoiveNo(randominvoice);
+        console.log(randominvoice, "Invoice no");
       }
       setTimeout(() => {
         hidedetailsection();
@@ -121,14 +135,11 @@ export default function Customerdetails({
         );
       }
       toast.success("Data Added");
-      // clearInterval(interval);
     }
   };
-  // useEffect(() => {
-  // }, [allusersData])/;
+
   useEffect(() => {
     console.log(alldata, "Data of all forms");
-    // setAllUsersData(alldata);
   }, [alldata]);
   const showdetailssection = (): void => {
     setEditItems(null);
@@ -228,7 +239,8 @@ export default function Customerdetails({
               className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
               <span className="line-clamp-1 text-gray-600 py-1 text-sm">
-                - {Customerdetails.name
+                -{" "}
+                {Customerdetails && Customerdetails.name
                   ? Customerdetails.name
                   : "Select Customer"}
               </span>
@@ -301,7 +313,7 @@ export default function Customerdetails({
         <div>
           <button
             onClick={showdetailssection}
-            className="bg-blue-800 flex gap-2 items-center px-4 py-1.5 cursor-pointer hover:bg-blue-900 rounded-md text-white "
+            className=" flex gap-2 items-center px-4 py-1.5 cursor-pointer bg-[#223f8b] hover:bg-[#1d336c] rounded-md text-white "
           >
             <span className="text-red-600">*</span> Add Invoice item{" "}
             <span className="text-white">
@@ -312,8 +324,10 @@ export default function Customerdetails({
         </div>
         <button
           id="posting-data"
-          onClick={submitdata}
-          className="bg-blue-800 py-1 rounded-md cursor-pointer hover:bg-blue-900 text-white px-6"
+          onClick={() => {
+            submitdata();
+          }}
+          className="bg-[#223f8b] hover:bg-[#1d336c] py-1 rounded-md cursor-pointer  text-white px-6"
         >
           Post
         </button>
