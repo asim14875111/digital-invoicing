@@ -44,7 +44,7 @@ export default function Customerdetails({
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
   const [remarks, setRemarks] = useState("");
   const context = useContext(Datacontext);
-  const [invoiceNo, setRandomNumbers] = useState<never>({});
+  const [invoiceNo, setRandomNumbers] = useState<number[]>([]);
 
   const setAllUsersData = context?.setAllUsersData;
 
@@ -117,7 +117,7 @@ export default function Customerdetails({
     ) {
       toast.error("Please make sure all mandatory fields are filled in.");
     } else {
-      const newNumbers = [];
+      const newNumbers: number[] = [];
       for (let i = 0; i < 10; i++) {
         newNumbers.push(generateRandomInt(1, 9));
       }
