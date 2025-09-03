@@ -44,6 +44,8 @@ export default function Customerdetails({
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
   const [remarks, setRemarks] = useState("");
   const context = useContext(Datacontext);
+  const [invoiceNo, setRandomNumbers] = useState<never>({});
+
   const setAllUsersData = context?.setAllUsersData;
 
   const savevalue = (value: string): void => {
@@ -101,6 +103,10 @@ export default function Customerdetails({
     setDetailsSection(false);
   };
 
+  const generateRandomInt = (min: number, max: number):number => {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  };
+
   const submitdata = () => {
     const Transactiondatendtype = { date, types, remarks };
     if (
@@ -111,18 +117,24 @@ export default function Customerdetails({
     ) {
       toast.error("Please make sure all mandatory fields are filled in.");
     } else {
+      const newNumbers = [];
+      for (let i = 0; i < 10; i++) {
+        newNumbers.push(generateRandomInt(1, 9));
+      }
+      setRandomNumbers(newNumbers);
+
       const postbtn = document.getElementById("posting-data");
       if (postbtn) {
         postbtn.innerHTML = "Posting...";
       }
-      const length = 10;
-      const charset = "0123456789";
+      // const length = 10;
+      // const charset = "0123456789";
       // let invoiceno = ""
-      for (let i = 0; i < length; i++) {
-        const randominvoice = Math.floor(Math.random() * charset.length);
-        // setInvoiveNo(randominvoice);
-        console.log(randominvoice, "Invoice no");
-      }
+      // for (let i = 0; i < length; i++) {
+      //   const randominvoice = Math.floor(Math.random() * charset.length);
+      //   // setInvoiveNo(randominvoice);
+      //   // console.log(randominvoice, "Invoice no");
+      // }
       setTimeout(() => {
         hidedetailsection();
       }, 1000);
@@ -130,13 +142,20 @@ export default function Customerdetails({
         setAllUsersData(
           (prev: import("@/Contexts/DataContext").AllUsersDataType[]) => [
             ...prev,
-            { Transactiondatendtype, Customerdetails, Itemdetails },
+            {
+              Transactiondatendtype,
+              Customerdetails,
+              Itemdetails,
+              invoiceNo: newNumbers,
+            },
           ]
         );
       }
       toast.success("Data Added");
     }
   };
+
+  console.log(invoiceNo, "Random numbers ");
 
   useEffect(() => {
     console.log(alldata, "Data of all forms");
@@ -150,6 +169,9 @@ export default function Customerdetails({
     const updatedItems = Itemdetails.filter((_, idx) => idx !== i);
     setItemsData(updatedItems);
   };
+  // useEffect(() => {
+  //   setItemsData(invoiceNo);
+  // });
 
   const edititem = (item: ItemType, i: number): void => {
     setInvoiceSection(true);

@@ -26,8 +26,7 @@ export default function Home() {
     setDisplay(false);
   };
 
-console.log(allusersData,"-complete data");
-
+  console.log(allusersData, "-complete data");
 
   const hidedetailsection = () => {
     setIsVisible(false);
@@ -87,6 +86,7 @@ console.log(allusersData,"-complete data");
                         address?: string;
                         shippingaddress?: string;
                       };
+                      invoiceNo?: number;
                       Itemdetails?: Array<{
                         itemname?: string;
                         barcode?: string;
@@ -115,7 +115,7 @@ console.log(allusersData,"-complete data");
                               Invoice No
                             </span>
                             <p className="text-sm font-medium text-gray-700">
-                              09765567
+                              {data.invoiceNo}
                             </p>
                           </div>
                           <div className="flex flex-col gap-1">
