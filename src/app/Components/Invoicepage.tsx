@@ -1,7 +1,7 @@
 "use client";
 import React, { useContext, useState } from "react";
-import Addnewdata from "../Addnewdata";
-import Invoicingdata from "../Invoicingdata";
+import Addnewdata from "./Addnewdata";
+import Invoicingdata from "./Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
 import searching from "../../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";

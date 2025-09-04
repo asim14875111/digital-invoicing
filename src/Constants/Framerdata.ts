@@ -1,3 +1,12 @@
+import img1 from "../assests/images/fbr-compliant.svg";
+import img2 from "../assests/images/lighting-fast-img.png";
+import img3 from "../assests/images/digital-records-img.png";
+import img4 from "../assests/images/multi-user-img.png";
+import img5 from "../assests/images/real-time-img.png";
+import img6 from "../assests/images/24-7-support-img.png";
+import icon1 from "../assests/images/sign-up-img.png";
+import icon2 from "../assests/images/create-invoices-img.png";
+import icon3 from "../assests/images/send-nd-track-img.png";
 export const transactiondata = [
   {
     id: 1,
@@ -370,7 +379,7 @@ export const rates = [
     title: "rates 5",
     value: "rates 5",
   },
-]
+];
 export const sro = [
   {
     id: 1,
@@ -423,5 +432,83 @@ export const sroitemno = [
     id: 5,
     title: "sro 5",
     value: "sro 5",
+  },
+];
+
+export const cards = [
+  {
+    id: 1,
+    src: img1,
+    title: "FBR Compliant",
+    desc: "100% compliant with Pakistan's Federal Board of Revenue requirements. Automated tax calculations and reporting.",
+  },
+  {
+    id: 2,
+    src: img2,
+    title: "Lightning Fast",
+    desc: "Create and send professional invoices in seconds.Automated workflows save you hours every week.",
+  },
+  {
+    id: 3,
+    src: img3,
+    title: "Digital Records",
+    desc: "Secure digital storage of all invoices with easy search and retrieval. Export data anytime you need.",
+  },
+  {
+    id: 4,
+    src: img4,
+    title: "Multi-User Access",
+    desc: "Collaborate with your team. Set different accesslevels for accountants, managers, and staff members.",
+  },
+  {
+    id: 5,
+    src: img5,
+    title: "Real-Time Tracking",
+    desc: "Track invoice status in real-time. Know exactly when invoices are sent, viewed, and paid.",
+  },
+  {
+    id: 6,
+    src: img6,
+    title: "24/7 Support",
+    desc: "Get help when you need it. Our Pakistan-based support team understands local business needs.",
+  },
+];
+
+export const howitworkscards = [
+  {
+    id: 1,
+    src: icon1,
+    numbering: "01",
+    heading: "Create Invoices",
+    description:
+      "Create your account in minutes. Add your business details and we'll configure everything for FBR compliance.",
+  },
+  {
+    id: 2,
+    src: icon2,
+    numbering: "02",
+    heading: "Sign Up & Setup",
+    description:
+      "Use our intuitive interface to create professional invoices. All tax calculations are handled automatically.",
+  },
+  {
+    id: 3,
+    src: icon3,
+    numbering: "03",
+    heading: "Send & Track",
+    description: "Send invoices digitally to FBR easily.",
+  },
+];
+
+export const aboutuscards = [
+  {
+    id: 1,
+    title: "Our Mission",
+    desc: "To simplify and streamline the FBR invoicing process for Pakistani businesses, ensuring compliance while reducing administrative burden and improving efficiency.",
+  },
+  {
+    id: 2,
+    title: "Our Vision",
+    desc: "To become Pakistan's leading digital invoicing platform, enabling businesses of all sizes to achieve seamless tax compliance and operational excellence.",
   },
 ];

@@ -1,8 +1,9 @@
- import Home from "./Components/Pages/Home";
- export default function Page() {
+//  import Home from "./Components/Pages/Home";
+import Landingpage from "./Components/Home";
+export default function Page() {
   return (
     <>
-    <Home/>
-     </>
+      <Landingpage />
+    </>
   );
 }

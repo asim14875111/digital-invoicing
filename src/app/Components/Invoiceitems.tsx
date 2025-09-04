@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useItems } from "@/Contexts/ItemsContext";
-import { toast, ToastContainer } from "react-toastify";
+import {  ToastContainer } from "react-toastify";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
 import { IoSearchSharp } from "react-icons/io5";
@@ -53,7 +53,7 @@ type itemsProps = {
 export default function Invoiceitems({
   setInvoiceSection,
   edititems,
-  deleteitem,
+  // deleteitem,
   editIndex,
 }: itemsProps) {
   const [itemname, setItemName] = useState<string>("");
@@ -117,47 +117,47 @@ export default function Invoiceitems({
     setInvoiceSection(false);
   };
 
-  const additemsdetails = (): void => {
-    const inputsdata = {
-      itemname,
-      barcode,
-      order,
-      maxorder,
-      reorderLevel,
-      category,
-      HsCode,
-      Uom,
-      revenueAccount,
-      assestAccount,
-      cogsAccount,
-      serviceAccount,
-      file,
-      quantity,
-      price,
-      rate,
-      SRO,
-      SroItemNO,
-      remarks,
-    };
-     if (
-      !itemname ||
-      !category ||
-      !HsCode ||
-      !Uom ||
-      !revenueAccount ||
-      !assestAccount ||
-      !cogsAccount ||
-      !serviceAccount ||
-      !quantity ||
-      !price
-    ) {
-      toast.error("Please fill all the mandatory fields");
-      return;
-    }
-     setItemsData((prev) => [...prev, inputsdata]);
-    setInvoiceSection(false);
-    console.log(inputsdata);
-  };
+  // const additemsdetails = (): void => {
+  //   const inputsdata = {
+  //     itemname,
+  //     barcode,
+  //     order,
+  //     maxorder,
+  //     reorderLevel,
+  //     category,
+  //     HsCode,
+  //     Uom,
+  //     revenueAccount,
+  //     assestAccount,
+  //     cogsAccount,
+  //     serviceAccount,
+  //     file,
+  //     quantity,
+  //     price,
+  //     rate,
+  //     SRO,
+  //     SroItemNO,
+  //     remarks,
+  //   };
+  //    if (
+  //     !itemname ||
+  //     !category ||
+  //     !HsCode ||
+  //     !Uom ||
+  //     !revenueAccount ||
+  //     !assestAccount ||
+  //     !cogsAccount ||
+  //     !serviceAccount ||
+  //     !quantity ||
+  //     !price
+  //   ) {
+  //     toast.error("Please fill all the mandatory fields");
+  //     return;
+  //   }
+  //    setItemsData((prev) => [...prev, inputsdata]);
+  //   setInvoiceSection(false);
+  //   console.log(inputsdata);
+  // };
 
   useEffect(() => {
     if (edititems) {
