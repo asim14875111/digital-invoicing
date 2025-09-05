@@ -1,9 +1,10 @@
 "use client";
 import React, { useContext, useState } from "react";
-import Addnewdata from "./Addnewdata";
-import Invoicingdata from "./Invoicingdata";
+import Addnewdata from "../Components/Addnewdata";
+import Invoicingdata from "../Components/Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
-import searching from "../../../assests/images/icons8-search-in-list-100.png";
+// import searching from "../../../assests/images/icons8-search-in-list-100.png";
+import searching from "../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
@@ -49,7 +50,7 @@ export default function Home() {
   // allusersData
   return (
     <div className="">
-      <div className="px-16.5 pt-20">
+      <div className="px-16.5 pt-20 pb-30">
         {display && (
           <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
             <div className="flex flex-col justify-between px-4 pt-3">
