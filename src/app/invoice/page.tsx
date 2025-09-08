@@ -101,6 +101,8 @@ export default function Home() {
                           price?: string;
                           quantity?: string;
                           remarks?: string;
+                          taxAmount?: string;
+                          netAmount?:string
                         }>;
                       },
                       index: number
@@ -323,6 +325,14 @@ export default function Home() {
                                   <p>
                                     <strong>Remarks:</strong>{" "}
                                     {data.Itemdetails?.[0]?.remarks}
+                                  </p>
+                                  <p>
+                                    <strong>Tax Amount:</strong>{" "}
+                                    {data.Itemdetails?.[0]?.taxAmount}
+                                  </p>
+                                  <p>
+                                    <strong>Net Amount:</strong>{" "}
+                                    {data.Itemdetails?.[0]?.netAmount}
                                   </p>
                                 </div>
                               </div>

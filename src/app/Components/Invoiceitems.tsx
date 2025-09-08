@@ -46,6 +46,7 @@ type itemsProps = {
     price?: string;
     file?: File | null;
     taxAmount?: string;
+    netAmount?: string;
   } | null;
   deleteitem: (i: number) => void;
   editIndex: number | null;
@@ -106,6 +107,7 @@ export default function Invoiceitems({
   const [cogsAccount, setcogsAccount] = useState<string>("");
   const [serviceAccount, setserviceAccount] = useState<string>("");
   const [taxAmount, setTaxAmount] = useState<string>("");
+  const [netAmount, setNetAmount] = useState<string>("");
   const [Uom, setUom] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState<string>("");
@@ -121,6 +123,7 @@ export default function Invoiceitems({
   };
   useEffect(() => {
     if (edititems) {
+      setNetAmount(edititems.netAmount || "");
       setTaxAmount(edititems.taxAmount || "");
       setItemName(edititems.itemname || "");
       setBarCode(edititems.barcode || "");
@@ -409,6 +412,9 @@ export default function Invoiceitems({
     if (price && rate) {
       const amount = (parseFloat(price) * parseFloat(rate)) / 100;
       setTaxAmount(amount.toFixed(2));
+
+      const net = parseFloat(price) + amount;
+      setNetAmount(net.toFixed(2));
     }
   }, [price, rate]);
 
@@ -579,7 +585,7 @@ export default function Invoiceitems({
                                 className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
                                 key={code.id}
                               >
-                                <div className="flex flex-col gap-1">
+                                <div className="flex flex-row gap-1">
                                   <p className="text-xs">{code.value}</p>
 
                                   <p className="text-xs">{code.title}</p>
@@ -1090,6 +1096,9 @@ export default function Invoiceitems({
                       Net amount
                     </label>
                     <input
+                      value={netAmount}
+                      readOnly
+                      onChange={(e) => setNetAmount(e.target.value)}
                       type="text"
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
@@ -1134,6 +1143,8 @@ export default function Invoiceitems({
                   SRO,
                   SroItemNO,
                   remarks,
+                  taxAmount,
+                  netAmount,
                 };
                 if (edititems && editIndex !== null) {
                   setItemsData((prev) => {

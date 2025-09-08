@@ -22,7 +22,10 @@ export type InputsData = {
   SroItemNO: string;
   remarks: string;
   taxAmount?: string;
+  netAmount?:string
 };
+
+
 
 type ItemsContextType = {
   Itemdetails: InputsData[];
