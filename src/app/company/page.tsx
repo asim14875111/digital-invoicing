@@ -47,13 +47,19 @@ export default function Company() {
     }
   };
 
+  const setgstnum = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    let inpvalue = e.target.value.replace(/\D/g, "");
+    if (inpvalue.length > 12) inpvalue = inpvalue.slice(0, 12);
+    setGst(inpvalue);
+  };
+
   return (
     <div className="flex gap-5 mt-15">
       <Sidebar />
       <div className="px-14 w-full flex  items-center">
         <div className="flex flex-col bg-gray-50  rounded-[6px] w-full ">
           <div className="flex justify-between bg-gray-100 py-1 rounded-[6px] w-full">
-            <p className="text-lg pl-2">Company details</p>
+            <p className="text-lg pl-2 text-gray-600">Company details</p>
             <p></p>
           </div>
           <form onSubmit={savecompanydetails}>
@@ -127,7 +133,7 @@ export default function Company() {
                 </label>
                 <input
                   value={gst}
-                  onChange={(e) => setGst(e.target.value)}
+                  onChange={setgstnum}
                   type="text"
                   className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                 />
