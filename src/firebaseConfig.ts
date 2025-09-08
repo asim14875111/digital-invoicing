@@ -11,6 +11,7 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
+// Just comment
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
 export const auth = typeof window !== "undefined" ? getAuth(app) : null;
