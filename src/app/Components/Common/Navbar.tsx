@@ -29,7 +29,7 @@ export default function Navbar() {
   const showloginform = (): void => {
     setIsVisible(true);
   };
-  
+
   // useEffect(() => {
   //   const auth = getAuth(app);
   //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -104,7 +104,7 @@ export default function Navbar() {
 
       console.log("sign up successfully");
       toast.success("Account created!");
-      router.push("/invoice");
+      router.push("/company");
       setTimeout(() => {
         setIsDisplay(false);
       }, 1000);
@@ -142,7 +142,7 @@ export default function Navbar() {
       await signInWithEmailAndPassword(auth, loginemail, loginpswrd);
       console.log("Sign in successfully");
       toast.success("Sign in successfully!");
-      router.push("/invoice");
+      router.push("/company");
       setTimeout(() => {
         setIsVisible(false);
       }, 1000);

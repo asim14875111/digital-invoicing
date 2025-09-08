@@ -76,7 +76,7 @@ export default function Newcustomers({
   };
 
   const addcustomerdetails = (): void => {
-    document.body.style.overflow = "hidden"
+    document.body.style.overflow = "auto"
     const inputsData = {
       customerreceivable,
       name,

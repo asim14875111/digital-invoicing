@@ -1,12 +1,20 @@
 import React from "react";
 import { RxExit } from "react-icons/rx";
 import Customerdetails from "../Components/Customerdetails";
+// import { useItems } from "@/Contexts/ItemsContext";
+import { useItems } from "@/Contexts/ItemsContext";
 type InvoicingdataProps = {
-    hidedetailsection : () => void
-}
-export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
+  hidedetailsection: () => void;
+};
+
+export default function Invoicingdata({
+  hidedetailsection,
+}: InvoicingdataProps) {
+  const { Itemdetails} = useItems();
+  // console.log(Itemdetails[0].pr);
+
   return (
-    <div className="pb-40">
+    <div className="pb-0">
       <div className="flex flex-col bg-gray-50 shadow-xl shadow-gray-200 w-[90%] justify-self-center rounded-sm mt-0 px-10 py-4">
         <div className="flex justify-between items-center py-2">
           <div className="flex flex-row gap-2 items-center">
@@ -22,15 +30,15 @@ export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
           <div className="flex gap-2 pb-4">
             <div className="flex flex-col bg-[#f3f4f6] pl-2 pr-12 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">SubTotal</label>
-              <p>0</p>
+              <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.price : 0}</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Total Tax</label>
-              <p>0</p>
+              <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.taxAmount : 0}</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Net Amount</label>
-              <p>0</p>
+              <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.netAmount : 0}</p>
             </div>
             <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Fbr Invoice No.</label>
@@ -44,6 +52,6 @@ export default function Invoicingdata({hidedetailsection}: InvoicingdataProps) {
         </div>
         <Customerdetails hidedetailsection={hidedetailsection} />
       </div>
-      </div>
+    </div>
   );
 }

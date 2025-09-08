@@ -4,6 +4,7 @@ import Addnewdata from "../Components/Addnewdata";
 import Invoicingdata from "../Components/Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
 // import searching from "../../../assests/images/icons8-search-in-list-100.png";
+import Sidebar from "../Components/Sidebar";
 import searching from "../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";
 import { FiEye } from "react-icons/fi";
@@ -49,8 +50,9 @@ export default function Home() {
 
   // allusersData
   return (
-    <div className="">
-      <div className="pt-40 pb-30">
+    <div className="flex mt-15 w-full">
+        <Sidebar />
+      <div className="pt-40 pb-30 w-full">
         <div className="px-16.5">
           {display && (
             <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
@@ -102,7 +104,7 @@ export default function Home() {
                           quantity?: string;
                           remarks?: string;
                           taxAmount?: string;
-                          netAmount?:string
+                          netAmount?: string;
                         }>;
                       },
                       index: number
@@ -361,6 +363,7 @@ export default function Home() {
 
         {visible && <Invoicingdata hidedetailsection={hidedetailsection} />}
       </div>
+    
     </div>
   );
 }

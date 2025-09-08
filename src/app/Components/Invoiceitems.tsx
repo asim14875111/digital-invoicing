@@ -515,7 +515,7 @@ export default function Invoiceitems({
                       </div>
 
                       {data && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
+                        <div className="absolute top-8 bg-gray-50 z-50 w-full rounded-b-md ">
                           <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
                             <input
                               type="text"
@@ -526,7 +526,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filtereddata.map((category) => (
                               <div
                                 onClick={() => selectcategory(category.value)}
@@ -570,6 +570,7 @@ export default function Invoiceitems({
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
                           <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
                             <input
+
                               type="text"
                               onChange={filtercodes}
                               className="w-full outline-0"
@@ -634,7 +635,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filtereduom.map((uom) => (
                               <div
                                 onClick={() => selectuomvalue(uom.value)}
@@ -724,7 +725,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filteredrevenue.map((revenue) => (
                               <div
                                 onClick={() =>
@@ -780,7 +781,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filteredassest.map((assest) => (
                               <div
                                 onClick={() => selectassestvalue(assest.value)}
@@ -832,7 +833,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filtercogs.map((cogs) => (
                               <div
                                 onClick={() => selectcogsvalue(cogs.value)}
@@ -886,7 +887,7 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {filterservice.map((service) => (
                               <div
                                 onClick={() =>
@@ -976,7 +977,7 @@ export default function Invoiceitems({
                       </div>
 
                       {taxdata && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
+                        <div className="absolute top-8 bg-gray-50  w-full rounded-b-md ">
                           <div className="flex flex-col gap-2 px-2 h-[100px] overflow-auto">
                             {rates.map((category) => (
                               <div
@@ -1019,7 +1020,7 @@ export default function Invoiceitems({
 
                       {sroData && (
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {sro.map((category) => (
                               <div
                                 onClick={() => selectsro(category.value)}
@@ -1062,7 +1063,7 @@ export default function Invoiceitems({
 
                       {sroitemnoData && (
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
                             {sroitemno.map((category) => (
                               <div
                                 onClick={() => selectsroitemno(category.value)}
