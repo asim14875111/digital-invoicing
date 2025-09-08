@@ -174,7 +174,7 @@ export default function Navbar() {
   };
   return (
     <>
-      <div className="bg-gray-50 border-b border-gray-200 justify-self-center shadow-md shadow-gray-200">
+      <div className="bg-gray-50 border-b fixed w-full z-50 border-gray-200 justify-self-center shadow-md shadow-gray-200">
         <div className="hidden lg:flex py-2 justify-between container justify-self-center w-full px-10 items-center  ">
           <div className="flex items-center h-[40px] pt-2">
             <Image

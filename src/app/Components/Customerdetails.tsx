@@ -31,7 +31,6 @@ export default function Customerdetails({
   const [detailssection, setDetailsSection] = useState<boolean>(false);
   const { Customerdetails } = useCustomer();
   const { Itemdetails, setItemsData } = useItems();
-  // const [invoiceNo, setInvoiveNo] = useState<number | null>(null);
   type ItemType = {
     itemname: string;
   };
@@ -93,6 +92,7 @@ export default function Customerdetails({
     }
   };
   const addcustomerdetails = () => {
+    document.body.style.overflow = "hidden";
     setDetailsSection(true);
     setCustomerDetails(false);
     setIsUnvisible(false);
@@ -100,10 +100,11 @@ export default function Customerdetails({
   };
 
   const hidedetailssection = () => {
+    document.body.style.overflow = "auto";
     setDetailsSection(false);
   };
 
-  const generateRandomInt = (min: number, max: number):number => {
+  const generateRandomInt = (min: number, max: number): number => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
 
@@ -127,14 +128,6 @@ export default function Customerdetails({
       if (postbtn) {
         postbtn.innerHTML = "Posting...";
       }
-      // const length = 10;
-      // const charset = "0123456789";
-      // let invoiceno = ""
-      // for (let i = 0; i < length; i++) {
-      //   const randominvoice = Math.floor(Math.random() * charset.length);
-      //   // setInvoiveNo(randominvoice);
-      //   // console.log(randominvoice, "Invoice no");
-      // }
       setTimeout(() => {
         hidedetailsection();
       }, 1000);
@@ -161,6 +154,7 @@ export default function Customerdetails({
     console.log(alldata, "Data of all forms");
   }, [alldata]);
   const showdetailssection = (): void => {
+    document.body.style.overflow = "hidden";
     setEditItems(null);
     setInvoiceSection(true);
   };
@@ -174,6 +168,7 @@ export default function Customerdetails({
   // });
 
   const edititem = (item: ItemType, i: number): void => {
+    document.body.style.overflow = "hidden";
     setInvoiceSection(true);
     setEditItems(item);
     setEditIndex(i);
@@ -308,7 +303,7 @@ export default function Customerdetails({
       <div className="pt-5">
         {Itemdetails.map((item, i) => (
           <div className="bg-gray  px-2 py-2 rounded-md" key={i}>
-            <div className="w-full bg-gray-100 mt-2 flex justify-between border rounded-md px-2 border-gray-300">
+            <div className="w-full bg-gray-100 mt-2 flex justify-between border py-1 rounded-md px-2 border-gray-300">
               <div>
                 <p className="text-gray-600">{item.itemname}</p>
               </div>
@@ -320,7 +315,7 @@ export default function Customerdetails({
                   <FaRegEdit />
                 </div>
                 <div
-                  className="text-red-500  cursor-pointer hover:scale-105 transition"
+                  className="text-gray-600  cursor-pointer hover:scale-105 transition"
                   onClick={() => deleteitem(i)}
                 >
                   <RiDeleteBin6Line />

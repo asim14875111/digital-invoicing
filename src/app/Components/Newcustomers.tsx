@@ -76,6 +76,7 @@ export default function Newcustomers({
   };
 
   const addcustomerdetails = (): void => {
+    document.body.style.overflow = "hidden"
     const inputsData = {
       customerreceivable,
       name,
@@ -163,7 +164,7 @@ export default function Newcustomers({
 
   return (
     <div className="">
-      <div className="fixed w-full bg-[#00000063] inset-0  px-10 py-14 flex justify-center">
+      <div className="fixed w-full bg-[#00000063] inset-0 z-60 px-10 py-14 flex justify-center">
         <div className=" text-black w-full rounded-md">
           <div className="flex justify-between bg-gray-200 rounded-t-md px-4 py-2">
             <div>

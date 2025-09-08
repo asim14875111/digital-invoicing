@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useItems } from "@/Contexts/ItemsContext";
-import {  ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
 import { IoSearchSharp } from "react-icons/io5";
@@ -45,6 +45,7 @@ type itemsProps = {
     remarks?: string;
     price?: string;
     file?: File | null;
+    taxAmount?: string;
   } | null;
   deleteitem: (i: number) => void;
   editIndex: number | null;
@@ -104,6 +105,7 @@ export default function Invoiceitems({
   const [revenueAccount, setrevenueAccount] = useState<string>("");
   const [cogsAccount, setcogsAccount] = useState<string>("");
   const [serviceAccount, setserviceAccount] = useState<string>("");
+  const [taxAmount, setTaxAmount] = useState<string>("");
   const [Uom, setUom] = useState<string>("");
   const [file, setFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState<string>("");
@@ -114,53 +116,12 @@ export default function Invoiceitems({
   const [price, setprice] = useState<string>("");
   const { setItemsData } = useItems();
   const closeitemssection = () => {
+    document.body.style.overflow = "auto";
     setInvoiceSection(false);
   };
-
-  // const additemsdetails = (): void => {
-  //   const inputsdata = {
-  //     itemname,
-  //     barcode,
-  //     order,
-  //     maxorder,
-  //     reorderLevel,
-  //     category,
-  //     HsCode,
-  //     Uom,
-  //     revenueAccount,
-  //     assestAccount,
-  //     cogsAccount,
-  //     serviceAccount,
-  //     file,
-  //     quantity,
-  //     price,
-  //     rate,
-  //     SRO,
-  //     SroItemNO,
-  //     remarks,
-  //   };
-  //    if (
-  //     !itemname ||
-  //     !category ||
-  //     !HsCode ||
-  //     !Uom ||
-  //     !revenueAccount ||
-  //     !assestAccount ||
-  //     !cogsAccount ||
-  //     !serviceAccount ||
-  //     !quantity ||
-  //     !price
-  //   ) {
-  //     toast.error("Please fill all the mandatory fields");
-  //     return;
-  //   }
-  //    setItemsData((prev) => [...prev, inputsdata]);
-  //   setInvoiceSection(false);
-  //   console.log(inputsdata);
-  // };
-
   useEffect(() => {
     if (edititems) {
+      setTaxAmount(edititems.taxAmount || "");
       setItemName(edititems.itemname || "");
       setBarCode(edititems.barcode || "");
       setOrderLevel(edititems.order || "");
@@ -212,7 +173,7 @@ export default function Invoiceitems({
   const filtercodes = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     const code = codes.filter((code) =>
-      code.title.toLowerCase().includes(value.toLowerCase())
+      code.value.toLowerCase().includes(value.toLowerCase())
     );
     setFilterhscode(code);
   };
@@ -440,8 +401,19 @@ export default function Invoiceitems({
     setSroItemNO(value);
   };
 
+  const showscrollbar = (): void => {
+    document.body.style.overflow = "auto";
+  };
+
+  useEffect(() => {
+    if (price && rate) {
+      const amount = (parseFloat(price) * parseFloat(rate)) / 100;
+      setTaxAmount(amount.toFixed(2));
+    }
+  }, [price, rate]);
+
   return (
-    <div className="fixed w-full bg-[#00000063] inset-0  px-2 py-2 flex justify-center">
+    <div className="fixed w-full bg-[#00000063] inset-0  px-2 z-60 py-2 flex justify-center">
       <div className="bg-white w-full rounded-md relative">
         <div className="flex flex-col justify-between">
           <div>
@@ -460,7 +432,7 @@ export default function Invoiceitems({
             </div>
             <div className="flex flex-col h-[90vh] overflow-auto py-4 px-2">
               <div className="px-2">
-                <div className="flex justify-between">
+                <div className="flex justify-between px-8">
                   <label>Items Details</label>
                   <div>
                     <div className="flex gap-1">
@@ -486,8 +458,8 @@ export default function Invoiceitems({
                     </div>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4  py-6 my-4 pt-4">
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                <div className="grid grid-cols-3  gap-8 px-8  py-6 my-4 pt-4">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Item name{" "}
@@ -499,7 +471,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Bar Code{" "}
@@ -511,7 +483,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Category{" "}
@@ -563,7 +535,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  col-span-2 h-fit  w-full border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Hs Code{" "}
@@ -600,14 +572,18 @@ export default function Invoiceitems({
                               <IoSearchSharp />
                             </p>
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[100px] overflow-auto">
                             {filterhscode.map((code) => (
                               <div
                                 onClick={() => selecthscode(code.value)}
                                 className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
                                 key={code.id}
                               >
-                                <p className="text-sm">{code.title}</p>
+                                <div className="flex flex-col gap-1">
+                                  <p className="text-xs">{code.value}</p>
+
+                                  <p className="text-xs">{code.title}</p>
+                                </div>
                               </div>
                             ))}
                           </div>
@@ -615,7 +591,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       UOM{" "}
@@ -667,7 +643,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Min Order Level{" "}
@@ -679,7 +655,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Max Order Level{" "}
@@ -691,7 +667,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Reorder Level{" "}
@@ -703,7 +679,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Revenue Account{" "}
@@ -759,7 +735,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Assest Account{" "}
@@ -813,7 +789,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       COGS Account{" "}
@@ -865,7 +841,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Service Account{" "}
@@ -924,14 +900,14 @@ export default function Invoiceitems({
                 </div>
               </div>
               <div className="px-2 pt-0">
-                <div className="flex justify-between">
+                <div className="flex justify-between px-8 pb-4">
                   <div>
                     <label>Rate & Tax</label>
                   </div>
                   <div></div>
                 </div>
-                <div className="grid grid-cols-3 gap-4 overflow-auto pb-6">
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                <div className="grid grid-cols-3 gap-8 px-8 overflow-auto pb-6">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Quantity
@@ -943,7 +919,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Price
@@ -955,7 +931,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "> </span>
                       Sub Amount
@@ -968,7 +944,7 @@ export default function Invoiceitems({
                       readOnly
                     />
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Rate{" "}
@@ -979,7 +955,7 @@ export default function Invoiceitems({
                         className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
                       >
                         <span className="text-sm text-gray-600 pl-1">
-                          {rate ? rate : "Select Rate"}
+                          {rate ? rate + "%" : "Select Rate"}
                         </span>
                         {chevrondwn8 && (
                           <span className="text-gray-500">
@@ -995,7 +971,7 @@ export default function Invoiceitems({
 
                       {taxdata && (
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[60px] overflow-auto">
+                          <div className="flex flex-col gap-2 px-2 h-[100px] overflow-auto">
                             {rates.map((category) => (
                               <div
                                 onClick={() => selectrate(category.value)}
@@ -1010,7 +986,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Select SRO{" "}
@@ -1052,7 +1028,7 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Select SRO Item NO
@@ -1095,17 +1071,20 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Tax amount
                     </label>
                     <input
+                      value={taxAmount}
                       type="text"
+                      onChange={(e) => setTaxAmount(e.target.value)}
+                      readOnly
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Net amount
@@ -1115,7 +1094,7 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
-                  <div className="flex flex-col h-fit  w-9/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Remarks
@@ -1167,6 +1146,7 @@ export default function Invoiceitems({
                   setItemsData((prev) => [...prev, inputsdata]);
                   setInvoiceSection(false);
                 }
+                showscrollbar();
               }}
               className={`bg-blue-600 text-white px-6 py-1 rounded-md ${
                 !itemname ||

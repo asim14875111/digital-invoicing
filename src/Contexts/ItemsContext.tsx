@@ -21,6 +21,7 @@ export type InputsData = {
   SRO: string;
   SroItemNO: string;
   remarks: string;
+  taxAmount?: string;
 };
 
 type ItemsContextType = {

@@ -4,7 +4,7 @@ import heroimg from "../../assests/images/Overlay+Shadow.png";
 import Image from "next/image";
 export default function Herosection() {
   return (
-    <div className="flex flex-col px-4 lg:flex lg:flex-row justify-center gap-20 pt-20 pb-14 bg-[#f4fafa]">
+    <div className="flex flex-col px-4 lg:flex lg:flex-row justify-center gap-20 pt-35 pb-14 bg-[#f4fafa]">
       <div className="flex flex-col">
         <div className="flex gap-1 bg-[#dbeff6] w-fit border border-[#3a91ad]  px-6 py-1 text-[#3a91ad] rounded-full">
           <p className="text-[13px] flex items-center gap-2 font-light">

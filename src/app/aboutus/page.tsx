@@ -3,7 +3,7 @@ import { aboutuscards } from "@/Constants/Framerdata";
 export default function Aboutus() {
   return (
     <div>
-      <div className="text-center pt-20">
+      <div className="text-center pt-40">
         <h1 className="text-5xl text-[#2d8eb8]">About Us</h1>
         <p className="text-gray-400 text-lg font-light pt-3">
           Empowering Pakistani businesses with seamless FBR-compliant digital
