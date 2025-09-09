@@ -5,7 +5,9 @@ import Footer from "./Components/Common/Footer";
 import { CustomerProvider } from "@/Contexts/MyContext";
 import { ItemsProvider } from "@/Contexts/ItemsContext";
 import { Datacontext } from "@/Contexts/DataContext";
+import { CompanyProvider } from "@/Contexts/Companycontext";
 import { useState } from "react";
+import { IntegrationProvider } from "@/Contexts/integrationcontext";
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,11 +30,15 @@ export default function RootLayout({
         <CustomerProvider>
           <ItemsProvider>
             <Datacontext.Provider value={{ allusersData, setAllUsersData }}>
-              <div className="min-h-screen  flex flex-col">
-                <Navbar />
-                <div className="flex-1">{children}</div>
-                <Footer />
-              </div>
+              <CompanyProvider>
+                <IntegrationProvider>
+                  <div className="min-h-screen  flex flex-col">
+                    <Navbar />
+                    <div className="flex-1">{children}</div>
+                    <Footer />
+                  </div>
+                </IntegrationProvider>
+              </CompanyProvider>
             </Datacontext.Provider>
           </ItemsProvider>
         </CustomerProvider>

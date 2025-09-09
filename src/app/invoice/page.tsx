@@ -9,14 +9,18 @@ import searching from "../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
-
+import { useCompanyDetails } from "@/Contexts/Companycontext";
 import { RiDeleteBin6Line } from "react-icons/ri";
-
+import Link from "next/link";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
   const context = useContext(Datacontext);
+  const [viewData, setViewData] = useState<boolean>(true);
+  const [hideData, sethideData] = useState<boolean>(false);
+  const { companyDetails } = useCompanyDetails();
   const { allusersData = [], setAllUsersData } = context || {};
+  const [details, setDetails] = useState(false);
   // Explicitly type allusersData if possible, e.g.:
   // const { allusersData = [], setAllUsersData } = context as { allusersData: YourDataType[]; setAllUsersData: (data: YourDataType[]) => void } || {};
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
@@ -48,12 +52,141 @@ export default function Home() {
     }
   };
 
+  const showdetails = (): void => {
+    setViewData(false);
+    sethideData(true);
+    setDetails(true);
+  };
+  const hidedetails = (): void => {
+    setViewData(true);
+    sethideData(false);
+    setDetails(false);
+  };
   // allusersData
   return (
     <div className="flex mt-15 w-full">
-        <Sidebar />
-      <div className="pt-40 pb-30 w-full">
-        <div className="px-16.5">
+      <Sidebar />
+
+      <div className="pt-10 flex flex-col pb-30 w-full">
+        <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm">
+          <div className=" flex bg-gray-50 items-center rounded-sm  px-4 py-2 justify-between">
+            {companyDetails ? (
+              <h3 className="text-xl  text-gray-600">
+                {companyDetails?.companyName}
+              </h3>
+            ) : (
+              <Link href="/company">
+                <h3 className="text-blue-600 hover:underline cursor-pointer">
+                  Add company
+                </h3>
+              </Link>
+            )}
+            {viewData && (
+              <p
+                onClick={showdetails}
+                className="cursor-pointer hover:text-gray-600"
+              >
+                <FiEye />
+              </p>
+            )}
+            {hideData && (
+              <p
+                onClick={hidedetails}
+                className="cursor-pointer hover:text-gray-600"
+              >
+                <FiEyeOff />
+              </p>
+            )}
+          </div>
+          {details && (
+            <div className="mx-4 mr-4 px-4  bg-white border py-2 border-gray-200 rounded-sm my-4">
+              {companyDetails ? (
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <label className="text-xl font-semibold text-gray-700 pb-2">
+                      Company details
+                    </label>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Company name:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.companyName}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Address:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.address}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Phone:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.phonenum}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Bank name:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.bankname}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Bank branch:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.branch}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col  gap-1">
+                    <div className="flex flex-row items-center gap-1">
+                      <label>NTN:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.ntn}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Business Type:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.businessType}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>GST/STRN:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.gst}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Email:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.email}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Bank account no:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.account}
+                      </p>
+                    </div>
+                    <div className="flex flex-row items-center gap-1">
+                      <label>Iban:</label>
+                      <p className="text-sm text-gray-600">
+                        {companyDetails.iban}
+                      </p>
+                    </div>
+                  </div>{" "}
+                </div>
+              ) : (
+                <div className="py-2">
+                  <p className="text-gray-600 text-sm text-center">
+                    ! Nothing to see here
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+        <div className="px-13.5 pt-25">
           {display && (
             <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
               <div className="flex flex-col justify-between px-4 pt-3">
@@ -363,7 +496,6 @@ export default function Home() {
 
         {visible && <Invoicingdata hidedetailsection={hidedetailsection} />}
       </div>
-    
     </div>
   );
 }

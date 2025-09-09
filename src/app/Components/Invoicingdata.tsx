@@ -1,7 +1,6 @@
 import React from "react";
 import { RxExit } from "react-icons/rx";
 import Customerdetails from "../Components/Customerdetails";
-// import { useItems } from "@/Contexts/ItemsContext";
 import { useItems } from "@/Contexts/ItemsContext";
 type InvoicingdataProps = {
   hidedetailsection: () => void;
@@ -11,7 +10,6 @@ export default function Invoicingdata({
   hidedetailsection,
 }: InvoicingdataProps) {
   const { Itemdetails} = useItems();
-  // console.log(Itemdetails[0].pr);
 
   return (
     <div className="pb-0">
@@ -28,23 +26,23 @@ export default function Invoicingdata({
             <p className="text-2xl">Digital Invoicing</p>
           </div>
           <div className="flex gap-2 pb-4">
-            <div className="flex flex-col bg-[#f3f4f6] pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+            <div className="flex flex-col bg-[#f3f4f6] pl-2 pr-6 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">SubTotal</label>
               <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.price : 0}</p>
             </div>
-            <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+            <div className="flex flex-col bg-gray-100 pl-2 pr-6 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Total Tax</label>
               <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.taxAmount : 0}</p>
             </div>
-            <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+            <div className="flex flex-col bg-gray-100 pl-2 pr-6 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Net Amount</label>
               <p className="font-light text-gray-700">{Itemdetails ? Itemdetails[0]?.netAmount : 0}</p>
             </div>
-            <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+            <div className="flex flex-col bg-gray-100 pl-2 pr-6 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Fbr Invoice No.</label>
               <p></p>
             </div>
-            <div className="flex flex-col bg-gray-100 pl-2 pr-12 py-1 border border-gray-300 rounded-md">
+            <div className="flex flex-col bg-gray-100 pl-2 pr-6 py-1 border border-gray-300 rounded-md">
               <label className="text-[#4a5565] text-sm">Transaction No.</label>
               <p></p>
             </div>

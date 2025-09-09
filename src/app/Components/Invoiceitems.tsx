@@ -570,7 +570,6 @@ export default function Invoiceitems({
                         <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
                           <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
                             <input
-
                               type="text"
                               onChange={filtercodes}
                               className="w-full outline-0"

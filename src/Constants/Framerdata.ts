@@ -37450,3 +37450,31 @@ export const aboutuscards = [
     desc: "To become Pakistan's leading digital invoicing platform, enabling businesses of all sizes to achieve seamless tax compliance and operational excellence.",
   },
 ];
+
+export const businesstypes = [
+  {
+    id: 1,
+    title: "Sole Proprietorship",
+    value: "Sole Proprietorship",
+  },
+  {
+    id: 2,
+    title: "Private Limited Company (Pvt Ltd)",
+    value: "private_limited",
+  },
+  {
+    id: 3,
+    title: "Partnership",
+    value: "partnership",
+  },
+  {
+    id: 4,
+    title: "Association / NGO",
+    value: "association_ngo",
+  },
+  {
+    id: 5,
+    title: "Other",
+    value: "other",
+  },
+];

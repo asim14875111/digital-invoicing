@@ -284,7 +284,7 @@ export default function Customerdetails({
             )}
           </div>
         </div>
-        <div className="flex flex-col rounded-sm px-3 py-1  w-fit">
+        <div className="hidden  flex-col rounded-sm px-3 py-1  w-fit">
           <div>
             <p className="text-sm text-[#364153]">
               <span className="text-red-400"></span> Remarks
