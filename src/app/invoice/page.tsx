@@ -1,5 +1,44 @@
 "use client";
 import React, { useContext, useState } from "react";
+import { postInvoiceData, validateInvoiceData } from "@/api/fbrApi";
+
+// Map internal invoice data to FBR API payload
+function mapToFBRPayload(data: any, companyDetails?: any) {
+  return {
+    invoiceType: data.invoiceType || "Sale Invoice",
+    invoiceDate: data.Transactiondatendtype?.date || data.invoiceDate || "",
+    sellerNTNCNIC: companyDetails?.ntn || data.sellerNTNCNIC || "",
+    sellerBusinessName: companyDetails?.companyName || data.sellerBusinessName || "",
+    sellerProvince: companyDetails?.province || data.sellerProvince || "",
+    sellerAddress: companyDetails?.address || data.sellerAddress || "",
+    buyerNTNCNIC: data.Customerdetails?.CNIC || data.buyerNTNCNIC || "",
+    buyerBusinessName: data.Customerdetails?.name || data.buyerBusinessName || "",
+    buyerProvince: data.Customerdetails?.province || data.buyerProvince || "",
+    buyerAddress: data.Customerdetails?.address || data.buyerAddress || "",
+    buyerRegistrationType: data.Customerdetails?.registrationType || data.buyerRegistrationType || "",
+    invoiceRefNo: String(data.invoiceNo ?? data.invoiceRefNo ?? ""),
+    scenarioId: data.scenarioId || "SN000",
+    items: (data.Itemdetails || data.items || []).map((item: any) => ({
+      hsCode: item.HsCode || item.hsCode || "",
+      productDescription: item.itemname || item.productDescription || "",
+      rate: item.taxRate || item.rate || "",
+      uoM: item.Uom || item.uoM || "",
+      quantity: Number(item.quantity) || 0,
+      totalValues: Number(item.price) || Number(item.totalValues) || 0,
+      valueSalesExcludingST: Number(item.valueSalesExcludingST) || 0,
+      fixedNotifiedValueOrRetailPrice: Number(item.fixedNotifiedValueOrRetailPrice) || 0,
+      salesTaxApplicable: Number(item.salesTaxApplicable) || 0,
+      salesTaxWithheldAtSource: Number(item.salesTaxWithheldAtSource) || 0,
+      extraTax: item.extraTax || "",
+      furtherTax: Number(item.furtherTax) || 0,
+      sroScheduleNo: item.SRO || item.sroScheduleNo || "",
+      fedPayable: Number(item.fedPayable) || 0,
+      discount: Number(item.discount) || 0,
+      saleType: item.saleType || "",
+      sroItemSerialNo: item.SroItemNO || item.sroItemSerialNo || ""
+    }))
+  };
+}
 import Addnewdata from "../Components/Addnewdata";
 import Invoicingdata from "../Components/Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
@@ -26,6 +65,38 @@ export default function Home() {
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
     number | null
   >(null);
+  const [fbrResponse, setFbrResponse] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  // Example: Post invoice to FBR
+  const handlePostToFBR = async (invoice: any) => {
+    setLoading(true);
+    setFbrResponse(null);
+    try {
+      const payload = mapToFBRPayload(invoice, companyDetails);
+      const res = await postInvoiceData(payload);
+      setFbrResponse("Posted: " + JSON.stringify(res));
+    } catch (err: any) {
+      setFbrResponse("Error: " + JSON.stringify(err));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Example: Validate invoice with FBR
+  const handleValidateFBR = async (invoice: any) => {
+    setLoading(true);
+    setFbrResponse(null);
+    try {
+      const payload = mapToFBRPayload(invoice, companyDetails);
+      const res = await validateInvoiceData(payload);
+      setFbrResponse("Validated: " + JSON.stringify(res));
+    } catch (err: any) {
+      setFbrResponse("Error: " + JSON.stringify(err));
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const showhiddendiv = () => {
     setIsVisible(true);
@@ -317,6 +388,20 @@ export default function Home() {
 
                           <div className="flex ml-6 gap-4">
                             <button
+                              onClick={() => handlePostToFBR(data)}
+                              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-xs"
+                              disabled={loading}
+                            >
+                              Post to FBR
+                            </button>
+                            <button
+                              onClick={() => handleValidateFBR(data)}
+                              className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 text-xs"
+                              disabled={loading}
+                            >
+                              Validate FBR
+                            </button>
+                            <button
                               onClick={() => toggleCustomerDetails(index)}
                               className="  text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
                             >
@@ -495,6 +580,16 @@ export default function Home() {
         </div>
 
         {visible && <Invoicingdata hidedetailsection={hidedetailsection} />}
+        {/* FBR API Response */}
+        {fbrResponse && (
+          <div className="fixed bottom-4 right-4 bg-white border border-gray-300 shadow-lg p-4 rounded-lg z-50 max-w-lg max-h-60 overflow-auto">
+            <div className="font-semibold mb-2">FBR API Response</div>
+            <pre className="text-xs whitespace-pre-wrap break-all">{fbrResponse}</pre>
+            <button className="mt-2 text-xs text-blue-600 underline" onClick={() => setFbrResponse(null)}>
+              Close
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
