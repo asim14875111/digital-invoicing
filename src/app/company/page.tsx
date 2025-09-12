@@ -44,6 +44,18 @@ export default function Company() {
   };
 
   useEffect(() => {
+    if (companyDetails) {
+      setCompanyName(companyDetails.companyName || "");
+      setNtnNumber(companyDetails.ntn || "");
+      setAddress(companyDetails.address || "");
+      setGst(companyDetails.gst || "");
+      setPhonenumber(companyDetails.phonenum || "");
+      setEmail(companyDetails.email || "");
+      setBankName(companyDetails.bankname || "");
+      setAccount(companyDetails.account || "");
+      setIban(companyDetails.iban || "");
+      setBusinessType(companyDetails.businessType || "");
+    }
     console.log(companyDetails, "Company details");
   }, [companyDetails]);
 
@@ -100,7 +112,7 @@ export default function Company() {
   return (
     <div className="flex gap-5 mt-15">
       <Sidebar />
-      <div className="px-14 w-full flex  items-center">
+      <div className="px-14 w-full flex pr-17  items-center">
         <div className="flex flex-col bg-gray-50  rounded-[6px] w-full ">
           <div className="flex justify-between bg-gray-100 py-1 rounded-[6px] w-full">
             <p className="text-lg pl-2 text-gray-600">Company details</p>

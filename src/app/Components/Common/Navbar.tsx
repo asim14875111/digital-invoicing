@@ -20,12 +20,14 @@ export default function Navbar() {
 
   const [visible, setIsVisible] = useState<boolean>(false);
   const [display, setIsDisplay] = useState<boolean>(false);
+  const [showname, setshownname] = useState<boolean>(false);
   const mydivref = useRef<HTMLDivElement>(null);
   const divref = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginemail, setLoginEmail] = useState("");
   const [loginpswrd, setLoginpswrd] = useState("");
+  const [settings, showSettings] = useState<boolean>(false);
   const showloginform = (): void => {
     setIsVisible(true);
   };
@@ -105,6 +107,7 @@ export default function Navbar() {
       console.log("sign up successfully");
       toast.success("Account created!");
       router.push("/company");
+      setshownname(true);
       setTimeout(() => {
         setIsDisplay(false);
       }, 1000);
@@ -143,6 +146,7 @@ export default function Navbar() {
       console.log("Sign in successfully");
       toast.success("Sign in successfully!");
       router.push("/company");
+      setshownname(true);
       setTimeout(() => {
         setIsVisible(false);
       }, 1000);
@@ -172,10 +176,63 @@ export default function Navbar() {
       }
     }
   };
+
+  const showaccountsettings = (): void => {
+    showSettings(true);
+  };
+
+  const closediv = (): void => {
+    showSettings(false);
+  };
+
+  const changeaccsettings = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      if (!auth) {
+        toast.error("Authentication server not initiliazed");
+        return;
+      }
+      await createUserWithEmailAndPassword(auth, email, password);
+
+      console.log("sign up successfully");
+      toast.success("Account created!");
+      router.push("/company");
+      setshownname(true);
+      setTimeout(() => {
+        setIsDisplay(false);
+      }, 1000);
+    } catch (err) {
+      console.log(err, "Error");
+      type FirebaseError = { code: string };
+      if (
+        typeof err === "object" &&
+        err !== null &&
+        typeof (err as FirebaseError).code === "string"
+      ) {
+        const code = (err as FirebaseError).code;
+        if (code === "auth/email-already-in-use") {
+          toast.error("This email is already registered!");
+        } else if (code === "auth/weak-password") {
+          toast.error("Password should be at least 6 characters.");
+        } else if (code === "auth/invalid-email") {
+          toast.error("Invalid email format.");
+        } else {
+          toast.error("Something went wrong. Please try again!");
+        }
+      } else {
+        toast.error("Something went wrong. Please try again!");
+      }
+    }
+  };
+
+  const hidesettingssection = (): void => {
+    showSettings(false);
+  };
+
   return (
     <>
       <div className="bg-gray-50 border-b fixed w-full z-50 border-gray-200 justify-self-center shadow-md shadow-gray-200">
-        <div className="hidden lg:flex py-2 justify-between container justify-self-center w-full px-10 items-center  ">
+        <div className="hidden lg:flex py-2 justify-between container justify-self-center w-full px-10 pl-0 items-center  ">
           <div className="flex items-center h-[40px] pt-2">
             <Image
               src={Navbarlogo}
@@ -194,7 +251,7 @@ export default function Navbar() {
               <p className="text-[15px] font-medium text-gray-600 cursor-pointer hover:text-blue-600 transition">
                 Pricing
               </p>
-            </Link> */}
+            </Link>  
           {/* </div> */}
           <div className="flex gap-5 items-center">
             <Link href="/aboutus">
@@ -208,6 +265,93 @@ export default function Navbar() {
             >
               Login
             </div>
+            {showname && (
+              <div
+                onClick={showaccountsettings}
+                className="bg-[#00579e] px-2.5 py-0.5 hover:bg-[#023e6f] cursor-pointer rounded-full flex  items-center text-white"
+              >
+                {email[0]}
+              </div>
+            )}
+            {settings && (
+              <div className="fixed inset-0 bg-[#00000057] flex justify-center items-center">
+                <div className="bg-white w-[320px] rounded-sm flex flex-col">
+                  <div className="w-full border-b flex justify-between items-center border-gray-200 px-3 rounded-t-md bg-gray-50 ">
+                    <p className="text-xl text-gray-700 font-semibold py-1">
+                      My Account
+                    </p>
+                    <p
+                      onClick={closediv}
+                      className="text-2xl cursor-pointer hover:scale-106 transition text-red-600"
+                    >
+                      <RxCross2 />
+                    </p>
+                  </div>
+                  <form onSubmit={changeaccsettings}>
+                    <div className="px-3 py-2 flex flex-col gap-2.5 pb-4">
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-700 pb-1">
+                          First Name
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-200 rounded-md outline-0 pl-2"
+                          placeholder="John"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-700 pb-1">
+                          Last Name
+                        </label>
+                        <input
+                          type="text"
+                          className="w-full border border-gray-200 rounded-md outline-0 pl-2"
+                          placeholder="smith"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-700 pb-1">
+                          Email
+                        </label>
+                        <input
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          type="email"
+                          className="w-full border border-gray-200 rounded-md outline-0 pl-2"
+                          placeholder="john@gmail.com"
+                        />
+                      </div>
+                      <div className="flex flex-col">
+                        <label className="text-sm font-semibold text-gray-700 pb-1">
+                          Password
+                        </label>
+                        <input
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          type="password"
+                          className="w-full border border-gray-200 rounded-md outline-0 pl-2"
+                          placeholder="****"
+                        />
+                      </div>
+                      <div>
+                        <button
+                          onClick={hidesettingssection}
+                          disabled={!email || !password}
+                          type="submit"
+                          className={`w-full text-white text-sm py-1.5 mt-2 hover:bg-[#034a85]  rounded-sm ${
+                            !email || !password
+                              ? "bg-blue-300 cursor-no-drop"
+                              : "bg-[#03569c] cursor-pointer"
+                          } `}
+                        >
+                          Update
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

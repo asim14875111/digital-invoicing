@@ -946,7 +946,7 @@ export default function Invoiceitems({
                       value={price}
                       onChange={(e) => setprice(e.target.value)}
                       type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 mt-1 rounded-md outline-0"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
                       readOnly
                     />
                   </div>{" "}
@@ -1087,7 +1087,7 @@ export default function Invoiceitems({
                       type="text"
                       onChange={(e) => setTaxAmount(e.target.value)}
                       readOnly
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
                   <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
@@ -1100,7 +1100,7 @@ export default function Invoiceitems({
                       readOnly
                       onChange={(e) => setNetAmount(e.target.value)}
                       type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
                   <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">

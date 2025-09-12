@@ -6,9 +6,11 @@ import { CustomerProvider } from "@/Contexts/MyContext";
 import { ItemsProvider } from "@/Contexts/ItemsContext";
 import { Datacontext } from "@/Contexts/DataContext";
 import { CompanyProvider } from "@/Contexts/Companycontext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { IntegrationProvider } from "@/Contexts/integrationcontext";
-export default function RootLayout({
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+export default function ProtectedRoute({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -16,6 +18,18 @@ export default function RootLayout({
   const [allusersData, setAllUsersData] = useState<
     import("@/Contexts/DataContext").AllUsersDataType[]
   >([]);
+  const router = useRouter();
+  const auth = getAuth();
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        router.push("/");
+      }
+    });
+    return () => unsubscribe();
+  }, [auth, router]);
+
   return (
     <html lang="en">
       <head>

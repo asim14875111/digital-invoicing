@@ -68,7 +68,7 @@ export default function Home() {
       <Sidebar />
 
       <div className="pt-10 flex flex-col pb-30 w-full">
-        <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm">
+        <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm mr-18.5">
           <div className=" flex bg-gray-50 items-center rounded-sm  px-4 py-2 justify-between">
             {companyDetails ? (
               <h3 className="text-xl  text-gray-600">
@@ -186,7 +186,7 @@ export default function Home() {
             </div>
           )}
         </div>
-        <div className="px-13.5 pt-25">
+        <div className="px-13.5 pt-25 pr-18.5">
           {display && (
             <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
               <div className="flex flex-col justify-between px-4 pt-3">
@@ -244,7 +244,7 @@ export default function Home() {
                     ) => (
                       <div
                         key={index}
-                        className="border border-gray-200 shadow-sm bg-white rounded-lg p-5 hover:shadow-md transition"
+                        className="border border-gray-200 shadow-sm bg-white rounded-lg p-5 hover:shadow-md transition mt-4"
                       >
                         <div className="flex justify-between items-center">
                           <div className="flex flex-wrap gap-8">
