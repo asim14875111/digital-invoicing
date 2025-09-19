@@ -6,11 +6,15 @@ import type { InputsData as ItemInputsData } from "./ItemsContext";
 export type AllUsersDataType = {
 	Transactiondatendtype: {
 		date: string;
-		types: string;
+		types: {
+			value: string;
+			title: string;
+		};
 		remarks: string;
 	};
 	Customerdetails: CustomerInputsData;
 	Itemdetails: ItemInputsData[];
+	invoiceNo?: number;
 };
 
 export type DataContextType = {

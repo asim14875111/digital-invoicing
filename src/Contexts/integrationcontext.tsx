@@ -2,10 +2,11 @@
 import React, { createContext, JSX, useContext, useState } from "react";
 export type InputsData = {
   environemnt: string;
-  clientid: string;
-  clientSecret: string;
-  irisUsername: string;
-  password: string;
+  // clientid: string;
+  // clientSecret: string;
+  // irisUsername: string;
+  // password: string;
+  token:string
 };
 
 type ItemContextType = {

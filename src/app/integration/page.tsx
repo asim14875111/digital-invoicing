@@ -10,11 +10,11 @@ export default function Integration() {
   const [visible, setVisible] = useState<boolean>(false);
   const [environemnt, setEnvironment] = useState<string>("");
   const [clientid, setClientId] = useState<string>("");
-  const [clientSecret, setClientSecret] = useState<string>("");
-  const [irisUsername, setIrisUsername] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [token, setToken] = useState("");
+  // const [clientSecret, setClientSecret] = useState<string>("");
+  // const [irisUsername, setIrisUsername] = useState<string>("");
+  // const [password, setPassword] = useState<string>("");
   const [data, setData] = useState(false);
+  const [token, setToken] = useState("");
   const { integrationdetails, setIntegrationdetails } = UseintegrationDetails();
   const router = useRouter();
   const showenvironment = (): void => {
@@ -48,35 +48,31 @@ export default function Integration() {
     setEnvironment(value);
   };
 
-  // const saveintegrationdetails = (
-  //   e: React.FormEvent<HTMLFormElement>
-  // ): void => {
-  //   e.preventDefault();
-  //   const details = {
-  //     environemnt,
-  //     clientid,
-  //     clientSecret,
-  //     irisUsername,
-  //     password,
-  //   };
-  //   setIntegrationdetails(details);
-  //   router.push("/invoice");
-  // };
-
   const saveintegrationdetails = (
     e: React.FormEvent<HTMLFormElement>
   ): void => {
     e.preventDefault();
+    const details = {
+      environemnt,
+      token,
+      // clientid,
+      // clientSecret,
+      // irisUsername,
+      // password,
+    };
+    setIntegrationdetails(details);
+    router.push("/invoice");
   };
 
   useEffect(() => {
     console.log(integrationdetails);
     if (integrationdetails) {
       setEnvironment(integrationdetails.environemnt || "");
-      setClientId(integrationdetails.clientid || "");
-      setClientSecret(integrationdetails.clientSecret || "");
-      setIrisUsername(integrationdetails.irisUsername || "");
-      setPassword(integrationdetails.password || "");
+      setToken(integrationdetails.token || "");
+      // setClientId(integrationdetails.clientid || "");
+      // setClientSecret(integrationdetails.clientSecret || "");
+      // setIrisUsername(integrationdetails.irisUsername || "");
+      // setPassword(integrationdetails.password || "");
     }
   }, [integrationdetails]);
 
@@ -91,60 +87,70 @@ export default function Integration() {
             </p>
             <p></p>
           </div>
-          <form className="px-4" onSubmit={saveintegrationdetails}>
-            {/* <div className="grid grid-cols-1 gap-4 px-8 py-4 pb-10">
+          <form onSubmit={saveintegrationdetails}>
+            <div className="grid grid-cols-1 gap-4 px-8 py-4 pb-10">
               {/* <div className="flex gap-4"> */}
-            {/* <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-              <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                <span className="text-red-400 font-semibold ">* </span>
-                Client Id
-              </label>
-              <input
-                value={clientid}
-                onChange={(e) => setClientId(e.target.value)}
-                type="text"
-                className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-              />
-            </div>{" "}
-            <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-              <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                <span className="text-red-400 font-semibold ">* </span>
-                Client Secret
-              </label>
-              <input
-                value={clientSecret}
-                onChange={(e) => setClientSecret(e.target.value)}
-                type="text"
-                className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-              />
-            </div>{" "}
-            {/* </div> */}
-            {/* <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-              <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                <span className="text-red-400 font-semibold ">* </span>
-                Iris Username
-              </label>
-              <input
-                value={irisUsername}
-                onChange={(e) => setIrisUsername(e.target.value)}
-                type="text"
-                className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-              />
-            </div>{" "}
-            <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-              <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                <span className="text-red-400 font-semibold ">* </span>
-                Iris password
-              </label>
-              <input
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-              />
-            </div>{" "}  */}
-            {/* </div> */}
-            <div className="flex flex-col">
+              {/* <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                  <span className="text-red-400 font-semibold ">* </span>
+                  Client Id
+                </label>
+                <input
+                  value={clientid}
+                  onChange={(e) => setClientId(e.target.value)}
+                  type="text"
+                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                />
+              </div>{" "}
+              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                  <span className="text-red-400 font-semibold ">* </span>
+                  Client Secret
+                </label>
+                <input
+                  value={clientSecret}
+                  onChange={(e) => setClientSecret(e.target.value)}
+                  type="text"
+                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                />
+              </div>{" "}
+              {/* </div> */}
+              {/* <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                  <span className="text-red-400 font-semibold ">* </span>
+                  Iris Username
+                </label>
+                <input
+                  value={irisUsername}
+                  onChange={(e) => setIrisUsername(e.target.value)}
+                  type="text"
+                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                />
+              </div>{" "}
+              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                  <span className="text-red-400 font-semibold ">* </span>
+                  Iris password
+                </label>
+                <input
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type="password"
+                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                />
+              </div>{" "}  */}
+              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                  <span className="text-red-400 font-semibold ">* </span>
+                  Token
+                </label>
+                <input
+                  value={token}
+                  onChange={(e) => setToken(e.target.value)}
+                  type="text"
+                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                />
+              </div>{" "}
               <div className="flex flex-col h-fit relative  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                 <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                   <span className="text-red-400 font-semibold ">* </span>
@@ -181,42 +187,16 @@ export default function Integration() {
                   </div>
                 )}
               </div>{" "}
-              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                  <span className="text-red-400 font-semibold ">* </span>
-                  Token
-                </label>
-                <input
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
-                  type="text"
-                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                />
-              </div>{" "}
             </div>
             <div className="flex justify-self-end px-8 pb-3">
               <button
-                // className="bg-blue-400 px-4 rounded-md"
-                // disabled={!password || !irisUsername || !clientid || !clientid}
-                // type="submit"
-                // className={` text-white px-5 py-1 rounded-sm  transition ${
-                //   !password ||
-                //   !irisUsername ||
-                //   !clientSecret ||
-                //   !clientid ||
-                //   !environemnt
-                //     ? "bg-blue-300 cursor-not-allowed"
-                //     : "bg-[#223f8f] cursor-pointer hover:bg-[#1a3274]"
-                // } `}
-                className=""
-                // disabled={
-                //   !password ||
-                //   !irisUsername ||
-                //   !clientid ||
-                //   !clientid ||
-                //   !environemnt
-                // }
                 type="submit"
+                className={` text-white px-5 py-1 rounded-sm  transition ${
+                  !environemnt || !token
+                    ? "bg-blue-300 cursor-not-allowed"
+                    : "bg-[#223f8f] cursor-pointer hover:bg-[#1a3274]"
+                } `}
+                disabled={!environemnt || !token}
               >
                 Save
               </button>

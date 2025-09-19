@@ -1,53 +1,17 @@
 "use client";
 import React, { useContext, useState } from "react";
-import { postInvoiceData, validateInvoiceData } from "@/api/fbrApi";
-
-// Map internal invoice data to FBR API payload
-function mapToFBRPayload(data: any, companyDetails?: any) {
-  return {
-    invoiceType: data.invoiceType || "Sale Invoice",
-    invoiceDate: data.Transactiondatendtype?.date || data.invoiceDate || "",
-    sellerNTNCNIC: companyDetails?.ntn || data.sellerNTNCNIC || "",
-    sellerBusinessName: companyDetails?.companyName || data.sellerBusinessName || "",
-    sellerProvince: companyDetails?.province || data.sellerProvince || "",
-    sellerAddress: companyDetails?.address || data.sellerAddress || "",
-    buyerNTNCNIC: data.Customerdetails?.CNIC || data.buyerNTNCNIC || "",
-    buyerBusinessName: data.Customerdetails?.name || data.buyerBusinessName || "",
-    buyerProvince: data.Customerdetails?.province || data.buyerProvince || "",
-    buyerAddress: data.Customerdetails?.address || data.buyerAddress || "",
-    buyerRegistrationType: data.Customerdetails?.registrationType || data.buyerRegistrationType || "",
-    invoiceRefNo: String(data.invoiceNo ?? data.invoiceRefNo ?? ""),
-    scenarioId: data.scenarioId || "SN000",
-    items: (data.Itemdetails || data.items || []).map((item: any) => ({
-      hsCode: item.HsCode || item.hsCode || "",
-      productDescription: item.itemname || item.productDescription || "",
-      rate: item.taxRate || item.rate || "",
-      uoM: item.Uom || item.uoM || "",
-      quantity: Number(item.quantity) || 0,
-      totalValues: Number(item.price) || Number(item.totalValues) || 0,
-      valueSalesExcludingST: Number(item.valueSalesExcludingST) || 0,
-      fixedNotifiedValueOrRetailPrice: Number(item.fixedNotifiedValueOrRetailPrice) || 0,
-      salesTaxApplicable: Number(item.salesTaxApplicable) || 0,
-      salesTaxWithheldAtSource: Number(item.salesTaxWithheldAtSource) || 0,
-      extraTax: item.extraTax || "",
-      furtherTax: Number(item.furtherTax) || 0,
-      sroScheduleNo: item.SRO || item.sroScheduleNo || "",
-      fedPayable: Number(item.fedPayable) || 0,
-      discount: Number(item.discount) || 0,
-      saleType: item.saleType || "",
-      sroItemSerialNo: item.SroItemNO || item.sroItemSerialNo || ""
-    }))
-  };
-}
 import Addnewdata from "../Components/Addnewdata";
 import Invoicingdata from "../Components/Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
+import { UseintegrationDetails } from "@/Contexts/integrationcontext";
 // import searching from "../../../assests/images/icons8-search-in-list-100.png";
 import Sidebar from "../Components/Sidebar";
 import searching from "../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
+
+import { useRouter } from "next/navigation";
 import { useCompanyDetails } from "@/Contexts/Companycontext";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Link from "next/link";
@@ -60,43 +24,13 @@ export default function Home() {
   const { companyDetails } = useCompanyDetails();
   const { allusersData = [], setAllUsersData } = context || {};
   const [details, setDetails] = useState(false);
+  const { integrationdetails } = UseintegrationDetails();
+  const router = useRouter();
   // Explicitly type allusersData if possible, e.g.:
   // const { allusersData = [], setAllUsersData } = context as { allusersData: YourDataType[]; setAllUsersData: (data: YourDataType[]) => void } || {};
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
     number | null
   >(null);
-  const [fbrResponse, setFbrResponse] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  // Example: Post invoice to FBR
-  const handlePostToFBR = async (invoice: any) => {
-    setLoading(true);
-    setFbrResponse(null);
-    try {
-      const payload = mapToFBRPayload(invoice, companyDetails);
-      const res = await postInvoiceData(payload);
-      setFbrResponse("Posted: " + JSON.stringify(res));
-    } catch (err: any) {
-      setFbrResponse("Error: " + JSON.stringify(err));
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Example: Validate invoice with FBR
-  const handleValidateFBR = async (invoice: any) => {
-    setLoading(true);
-    setFbrResponse(null);
-    try {
-      const payload = mapToFBRPayload(invoice, companyDetails);
-      const res = await validateInvoiceData(payload);
-      setFbrResponse("Validated: " + JSON.stringify(res));
-    } catch (err: any) {
-      setFbrResponse("Error: " + JSON.stringify(err));
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const showhiddendiv = () => {
     setIsVisible(true);
@@ -134,10 +68,156 @@ export default function Home() {
     setDetails(false);
   };
   // allusersData
+
+  const senddatatofbr = (): void => {
+    if (!integrationdetails?.environemnt || !integrationdetails.token) {
+      const btn = document.getElementById("validate-btn");
+
+      if (btn) {
+        btn.textContent = "add token!";
+      }
+      alert("add environement and token!");
+      router.push("/integration");
+      return;
+    }
+  };
+
+  const validatefromfbr = async () => {
+    const btn = document.getElementById("validate-btn");
+
+    if (btn) {
+      btn.textContent = "Validating...";
+    }
+    if (!integrationdetails?.environemnt || !integrationdetails.token) {
+      alert("add environement and token!");
+      router.push("/integration");
+      return;
+    }
+
+    // Helper to format date as yyyy-MM-dd
+    // const formatDate = (dateStr: string): string => {
+    //   if (!dateStr) return "";
+    //   const d = new Date(dateStr);
+    //   if (isNaN(d.getTime())) return "";
+    //   return d.toISOString().slice(0, 10);
+    // };
+
+    // Helper to sanitize string (no nulls, no dashes for CNIC/NTN)
+    const sanitizeString = (
+      val: string | number | undefined | null,
+      removeDashes = false
+    ): string => {
+      if (!val) return "";
+      const str = String(val);
+      return removeDashes ? str.replace(/-/g, "") : str;
+    };
+
+    const scenarioId = allusersData[0].Transactiondatendtype.types.value;
+    console.log(scenarioId, "-scenario id");
+
+    // Helper to sanitize number (no nulls)
+    // const sanitizeNumber = (
+    //   val: string | number | undefined | null
+    // ): number => {
+    //   const num = Number(val);
+    //   return isNaN(num) ? 0 : num;
+    // };
+
+    const rawhsCode = String(allusersData[0].Itemdetails[0].HsCode);
+    const foramttedhsCode = rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4);
+
+    console.log(foramttedhsCode, "-formatted hs code");
+
+    // Build FBR-compliant payload
+    const invoiceitems = {
+      invoiceType: sanitizeString(
+        allusersData?.[0]?.Itemdetails?.[0]?.serviceAccount
+      ),
+      invoiceDate: allusersData[0].Transactiondatendtype.date,
+      sellerBusinessName: allusersData[0].Customerdetails.name,
+      sellerProvince: allusersData[0].Customerdetails.Site,
+      sellerNTNCNIC: sanitizeString(
+        allusersData?.[0]?.Customerdetails?.CNIC,
+        true
+      ),
+      sellerAddress: allusersData[0].Customerdetails.address,
+      buyerNTNCNIC: companyDetails?.ntn,
+      buyerBusinessName: companyDetails?.companyName,
+      buyerProvince: companyDetails?.province,
+      buyerAddress: companyDetails?.address,
+      invoiceRefNo: "INV-" + allusersData[0].invoiceNo,
+      scenarioId: allusersData[0].Transactiondatendtype.types.value,
+      buyerRegistrationType: companyDetails?.businessType,
+      items: [
+        {
+          hsCode: "0101.2100",
+          productDescription: allusersData[0].Itemdetails[0].description,
+          rate: allusersData[0].Itemdetails[0].rate + "%",
+          uoM: "Numbers, pieces, units",
+          quantity: allusersData[0].Itemdetails[0].quantity,
+          fixedNotifiedValueOrRetailPrice: 0.0,
+          salesTaxWithheldAtSource:
+            allusersData[0].Itemdetails[0].salesTaxWithheldAtSource,
+          extraTax: allusersData[0].Itemdetails[0].extraTax,
+          furtherTax: allusersData[0].Itemdetails[0].furtherTax,
+          sroScheduleNo: allusersData[0].Itemdetails[0].SRO,
+          fedPayable: allusersData[0].Itemdetails[0].fedPayable,
+          discount: allusersData[0].Itemdetails[0].discount,
+          totalValues:
+            Number(allusersData[0].Itemdetails[0].price) *
+              Number(allusersData[0].Itemdetails[0].quantity) +
+            (Number(allusersData[0].Itemdetails[0].price) *
+              Number(allusersData[0].Itemdetails[0].quantity) *
+              Number(allusersData[0].Itemdetails[0].rate)) /
+              100 +
+            Number(allusersData[0].Itemdetails[0].fedPayable || 0) +
+            Number(allusersData[0].Itemdetails[0].extraTax || 0) +
+            Number(allusersData[0].Itemdetails[0].furtherTax || 0) -
+            Number(allusersData[0].Itemdetails[0].discount || 0),
+          valueSalesExcludingST:
+            Number(allusersData[0].Itemdetails[0].price) *
+            Number(allusersData[0].Itemdetails[0].quantity),
+          salesTaxApplicable:
+            (Number(allusersData[0].Itemdetails[0].price) *
+              Number(allusersData[0].Itemdetails[0].quantity) *
+              Number(allusersData[0].Itemdetails[0].rate)) /
+            100,
+          saleType: allusersData[0].Transactiondatendtype.types.title,
+          sroItemSerialNo: allusersData[0].Itemdetails[0].SroItemNO,
+        },
+      ],
+    };
+
+    try {
+      const res = await fetch("/api/validate-invoice", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          environment: integrationdetails.environemnt,
+          token: integrationdetails.token,
+          customerData: invoiceitems,
+        }),
+      });
+
+      const data = await res.json();
+      console.log("Validation response", data);
+      const btn = document.getElementById("validate-btn");
+
+      if (btn) {
+        btn.textContent = "Validated!";
+      }
+    } catch (err) {
+      console.log(err, "Error");
+    }
+
+    console.log("Buyer CNIC/NTN:", invoiceitems.buyerNTNCNIC);
+    // console.log("Registration Type:", invoiceitems.buyerRegistrationType);
+    console.log("Token:", integrationdetails.token);
+  };
+
   return (
     <div className="flex mt-15 w-full">
       <Sidebar />
-
       <div className="pt-10 flex flex-col pb-30 w-full">
         <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm mr-18.5">
           <div className=" flex bg-gray-50 items-center rounded-sm  px-4 py-2 justify-between">
@@ -274,152 +354,125 @@ export default function Home() {
                 {Array.isArray(allusersData) && allusersData.length > 0 ? (
                   allusersData.map(
                     (
-                      data: {
-                        Transactiondatendtype?: {
-                          date?: string;
-                          types?: string;
-                          remarks?: string;
-                        };
-                        Customerdetails?: {
-                          name?: string;
-                          CNIC?: string;
-                          mobileNumber?: string;
-                          email?: string;
-                          status?: string;
-                          creditLimit?: string;
-                          customerreceivable?: string;
-                          description?: string;
-                          contactperson?: string;
-                          Site?: string;
-                          address?: string;
-                          shippingaddress?: string;
-                        };
-                        invoiceNo?: number;
-                        Itemdetails?: Array<{
-                          itemname?: string;
-                          barcode?: string;
-                          category?: string;
-                          HsCode?: string;
-                          SRO?: string;
-                          SroItemNO?: string;
-                          Uom?: string;
-                          assestAccount?: string;
-                          price?: string;
-                          quantity?: string;
-                          remarks?: string;
-                          taxAmount?: string;
-                          netAmount?: string;
-                        }>;
-                      },
+                      data: import("@/Contexts/DataContext").AllUsersDataType,
                       index: number
                     ) => (
                       <div
                         key={index}
                         className="border border-gray-200 shadow-sm bg-white rounded-lg p-5 hover:shadow-md transition mt-4"
                       >
-                        <div className="flex justify-between items-center">
-                          <div className="flex flex-wrap gap-8">
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                {/* {allusersData} */}
-                                Invoice No
-                              </span>
-                              <p className="text-sm font-medium text-gray-700">
-                                {data.invoiceNo}
-                              </p>
+                        <div className="flex flex-col">
+                          <div className="flex justify-between items-center">
+                            <div className="flex flex-wrap gap-8">
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  {/* {allusersData} */}
+                                  Invoice No
+                                </span>
+                                <p className="text-sm font-medium text-gray-700">
+                                  {data.invoiceNo}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Voucher
+                                </span>
+                                <p className="text-sm font-medium text-gray-700">
+                                  09765567
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Date
+                                </span>
+                                <p className="text-sm font-medium text-gray-700">
+                                  {data.Transactiondatendtype?.date}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Customer
+                                </span>
+                                <p className="text-sm font-medium text-gray-700">
+                                  {data.Customerdetails?.name}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Amount
+                                </span>
+                                <p className="text-sm font-medium text-green-600">
+                                  {data.Itemdetails?.[0]?.price}
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Status
+                                </span>
+                                <p className="text-sm font-medium text-yellow-600">
+                                  post / un-post
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  Validate
+                                </span>
+                                <p className="text-sm font-medium text-blue-600">
+                                  Valid / In-valid
+                                </p>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <span className="text-xs font-semibold text-gray-500">
+                                  FBR Invoice No
+                                </span>
+                                <p className="text-sm font-medium text-gray-700">
+                                  G056765487735245
+                                </p>
+                              </div>
                             </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Voucher
-                              </span>
-                              <p className="text-sm font-medium text-gray-700">
-                                09765567
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Date
-                              </span>
-                              <p className="text-sm font-medium text-gray-700">
-                                {data.Transactiondatendtype?.date}
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Customer
-                              </span>
-                              <p className="text-sm font-medium text-gray-700">
-                                {data.Customerdetails?.name}
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Amount
-                              </span>
-                              <p className="text-sm font-medium text-green-600">
-                                {data.Itemdetails?.[0]?.price}
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Status
-                              </span>
-                              <p className="text-sm font-medium text-yellow-600">
-                                post / un-post
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                Validate
-                              </span>
-                              <p className="text-sm font-medium text-blue-600">
-                                Valid / In-valid
-                              </p>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                              <span className="text-xs font-semibold text-gray-500">
-                                FBR Invoice No
-                              </span>
-                              <p className="text-sm font-medium text-gray-700">
-                                G056765487735245
-                              </p>
+
+                            <div className="flex ml-6 gap-4">
+                              {/* <div className="flex gap-4"> */}
+                              <button
+                                onClick={() => toggleCustomerDetails(index)}
+                                className="  text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
+                              >
+                                {selectedCustomerIndex === index ? (
+                                  <FiEyeOff />
+                                ) : (
+                                  <FiEye />
+                                )}
+                              </button>
+                              <button
+                                onClick={() => deleteitem(index)}
+                                className="text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
+                              >
+                                <RiDeleteBin6Line />
+                              </button>
+                              {/* </div> */}
                             </div>
                           </div>
-
-                          <div className="flex ml-6 gap-4">
+                          <div className="flex gap-4 pt-6">
                             <button
-                              onClick={() => handlePostToFBR(data)}
-                              className="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-xs"
-                              disabled={loading}
+                              // onClick={senddatatofbr}
+                              // onClick={() => deleteitem(index)}
+                              id="validate-btn"
+                              onClick={validatefromfbr}
+                              className="text-white bg-yellow-600 font-semibold px-4 py-1 rounded-sm cursor-pointer hover:bg-yellow-700 transition"
                             >
-                              Post to FBR
+                              Validate
+                              {/* <RiDeleteBin6Line /> */}
                             </button>
                             <button
-                              onClick={() => handleValidateFBR(data)}
-                              className="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600 text-xs"
-                              disabled={loading}
+                              onClick={senddatatofbr}
+                              // onClick={() => deleteitem(index)}
+                              className="text-white bg-blue-600 font-semibold px-6 py-1 rounded-sm cursor-pointer hover:bg-blue-700 transition"
                             >
-                              Validate FBR
-                            </button>
-                            <button
-                              onClick={() => toggleCustomerDetails(index)}
-                              className="  text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
-                            >
-                              {selectedCustomerIndex === index ? (
-                                <FiEyeOff />
-                              ) : (
-                                <FiEye />
-                              )}
-                            </button>
-                            <button
-                              onClick={() => deleteitem(index)}
-                              className="text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
-                            >
-                              <RiDeleteBin6Line />
+                              Send
+                              {/* <RiDeleteBin6Line /> */}
                             </button>
                           </div>
                         </div>
-
                         {selectedCustomerIndex === index && (
                           <div className="bg-gray-50 border border-gray-200 p-5 mt-5 rounded-md">
                             <div className="flex flex-col md:flex-row justify-between gap-10">
@@ -490,7 +543,7 @@ export default function Home() {
                                   </p>
                                   <p>
                                     <strong>Type:</strong>{" "}
-                                    {data.Transactiondatendtype?.types}
+                                    {data.Transactiondatendtype?.types?.value}
                                   </p>
                                   <p>
                                     <strong>Remarks:</strong>{" "}
@@ -536,11 +589,11 @@ export default function Home() {
                                   </p>
                                   <p>
                                     <strong>Price:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.price}
+                                    {data.Itemdetails?.[0]?.price?.toString()}
                                   </p>
                                   <p>
                                     <strong>Quantity:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.quantity}
+                                    {data.Itemdetails?.[0]?.quantity?.toString()}
                                   </p>
                                   <p>
                                     <strong>Remarks:</strong>{" "}
@@ -580,16 +633,6 @@ export default function Home() {
         </div>
 
         {visible && <Invoicingdata hidedetailsection={hidedetailsection} />}
-        {/* FBR API Response */}
-        {fbrResponse && (
-          <div className="fixed bottom-4 right-4 bg-white border border-gray-300 shadow-lg p-4 rounded-lg z-50 max-w-lg max-h-60 overflow-auto">
-            <div className="font-semibold mb-2">FBR API Response</div>
-            <pre className="text-xs whitespace-pre-wrap break-all">{fbrResponse}</pre>
-            <button className="mt-2 text-xs text-blue-600 underline" onClick={() => setFbrResponse(null)}>
-              Close
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

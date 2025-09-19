@@ -297,14 +297,14 @@ export default function Newcustomers({
                   htmlFor=""
                   className="text-sm pt-1 text-[#4a5565] font-semibold"
                 >
-                  <span className="text-red-400">* </span>Site
+                  <span className="text-red-400">* </span>Province
                 </label>
                 <div
                   onClick={showsites}
                   className="bg-gray-100  flex border border-gray-200 justify-between items-center px-1 py-[4px] mt-[7px] hover:border-gray-300 cursor-pointer rounded-md"
                 >
                   <p className="px-2 text-sm text-gray-600">
-                    {Site ? Site : "Select Site"}
+                    {Site ? Site : "Select Province"}
                   </p>
                   {sitechvrndwn && (
                     <span className="text-gray-500">

@@ -8,11 +8,11 @@ import { IoSearchSharp } from "react-icons/io5";
 import { categories } from "@/Constants/Framerdata";
 import { codes } from "@/Constants/Framerdata";
 import { uomdata } from "@/Constants/Framerdata";
-import { revenuedata } from "@/Constants/Framerdata";
+import { paymentmethod } from "@/Constants/Framerdata";
 import { assestdata } from "@/Constants/Framerdata";
 import { cogsdata } from "@/Constants/Framerdata";
 import Image from "next/image";
-import { servicedata } from "@/Constants/Framerdata";
+import { invoicetype } from "@/Constants/Framerdata";
 import { rates } from "@/Constants/Framerdata";
 import { sro } from "@/Constants/Framerdata";
 import { sroitemno } from "@/Constants/Framerdata";
@@ -26,11 +26,11 @@ type itemsProps = {
     reorderLevel?: string;
     filtereddata?: typeof categories;
     filtereduom?: typeof uomdata;
-    filteredrevenue?: typeof revenuedata;
+    filteredrevenue?: typeof paymentmethod;
     filteredassest?: typeof assestdata;
     filterhscode?: typeof codes;
     filtercogs?: typeof cogsdata;
-    filterservice?: typeof servicedata;
+    filterservice?: typeof invoicetype;
     assestAccount?: string;
     category?: string;
     HsCode?: string;
@@ -47,6 +47,7 @@ type itemsProps = {
     file?: File | null;
     taxAmount?: string;
     netAmount?: string;
+    description?: string;
   } | null;
   deleteitem: (i: number) => void;
   editIndex: number | null;
@@ -95,11 +96,11 @@ export default function Invoiceitems({
   const [sroitemnoData, setsroitemnoData] = useState<boolean>(false);
   const [filtereddata, setFilteredData] = useState(categories);
   const [filtereduom, setFilteredUom] = useState(uomdata);
-  const [filteredrevenue, setfilteredrevenue] = useState(revenuedata);
+  const [filteredrevenue, setfilteredrevenue] = useState(paymentmethod);
   const [filteredassest, setfilteredassest] = useState(assestdata);
   const [filterhscode, setFilterhscode] = useState(codes);
   const [filtercogs, setfiltercogs] = useState(cogsdata);
-  const [filterservice, setfiltersevice] = useState(servicedata);
+  const [filterservice, setfiltersevice] = useState(invoicetype);
   const [assestAccount, setassestAccount] = useState<string>("");
   const [category, setCategoroies] = useState<string>("");
   const [HsCode, setHsCode] = useState<string>("");
@@ -115,7 +116,15 @@ export default function Invoiceitems({
   const [SRO, setSRO] = useState<string>("");
   const [SroItemNO, setSroItemNO] = useState<string>("");
   const [remarks, setRemarks] = useState<string>("");
+  const [description, setDescription] = useState<string>("");
   const [price, setprice] = useState<string>("");
+    // New states for extra tax fields
+    const [extraTax, setExtraTax] = useState<string>("");
+    const [furtherTax, setFurtherTax] = useState<string>("");
+    const [discount, setDiscount] = useState<string>("");
+    const [fedPayable, setFedPayable] = useState<string>("");
+    const [fixedNotifiedValueOrRetailPrice, setFixedNotifiedValueOrRetailPrice] = useState<string>("");
+    const [salesTaxWithheldAtSource, setSalesTaxWithheldAtSource] = useState<string>("");
   const { setItemsData } = useItems();
   const closeitemssection = () => {
     document.body.style.overflow = "auto";
@@ -132,11 +141,11 @@ export default function Invoiceitems({
       setreorderLevel(edititems.reorderLevel || "");
       setFilteredData(edititems.filtereddata || categories);
       setFilteredUom(edititems.filtereduom || uomdata);
-      setfilteredrevenue(edititems.filteredrevenue || revenuedata);
+      setfilteredrevenue(edititems.filteredrevenue || paymentmethod);
       setfilteredassest(edititems.filteredassest || assestdata);
       setFilterhscode(edititems.filterhscode || codes);
       setfiltercogs(edititems.filtercogs || cogsdata);
-      setfiltersevice(edititems.filterservice || servicedata);
+      setfiltersevice(edititems.filterservice || invoicetype);
       setassestAccount(edititems.assestAccount || "");
       setCategoroies(edititems.category || "");
       setHsCode(typeof edititems.HsCode === "string" ? edititems.HsCode : "");
@@ -150,6 +159,7 @@ export default function Invoiceitems({
       setSroItemNO(edititems.SroItemNO || "");
       setRemarks(edititems.remarks || "");
       setprice(edititems.price || "");
+      setDescription(edititems.description || "");
     }
   }, [edititems]);
 
@@ -190,7 +200,7 @@ export default function Invoiceitems({
 
   const filterrevenue = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const revenuevalue = e.target.value;
-    const filterdrevenue = revenuedata.filter((revenue) =>
+    const filterdrevenue = paymentmethod.filter((revenue) =>
       revenue.title.toLowerCase().includes(revenuevalue.toLowerCase())
     );
     setfilteredrevenue(filterdrevenue);
@@ -215,6 +225,7 @@ export default function Invoiceitems({
     }
   };
 
+  
   const selectuomvalue = (value: string): void => {
     setUom(value);
     setUOMData(false);
@@ -335,7 +346,7 @@ export default function Invoiceitems({
 
   const filterservicedata = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const inpvalue = e.target.value;
-    const filtered = servicedata.filter((data) =>
+    const filtered = invoicetype.filter((data) =>
       data.title.toLowerCase().includes(inpvalue.toLowerCase())
     );
     setfiltersevice(filtered);
@@ -688,7 +699,7 @@ export default function Invoiceitems({
                   <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
-                      Revenue Account{" "}
+                     Payment Method
                     </label>
                     <div className="flex relative flex-col">
                       <div
@@ -698,7 +709,7 @@ export default function Invoiceitems({
                         <span className="text-sm text-gray-600 pl-1">
                           {revenueAccount
                             ? revenueAccount
-                            : "Select Revenue Account"}
+                            : "Select payment method"}
                         </span>
                         {chevrondwn4 && (
                           <span className="text-gray-500">
@@ -850,7 +861,7 @@ export default function Invoiceitems({
                   <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
-                      Service Account{" "}
+                      Invoice Type
                     </label>
                     <div className="flex relative flex-col">
                       <div
@@ -860,11 +871,12 @@ export default function Invoiceitems({
                         <span className="text-sm text-gray-600 pl-1">
                           {serviceAccount
                             ? serviceAccount
-                            : "Select Service Account"}
+                            : "Select Invoice Type"}
                         </span>
                         {chevrondwn7 && (
                           <span className="text-gray-500">
                             <IoChevronDownOutline />
+                        
                           </span>
                         )}
                         {chevronup7 && (
@@ -903,6 +915,18 @@ export default function Invoiceitems({
                       )}
                     </div>
                   </div>{" "}
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                      <span className="text-red-400 font-semibold ">* </span>
+                      Product description{""}
+                    </label>
+                    <input
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      type="text"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    />
+                  </div>{" "}
                 </div>
               </div>
               <div className="px-2 pt-0">
@@ -925,6 +949,52 @@ export default function Invoiceitems({
                       className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
                     />
                   </div>{" "}
+                    {/* New Inputs for Tax Fields */}
+                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Extra Tax</label>
+                      <input
+                        value={extraTax}
+                        onChange={(e) => setExtraTax(e.target.value)}
+                        type="number"
+                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      />
+                    </div>
+                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Further Tax</label>
+                      <input
+                        value={furtherTax}
+                        onChange={(e) => setFurtherTax(e.target.value)}
+                        type="number"
+                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      />
+                    </div>
+                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Discount</label>
+                      <input
+                        value={discount}
+                        onChange={(e) => setDiscount(e.target.value)}
+                        type="number"
+                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      />
+                    </div>
+                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Fed Payable</label>
+                      <input
+                        value={fedPayable}
+                        onChange={(e) => setFedPayable(e.target.value)}
+                        type="number"
+                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      />
+                    </div>
+                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Fixed Notified Value / Retail Price</label>
+                      <input
+                        value={fixedNotifiedValueOrRetailPrice}
+                        onChange={(e) => setFixedNotifiedValueOrRetailPrice(e.target.value)}
+                        type="number"
+                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                      />
+                    </div>
                   <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
@@ -1105,6 +1175,32 @@ export default function Invoiceitems({
                   </div>{" "}
                   <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                      <span className="text-red-400 font-semibold "></span>
+                      Fixed Notified Value or Retail Price
+                    </label>
+                    <input
+                      value={fixedNotifiedValueOrRetailPrice}
+                      onChange={e => setFixedNotifiedValueOrRetailPrice(e.target.value)}
+                      type="number"
+                      min="0"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    />
+                  </div>
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                      <span className="text-red-400 font-semibold "></span>
+                      Sales Tax Withheld At Source
+                    </label>
+                    <input
+                      value={salesTaxWithheldAtSource}
+                      onChange={e => setSalesTaxWithheldAtSource(e.target.value)}
+                      type="number"
+                      min="0"
+                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    />
+                  </div>
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold ">* </span>
                       Remarks
                     </label>
@@ -1137,24 +1233,40 @@ export default function Invoiceitems({
                   cogsAccount,
                   serviceAccount,
                   file,
-                  quantity,
-                  price,
-                  rate,
+                  quantity: Number(quantity),
+                  price: Number(price),
+                  rate: Number(rate),
                   SRO,
                   SroItemNO,
                   remarks,
-                  taxAmount,
-                  netAmount,
+                  taxAmount: Number(taxAmount),
+                  netAmount: Number(netAmount),
+                  description,
+                    extraTax: Number(extraTax),
+                    furtherTax: Number(furtherTax),
+                    discount: Number(discount),
+                    fedPayable: Number(fedPayable),
+                    fixedNotifiedValueOrRetailPrice: Number(fixedNotifiedValueOrRetailPrice),
+                    salesTaxWithheldAtSource: Number(salesTaxWithheldAtSource),
                 };
                 if (edititems && editIndex !== null) {
                   setItemsData((prev) => {
                     const updated = [...prev];
-                    updated[editIndex] = inputsdata;
+                    updated[editIndex] = {
+                      ...inputsdata,
+                      totalValues: 0, // or provide a calculated value if needed
+                    };
                     return updated;
                   });
                   setInvoiceSection(false);
                 } else {
-                  setItemsData((prev) => [...prev, inputsdata]);
+                  setItemsData((prev) => [
+                    ...prev,
+                    {
+                      ...inputsdata,
+                      totalValues: 0, // or provide a calculated value if needed
+                    },
+                  ]);
                   setInvoiceSection(false);
                 }
                 showscrollbar();
@@ -1169,7 +1281,8 @@ export default function Invoiceitems({
                 !cogsAccount ||
                 !serviceAccount ||
                 !quantity ||
-                !price
+                !price ||
+                !description
                   ? "opacity-50 cursor-not-allowed"
                   : "cursor-pointer hover:bg-blue-800"
               }`}
@@ -1183,7 +1296,8 @@ export default function Invoiceitems({
                 !cogsAccount ||
                 !serviceAccount ||
                 !quantity ||
-                !price
+                !price ||
+                !description
               }
             >
               {edititems ? "Update" : "Add"}

@@ -15,17 +15,23 @@ export type InputsData = {
   cogsAccount: string;
   serviceAccount: string;
   file: File | null;
-  quantity: string;
-  price: string;
-  rate: string;
+  quantity: number;
+  price: number;
+  rate: number;
   SRO: string;
   SroItemNO: string;
   remarks: string;
-  taxAmount?: string;
-  netAmount?:string
+  taxAmount?: number;
+  netAmount?: number;
+  description: string;
+  totalValues: number;
+  extraTax: number;
+  furtherTax: number;
+  discount: number;
+  fedPayable: number;
+  salesTaxWithheldAtSource: number;
+  fixedNotifiedValueOrRetailPrice: number;
 };
-
-
 
 type ItemsContextType = {
   Itemdetails: InputsData[];

@@ -20,7 +20,9 @@ export default function Customerdetails({
   hidedetailsection,
 }: InvoicingdataProps) {
   const [date, setDate] = useState("");
-  const [types, setTypes] = useState("");
+  const [types, setTypes] = useState<{ value: string; title: string } | null>(
+    null
+  );
   const [transactionTypes, setTransactionTypes] = useState<boolean>(false);
   const [customerdetails, setCustomerDetails] = useState<boolean>(false);
   const [chevronup, setChevronup] = useState<boolean>(false);
@@ -47,9 +49,16 @@ export default function Customerdetails({
 
   const setAllUsersData = context?.setAllUsersData;
 
-  const savevalue = (value: string): void => {
+  const savevalue = (item: {
+    value: string;
+    title: string;
+    scenarioCode: string;
+  }): void => {
     setTransactionTypes(false);
-    setTypes(value);
+    setTypes({
+      value: item.scenarioCode,
+      title: item.value, 
+    });
     setChevronup(false);
     setChevrondown(true);
   };
@@ -109,7 +118,13 @@ export default function Customerdetails({
   };
 
   const submitdata = () => {
-    const Transactiondatendtype = { date, types, remarks };
+    const Transactiondatendtype = {
+      date,
+      types: types
+        ? { value: types.value, title: types.title }
+        : { value: "", title: "" },
+      remarks,
+    };
     if (
       !date ||
       !types ||
@@ -118,11 +133,8 @@ export default function Customerdetails({
     ) {
       toast.error("Please make sure all mandatory fields are filled in.");
     } else {
-      const newNumbers: number[] = [];
-      for (let i = 0; i < 10; i++) {
-        newNumbers.push(generateRandomInt(1, 9));
-      }
-      setRandomNumbers(newNumbers);
+      const newNumber: number = generateRandomInt(1000000000, 9999999999); // Generate a single random number (e.g., 10 digits)
+      setRandomNumbers([newNumber]);
 
       const postbtn = document.getElementById("posting-data");
       if (postbtn) {
@@ -139,7 +151,7 @@ export default function Customerdetails({
               Transactiondatendtype,
               Customerdetails,
               Itemdetails,
-              invoiceNo: newNumbers,
+              invoiceNo: newNumber,
             },
           ]
         );
@@ -201,7 +213,7 @@ export default function Customerdetails({
               className="py-[1px] flex justify-between items-center cursor-pointer px-3 w-[300px]  shadow-md border border-gray-200 focus:border-gray-400 bg-gray-100 mt-2 rounded-md outline-0"
             >
               <span className="line-clamp-1 text-gray-600 text-sm py-1">
-                {types ? types : "Select Transaction Type"}
+                {types ? types.title : "Select Transaction Type"}
               </span>
 
               {chevrondown && (
@@ -231,7 +243,7 @@ export default function Customerdetails({
                 <div className="flex flex-col h-33 pt-3 gap-2 overflow-auto">
                   {filteredData.map((data) => (
                     <div
-                      onClick={() => savevalue(data.value)}
+                      onClick={() => savevalue(data)}
                       className="cursor-pointer hover:bg-blue-500 hover:text-white"
                       key={data.id}
                     >

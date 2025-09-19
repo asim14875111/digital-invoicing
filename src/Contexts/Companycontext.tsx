@@ -13,6 +13,7 @@ export type InputsData = {
   account: string;
   iban: string;
   businessType: string;
+  province:string
 };
 
 type ItemContextType = {

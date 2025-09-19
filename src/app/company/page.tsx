@@ -21,6 +21,7 @@ export default function Company() {
   const [visible, setIsVisible] = useState<boolean>(true);
   const [businessdata, setBusinessData] = useState<boolean>(false);
   const [businessType, setBusinessType] = useState<string>("");
+  const [province, setProvince] = useState<string>("");
   const { companyDetails, setCompanyDetails } = useCompanyDetails();
   const router = useRouter();
   const savecompanydetails = (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,6 +38,7 @@ export default function Company() {
       account,
       iban,
       businessType,
+      province,
     };
     setCompanyDetails(details);
     console.log("data saved");
@@ -55,6 +57,7 @@ export default function Company() {
       setAccount(companyDetails.account || "");
       setIban(companyDetails.iban || "");
       setBusinessType(companyDetails.businessType || "");
+      setProvince(companyDetails.province || "");
     }
     console.log(companyDetails, "Company details");
   }, [companyDetails]);
@@ -115,7 +118,7 @@ export default function Company() {
       <div className="px-14 w-full flex pr-17  items-center">
         <div className="flex flex-col bg-gray-50  rounded-[6px] w-full ">
           <div className="flex justify-between bg-gray-100 py-1 rounded-[6px] w-full">
-            <p className="text-lg pl-2 text-gray-600">Company details</p>
+            <p className="text-lg pl-2 text-gray-600">Company / Buyer details</p>
             <p></p>
           </div>
           <form onSubmit={savecompanydetails}>
@@ -146,18 +149,32 @@ export default function Company() {
                   />
                 </div>{" "}
               </div>
-              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                  <span className="text-red-400 font-semibold ">* </span>
-                  Address{" "}
-                </label>
-                <input
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  type="text"
-                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                />
-              </div>{" "}
+              <div className="flex gap-4">
+                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                    <span className="text-red-400 font-semibold ">* </span>
+                    Address{" "}
+                  </label>
+                  <input
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    type="text"
+                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                  />
+                </div>{" "}
+                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
+                    <span className="text-red-400 font-semibold ">* </span>
+                    Province{" "}
+                  </label>
+                  <input
+                    value={province}
+                    onChange={(e) => setProvince(e.target.value)}
+                    type="text"
+                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                  />
+                </div>{" "}
+              </div>
               <div className="flex flex-col h-fit relative  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                 <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                   <span className="text-red-400 font-semibold ">* </span>
