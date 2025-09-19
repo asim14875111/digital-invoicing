@@ -82,8 +82,8 @@ export default function Home() {
     }
   };
 
-  const validatefromfbr = async () => {
-    const btn = document.getElementById("validate-btn");
+  const validatefromfbr = async (index: number) => {
+    const btn = document.getElementById(`validate-btn-${index}`);
 
     if (btn) {
       btn.textContent = "Validating...";
@@ -93,14 +93,6 @@ export default function Home() {
       router.push("/integration");
       return;
     }
-
-    // Helper to format date as yyyy-MM-dd
-    // const formatDate = (dateStr: string): string => {
-    //   if (!dateStr) return "";
-    //   const d = new Date(dateStr);
-    //   if (isNaN(d.getTime())) return "";
-    //   return d.toISOString().slice(0, 10);
-    // };
 
     // Helper to sanitize string (no nulls, no dashes for CNIC/NTN)
     const sanitizeString = (
@@ -112,18 +104,10 @@ export default function Home() {
       return removeDashes ? str.replace(/-/g, "") : str;
     };
 
-    const scenarioId = allusersData[0].Transactiondatendtype.types.value;
+    const scenarioId = allusersData[index].Transactiondatendtype.types.value;
     console.log(scenarioId, "-scenario id");
 
-    // Helper to sanitize number (no nulls)
-    // const sanitizeNumber = (
-    //   val: string | number | undefined | null
-    // ): number => {
-    //   const num = Number(val);
-    //   return isNaN(num) ? 0 : num;
-    // };
-
-    const rawhsCode = String(allusersData[0].Itemdetails[0].HsCode);
+    const rawhsCode = String(allusersData[index].Itemdetails[0].HsCode);
     const foramttedhsCode = rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4);
 
     console.log(foramttedhsCode, "-formatted hs code");
@@ -131,59 +115,59 @@ export default function Home() {
     // Build FBR-compliant payload
     const invoiceitems = {
       invoiceType: sanitizeString(
-        allusersData?.[0]?.Itemdetails?.[0]?.serviceAccount
+        allusersData?.[index]?.Itemdetails?.[0]?.serviceAccount
       ),
-      invoiceDate: allusersData[0].Transactiondatendtype.date,
-      sellerBusinessName: allusersData[0].Customerdetails.name,
-      sellerProvince: allusersData[0].Customerdetails.Site,
+      invoiceDate: allusersData[index].Transactiondatendtype.date,
+      sellerBusinessName: allusersData[index].Customerdetails.name,
+      sellerProvince: allusersData[index].Customerdetails.Site,
       sellerNTNCNIC: sanitizeString(
-        allusersData?.[0]?.Customerdetails?.CNIC,
+        allusersData?.[index]?.Customerdetails?.CNIC,
         true
       ),
-      sellerAddress: allusersData[0].Customerdetails.address,
+      sellerAddress: allusersData[index].Customerdetails.address,
       buyerNTNCNIC: companyDetails?.ntn,
       buyerBusinessName: companyDetails?.companyName,
       buyerProvince: companyDetails?.province,
       buyerAddress: companyDetails?.address,
-      invoiceRefNo: "INV-" + allusersData[0].invoiceNo,
-      scenarioId: allusersData[0].Transactiondatendtype.types.value,
+      invoiceRefNo: "INV-" + allusersData[index].invoiceNo,
+      scenarioId: allusersData[index].Transactiondatendtype.types.value,
       buyerRegistrationType: companyDetails?.businessType,
       items: [
         {
           hsCode: "0101.2100",
-          productDescription: allusersData[0].Itemdetails[0].description,
-          rate: allusersData[0].Itemdetails[0].rate + "%",
+          productDescription: allusersData[index].Itemdetails[0].description,
+          rate: allusersData[index].Itemdetails[0].rate + "%",
           uoM: "Numbers, pieces, units",
-          quantity: allusersData[0].Itemdetails[0].quantity,
+          quantity: allusersData[index].Itemdetails[0].quantity,
           fixedNotifiedValueOrRetailPrice: 0.0,
           salesTaxWithheldAtSource:
-            allusersData[0].Itemdetails[0].salesTaxWithheldAtSource,
-          extraTax: allusersData[0].Itemdetails[0].extraTax,
-          furtherTax: allusersData[0].Itemdetails[0].furtherTax,
-          sroScheduleNo: allusersData[0].Itemdetails[0].SRO,
-          fedPayable: allusersData[0].Itemdetails[0].fedPayable,
-          discount: allusersData[0].Itemdetails[0].discount,
+            allusersData[index].Itemdetails[0].salesTaxWithheldAtSource,
+          extraTax: allusersData[index].Itemdetails[0].extraTax,
+          furtherTax: allusersData[index].Itemdetails[0].furtherTax,
+          sroScheduleNo: allusersData[index].Itemdetails[0].SRO,
+          fedPayable: allusersData[index].Itemdetails[0].fedPayable,
+          discount: allusersData[index].Itemdetails[0].discount,
           totalValues:
-            Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) +
-            (Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) *
-              Number(allusersData[0].Itemdetails[0].rate)) /
+            Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) +
+            (Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) *
+              Number(allusersData[index].Itemdetails[0].rate)) /
               100 +
-            Number(allusersData[0].Itemdetails[0].fedPayable || 0) +
-            Number(allusersData[0].Itemdetails[0].extraTax || 0) +
-            Number(allusersData[0].Itemdetails[0].furtherTax || 0) -
-            Number(allusersData[0].Itemdetails[0].discount || 0),
+            Number(allusersData[index].Itemdetails[0].fedPayable || 0) +
+            Number(allusersData[index].Itemdetails[0].extraTax || 0) +
+            Number(allusersData[index].Itemdetails[0].furtherTax || 0) -
+            Number(allusersData[index].Itemdetails[0].discount || 0),
           valueSalesExcludingST:
-            Number(allusersData[0].Itemdetails[0].price) *
-            Number(allusersData[0].Itemdetails[0].quantity),
+            Number(allusersData[index].Itemdetails[0].price) *
+            Number(allusersData[index].Itemdetails[0].quantity),
           salesTaxApplicable:
-            (Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) *
-              Number(allusersData[0].Itemdetails[0].rate)) /
+            (Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) *
+              Number(allusersData[index].Itemdetails[0].rate)) /
             100,
-          saleType: allusersData[0].Transactiondatendtype.types.title,
-          sroItemSerialNo: allusersData[0].Itemdetails[0].SroItemNO,
+          saleType: allusersData[index].Transactiondatendtype.types.title,
+          sroItemSerialNo: allusersData[index].Itemdetails[0].SroItemNO,
         },
       ],
     };
@@ -201,7 +185,7 @@ export default function Home() {
 
       const data = await res.json();
       console.log("Validation response", data);
-      const btn = document.getElementById("validate-btn");
+      const btn = document.getElementById(`validate-btn-${index}`);
 
       if (btn) {
         btn.textContent = "Validated!";
@@ -454,14 +438,11 @@ export default function Home() {
                           </div>
                           <div className="flex gap-4 pt-6">
                             <button
-                              // onClick={senddatatofbr}
-                              // onClick={() => deleteitem(index)}
-                              id="validate-btn"
-                              onClick={validatefromfbr}
+                              id={`validate-btn-${index}`}
+                              onClick={() => validatefromfbr(index)}
                               className="text-white bg-yellow-600 font-semibold px-4 py-1 rounded-sm cursor-pointer hover:bg-yellow-700 transition"
                             >
                               Validate
-                              {/* <RiDeleteBin6Line /> */}
                             </button>
                             <button
                               onClick={senddatatofbr}
