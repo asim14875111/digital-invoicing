@@ -9,7 +9,6 @@ export default function Integration() {
   const [display, setDisplay] = useState<boolean>(true);
   const [visible, setVisible] = useState<boolean>(false);
   const [environemnt, setEnvironment] = useState<string>("");
-  const [clientid, setClientId] = useState<string>("");
   // const [clientSecret, setClientSecret] = useState<string>("");
   // const [irisUsername, setIrisUsername] = useState<string>("");
   // const [password, setPassword] = useState<string>("");
