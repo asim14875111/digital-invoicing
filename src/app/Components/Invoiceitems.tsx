@@ -8,6 +8,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { categories } from "@/Constants/Framerdata";
 import { codes } from "@/Constants/Framerdata";
 import { uomdata } from "@/Constants/Framerdata";
+import { hsCodeUomMap, getAllowedUomsForHs } from "@/Constants/hsCodeUomMap";
 import { paymentmethod } from "@/Constants/Framerdata";
 import { assestdata } from "@/Constants/Framerdata";
 import { cogsdata } from "@/Constants/Framerdata";
@@ -110,6 +111,18 @@ export default function Invoiceitems({
   const [taxAmount, setTaxAmount] = useState<string>("");
   const [netAmount, setNetAmount] = useState<string>("");
   const [Uom, setUom] = useState<string>("");
+  // Filtered UOMs based on selected HS Code
+  const [filteredUomForHs, setFilteredUomForHs] = useState(uomdata);
+  // Keep filtered UOMs in sync when HsCode changes (including edit mode preload)
+  useEffect(() => {
+    const allowed = getAllowedUomsForHs(HsCode);
+    if (allowed) {
+      setFilteredUomForHs(uomdata.filter(u => allowed.includes(u.value)));
+      if (Uom && !allowed.includes(Uom)) setUom("");
+    } else {
+      setFilteredUomForHs(uomdata);
+    }
+  }, [HsCode]);
   const [file, setFile] = useState<File | null>(null);
   const [quantity, setQuantity] = useState<string>("");
   const [rate, setRate] = useState<string>("");
@@ -192,10 +205,14 @@ export default function Invoiceitems({
   };
   const filteruom = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const uomvalue = e.target.value;
-    const filterduomdata = uomdata.filter((data) =>
-      data.title.toLowerCase().includes(uomvalue.toLowerCase())
+    // Determine base set (allowed for selected HS or full list)
+    const allowed = getAllowedUomsForHs(HsCode);
+    const base = allowed ? uomdata.filter(u => allowed.includes(u.value)) : uomdata;
+    const filtered = base.filter((data) =>
+      data.title.toLowerCase().includes(uomvalue.toLowerCase()) ||
+      data.value.toLowerCase().includes(uomvalue.toLowerCase())
     );
-    setFilteredUom(filterduomdata);
+    setFilteredUomForHs(filtered);
   };
 
   const filterrevenue = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -250,6 +267,14 @@ export default function Invoiceitems({
     sethsCode(false);
     setChevronDown2(true);
     setChevronup2(false);
+    // Filter UOMs for selected HS Code
+    const allowed = getAllowedUomsForHs(value);
+    if (allowed) {
+      setFilteredUomForHs(uomdata.filter(u => allowed.includes(u.value)));
+      if (Uom && !allowed.includes(Uom)) setUom("");
+    } else {
+      setFilteredUomForHs(uomdata);
+    }
   };
 
   const displayrevenue = (): void => {
@@ -646,7 +671,7 @@ export default function Invoiceitems({
                             </p>
                           </div>
                           <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filtereduom.map((uom) => (
+                            {filteredUomForHs.map((uom) => (
                               <div
                                 onClick={() => selectuomvalue(uom.value)}
                                 className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
@@ -1020,7 +1045,7 @@ export default function Invoiceitems({
                       readOnly
                     />
                   </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
+                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
                     <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
                       <span className="text-red-400 font-semibold "></span>
                       Rate{" "}

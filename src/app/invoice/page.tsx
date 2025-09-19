@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useCompanyDetails } from "@/Contexts/Companycontext";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Link from "next/link";
+import { hsCodeUomMap, getAllowedUomsForHs } from "@/Constants/hsCodeUomMap";
+import { normalizeUom } from "@/Constants/uomNormalization";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
@@ -123,10 +125,42 @@ export default function Home() {
     //   return isNaN(num) ? 0 : num;
     // };
 
-    const rawhsCode = String(allusersData[0].Itemdetails[0].HsCode);
-    const foramttedhsCode = rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4);
+  // HS code normalization: keep digits for submission, optionally format with dot for display
+  const inputHs = String(allusersData?.[0]?.Itemdetails?.[0]?.HsCode || "");
+  const rawhsCode = inputHs.replace(/\D/g, ""); // '01012100'
+  const formattedhsCode = rawhsCode.length > 4 ? rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4) : rawhsCode;
 
-    console.log(foramttedhsCode, "-formatted hs code");
+    // Pre-validate UoM against HS Code mapping (client-side safety)
+    const selectedUomRaw = String(allusersData[0].Itemdetails[0].Uom || "");
+    const selectedUom = normalizeUom(selectedUomRaw);
+  const allowedUoms = getAllowedUomsForHs(rawhsCode);
+    const isAllowed = Array.isArray(allowedUoms)
+      ? allowedUoms.some((u) => {
+          const uLower = String(u).trim().toLowerCase();
+          const selLower = String(selectedUom).trim().toLowerCase();
+          if (uLower === selLower) return true; // direct label match
+          // try normalized code match as fallback (e.g., Liter <-> LTR)
+          return (
+            normalizeUom(u).toLowerCase() === normalizeUom(selectedUom).toLowerCase()
+          );
+        })
+      : undefined;
+
+    if (!allowedUoms) {
+      if (btn) btn.textContent = "Validate";
+      alert(
+        `Allowed UoMs for HS Code ${rawhsCode} are not configured. Please update hsCodeUomMap.ts before posting.`
+      );
+      return;
+    }
+
+    if (!isAllowed) {
+      if (btn) btn.textContent = "Validate";
+      alert(
+        `UoM "${selectedUom}" is not allowed for HS Code ${formattedhsCode}. Allowed: ${allowedUoms.join(", ")}`
+      );
+      return;
+    }
 
     // Build FBR-compliant payload
     const invoiceitems = {
@@ -150,10 +184,10 @@ export default function Home() {
       buyerRegistrationType: companyDetails?.businessType,
       items: [
         {
-          hsCode: "0101.2100",
+          hsCode: formattedhsCode, // FBR expects 4+4 formatted
           productDescription: allusersData[0].Itemdetails[0].description,
           rate: allusersData[0].Itemdetails[0].rate + "%",
-          uoM: "Numbers, pieces, units",
+          uoM: selectedUom || "",
           quantity: allusersData[0].Itemdetails[0].quantity,
           fixedNotifiedValueOrRetailPrice: 0.0,
           salesTaxWithheldAtSource:
