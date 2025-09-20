@@ -12,6 +12,7 @@ import {
 } from "firebase/auth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged, updateEmail, updatePassword, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 // import app from "../../../firebaseConfig";
@@ -20,7 +21,8 @@ export default function Navbar() {
 
   const [visible, setIsVisible] = useState<boolean>(false);
   const [display, setIsDisplay] = useState<boolean>(false);
-  const [showname, setshownname] = useState<boolean>(false);
+  // const [showname, setshownname] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const mydivref = useRef<HTMLDivElement>(null);
   const divref = useRef<HTMLDivElement>(null);
   const [email, setEmail] = useState("");
@@ -32,22 +34,19 @@ export default function Navbar() {
     setIsVisible(true);
   };
 
-  // useEffect(() => {
-  //   const auth = getAuth(app);
-  //   const unsubscribe = onAuthStateChanged(auth, async (user) => {
-  //     if (user) {
-  //       try {
-  //         const idToken = await user.getIdToken();
-  //         console.log(idToken, "firebase token");
-  //       } catch (err) {
-  //         console.log(err);
-  //       }
-  //     } else {
-  //       console.log("no user signed in");
-  //     }
-  //   });
-  //   return () => unsubscribe();
-  // }, []);
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+  // setshownname(!!user); // removed, not needed
+      if (user) {
+        setEmail(user.email || "");
+      } else {
+        setEmail("");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   const closeloginsection = (): void => {
     setIsVisible(false);
@@ -107,7 +106,7 @@ export default function Navbar() {
       console.log("sign up successfully");
       toast.success("Account created!");
       router.push("/company");
-      setshownname(true);
+  // setshownname(true); // removed, not needed
       setTimeout(() => {
         setIsDisplay(false);
       }, 1000);
@@ -146,7 +145,7 @@ export default function Navbar() {
       console.log("Sign in successfully");
       toast.success("Sign in successfully!");
       router.push("/company");
-      setshownname(true);
+  // setshownname(true); // removed, not needed
       setTimeout(() => {
         setIsVisible(false);
       }, 1000);
@@ -188,19 +187,26 @@ export default function Navbar() {
   const changeaccsettings = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      if (!auth) {
-        toast.error("Authentication server not initiliazed");
+      if (!auth || !currentUser) {
+        toast.error("Authentication server not initialized");
         return;
       }
-      await createUserWithEmailAndPassword(auth, email, password);
-
-      console.log("sign up successfully");
-      toast.success("Account created!");
-      router.push("/company");
-      setshownname(true);
-      setTimeout(() => {
-        setIsDisplay(false);
-      }, 1000);
+      let updated = false;
+      if (email && email !== (currentUser.email || "")) {
+        await updateEmail(currentUser, email);
+        updated = true;
+      }
+      if (password) {
+        await updatePassword(currentUser, password);
+        updated = true;
+        setPassword(""); // clear password after update
+      }
+      if (updated) {
+        toast.success("Account updated!");
+      } else {
+        toast.info("No changes to update.");
+      }
+      showSettings(false);
     } catch (err) {
       console.log(err, "Error");
       type FirebaseError = { code: string };
@@ -259,18 +265,20 @@ export default function Navbar() {
                 About Us
               </p>
             </Link>
-            <div
-              className="font-semibold text-blue-500 hover:text-blue-700 cursor-pointer bg-blue-100 hover:bg-blue-200 px-4 py-1 rounded-md"
-              onClick={showloginform}
-            >
-              Login
-            </div>
-            {showname && (
+            {!currentUser && (
+              <div
+                className="font-semibold text-blue-500 hover:text-blue-700 cursor-pointer bg-blue-100 hover:bg-blue-200 px-4 py-1 rounded-md"
+                onClick={showloginform}
+              >
+                Login
+              </div>
+            )}
+            {currentUser && (
               <div
                 onClick={showaccountsettings}
                 className="bg-[#00579e] px-2.5 py-0.5 hover:bg-[#023e6f] cursor-pointer rounded-full flex  items-center text-white"
               >
-                {email[0]}
+                {currentUser && currentUser.email ? currentUser.email[0] : "U"}
               </div>
             )}
             {settings && (
@@ -338,11 +346,11 @@ export default function Navbar() {
                           onClick={hidesettingssection}
                           disabled={!email || !password}
                           type="submit"
-                          className={`w-full text-white text-sm py-1.5 mt-2 hover:bg-[#034a85]  rounded-sm ${
+                          className={`btn-main w-full text-sm py-1.5 mt-2 ${
                             !email || !password
-                              ? "bg-blue-300 cursor-no-drop"
-                              : "bg-[#03569c] cursor-pointer"
-                          } `}
+                              ? "opacity-50 cursor-not-allowed"
+                              : "hover:brightness-110"
+                          }`}
                         >
                           Update
                         </button>

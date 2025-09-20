@@ -5,8 +5,8 @@ import { ToastContainer } from "react-toastify";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
 import { IoSearchSharp } from "react-icons/io5";
-import { categories } from "@/Constants/Framerdata";
-import { codes } from "@/Constants/Framerdata";
+// import { categories } from "@/Constants/Framerdata";
+// import { codes } from "@/Constants/Framerdata";
 import { uomdata } from "@/Constants/Framerdata";
 import { paymentmethod } from "@/Constants/Framerdata";
 import { assestdata } from "@/Constants/Framerdata";
@@ -24,11 +24,11 @@ type itemsProps = {
     order?: string;
     maxorder?: string;
     reorderLevel?: string;
-    filtereddata?: typeof categories;
+    // filtereddata?: typeof categories;
     filtereduom?: typeof uomdata;
     filteredrevenue?: typeof paymentmethod;
     filteredassest?: typeof assestdata;
-    filterhscode?: typeof codes;
+    // filterhscode?: typeof codes;
     filtercogs?: typeof cogsdata;
     filterservice?: typeof invoicetype;
     assestAccount?: string;
@@ -65,7 +65,7 @@ export default function Invoiceitems({
   const [maxorder, setmaxorder] = useState<string>("");
   const [reorderLevel, setreorderLevel] = useState<string>("");
   const [chevrondwn, setChevronDown] = useState<boolean>(true);
-  const [chevronup, setChevronup] = useState<boolean>(false);
+  // const [chevronup, setChevronup] = useState<boolean>(false);
   const [chevrondwn2, setChevronDown2] = useState<boolean>(true);
   const [chevronup2, setChevronup2] = useState<boolean>(false);
   const [chevrondwn3, setChevronDown3] = useState<boolean>(true);
@@ -94,11 +94,11 @@ export default function Invoiceitems({
   const [taxdata, setTaxData] = useState<boolean>(false);
   const [sroData, setSroData] = useState<boolean>(false);
   const [sroitemnoData, setsroitemnoData] = useState<boolean>(false);
-  const [filtereddata, setFilteredData] = useState(categories);
+  // const [filtereddata, setFilteredData] = useState(categories);
   const [filtereduom, setFilteredUom] = useState(uomdata);
   const [filteredrevenue, setfilteredrevenue] = useState(paymentmethod);
   const [filteredassest, setfilteredassest] = useState(assestdata);
-  const [filterhscode, setFilterhscode] = useState(codes);
+  // const [filterhscode, setFilterhscode] = useState(codes);
   const [filtercogs, setfiltercogs] = useState(cogsdata);
   const [filterservice, setfiltersevice] = useState(invoicetype);
   const [assestAccount, setassestAccount] = useState<string>("");
@@ -118,13 +118,15 @@ export default function Invoiceitems({
   const [remarks, setRemarks] = useState<string>("");
   const [description, setDescription] = useState<string>("");
   const [price, setprice] = useState<string>("");
-    // New states for extra tax fields
-    const [extraTax, setExtraTax] = useState<string>("");
-    const [furtherTax, setFurtherTax] = useState<string>("");
-    const [discount, setDiscount] = useState<string>("");
-    const [fedPayable, setFedPayable] = useState<string>("");
-    const [fixedNotifiedValueOrRetailPrice, setFixedNotifiedValueOrRetailPrice] = useState<string>("");
-    const [salesTaxWithheldAtSource, setSalesTaxWithheldAtSource] = useState<string>("");
+  // New states for extra tax fields
+  const [extraTax, setExtraTax] = useState<string>("");
+  const [furtherTax, setFurtherTax] = useState<string>("");
+  const [discount, setDiscount] = useState<string>("");
+  const [fedPayable, setFedPayable] = useState<string>("");
+  const [fixedNotifiedValueOrRetailPrice, setFixedNotifiedValueOrRetailPrice] =
+    useState<string>("");
+  const [salesTaxWithheldAtSource, setSalesTaxWithheldAtSource] =
+    useState<string>("");
   const { setItemsData } = useItems();
   const closeitemssection = () => {
     document.body.style.overflow = "auto";
@@ -139,11 +141,11 @@ export default function Invoiceitems({
       setOrderLevel(edititems.order || "");
       setmaxorder(edititems.maxorder || "");
       setreorderLevel(edititems.reorderLevel || "");
-      setFilteredData(edititems.filtereddata || categories);
+      // setFilteredData(edititems.filtereddata || categories);
       setFilteredUom(edititems.filtereduom || uomdata);
       setfilteredrevenue(edititems.filteredrevenue || paymentmethod);
       setfilteredassest(edititems.filteredassest || assestdata);
-      setFilterhscode(edititems.filterhscode || codes);
+      // setFilterhscode(edititems.filterhscode || codes);
       setfiltercogs(edititems.filtercogs || cogsdata);
       setfiltersevice(edititems.filterservice || invoicetype);
       setassestAccount(edititems.assestAccount || "");
@@ -163,33 +165,33 @@ export default function Invoiceitems({
     }
   }, [edititems]);
 
-  const showcategories = (): void => {
-    if (chevrondwn) {
-      setChevronDown(false);
-      setChevronup(true);
-      setData(true);
-    } else {
-      setChevronup(false);
-      setData(false);
-      setChevronDown(true);
-    }
-  };
+  // const showcategories = (): void => {
+  //   if (chevrondwn) {
+  //     setChevronDown(false);
+  //     setChevronup(true);
+  //     setData(true);
+  //   } else {
+  //     setChevronup(false);
+  //     setData(false);
+  //     setChevronDown(true);
+  //   }
+  // };
 
-  const filterdata = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const inptvalue = e.target.value;
-    const data = categories.filter((category) =>
-      category.title.toLowerCase().includes(inptvalue.toLowerCase())
-    );
-    setFilteredData(data);
-  };
+  // const filterdata = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  //   const inptvalue = e.target.value;
+  //   const data = categories.filter((category) =>
+  //     category.title.toLowerCase().includes(inptvalue.toLowerCase())
+  //   );
+  //   setFilteredData(data);
+  // };
 
-  const filtercodes = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = e.target.value;
-    const code = codes.filter((code) =>
-      code.value.toLowerCase().includes(value.toLowerCase())
-    );
-    setFilterhscode(code);
-  };
+  // const filtercodes = (e: React.ChangeEvent<HTMLInputElement>): void => {
+  //   const value = e.target.value;
+  //   const code = codes.filter((code) =>
+  //     code.value.toLowerCase().includes(value.toLowerCase())
+  //   );
+  //   setFilterhscode(code);
+  // };
   const filteruom = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const uomvalue = e.target.value;
     const filterduomdata = uomdata.filter((data) =>
@@ -206,12 +208,12 @@ export default function Invoiceitems({
     setfilteredrevenue(filterdrevenue);
   };
 
-  const selectcategory = (value: string): void => {
-    setChevronup(false);
-    setData(false);
-    setChevronDown(true);
-    setCategoroies(value);
-  };
+  // const selectcategory = (value: string): void => {
+  //   setChevronup(false);
+  //   setData(false);
+  //   setChevronDown(true);
+  //   setCategoroies(value);
+  // };
 
   const showhscodes = (): void => {
     if (chevrondwn2) {
@@ -225,7 +227,6 @@ export default function Invoiceitems({
     }
   };
 
-  
   const selectuomvalue = (value: string): void => {
     setUom(value);
     setUOMData(false);
@@ -430,882 +431,559 @@ export default function Invoiceitems({
   }, [price, rate]);
 
   return (
-    <div className="fixed w-full bg-[#00000063] inset-0  px-2 z-60 py-2 flex justify-center">
-      <div className="bg-white w-full rounded-md relative">
-        <div className="flex flex-col justify-between">
-          <div>
-            <div className="flex justify-between items-center px-4 py-2 rounded-t-md bg-gray-50">
-              <div>
-                <p className="text-xl">Item & Tax information </p>
-              </div>
-              <div>
-                <button
-                  className="text-2xl cursor-pointer text-red-600 hover:scale-106"
-                  onClick={closeitemssection}
-                >
-                  <RxCross2 />
-                </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000063]">
+      <div className="bg-white w-full max-w-6xl rounded-xl shadow-lg relative">
+        {/* Header */}
+        <div className="flex justify-between items-center px-8 py-4 rounded-t-xl border-b border-gray-200 bg-gray-50">
+          <h2 className="text-2xl font-semibold text-gray-800">
+            Item & Tax Information
+          </h2>
+          <button
+            className="text-2xl text-red-600 hover:scale-110 transition"
+            onClick={closeitemssection}
+          >
+            <RxCross2 />
+          </button>
+        </div>
+        {/* Form */}
+        <div className="px-8 py-6 max-h-[80vh] overflow-y-auto">
+          {/* Item Details */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-4">
+              <label className="text-lg font-semibold text-gray-700">
+                Item Details
+              </label>
+              <div className="flex items-center gap-2">
+                {file && (
+                  <Image
+                    width={36}
+                    height={36}
+                    src={URL.createObjectURL(file)}
+                    alt="uploaded-img"
+                    className="rounded border"
+                  />
+                )}
+                <label className="text-sm text-gray-700">Upload image</label>
+                <input
+                  onChange={handlefileupload}
+                  type="file"
+                  className="w-24 cursor-pointer bg-gray-100 rounded px-2 py-1"
+                />
               </div>
             </div>
-            <div className="flex flex-col h-[90vh] overflow-auto py-4 px-2">
-              <div className="px-2">
-                <div className="flex justify-between px-8">
-                  <label>Items Details</label>
-                  <div>
-                    <div className="flex gap-1">
-                      {file && (
-                        <Image
-                          width={30}
-                          height={30}
-                          src={URL.createObjectURL(file)}
-                          alt="uploaded-img"
-                        />
-                      )}
-                      <label className="text-sm text-gray-700">
-                        Upload image
-                      </label>
-                    </div>
-                    <div className="bg-gray-50 w-fit px-2 py-1 rounded-md cu hover:bg-gray-200">
-                      <input
-                        onChange={handlefileupload}
-                        type="file"
-                        placeholder="choose image"
-                        className="w-22 cursor-pointer"
-                      />
-                    </div>
+            <div className="grid grid-cols-3 gap-6">
+              {/* Item Name */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Item name
+                </label>
+                <input
+                  value={itemname}
+                  onChange={(e) => setItemName(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Bar Code */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Bar Code
+                </label>
+                <input
+                  value={barcode}
+                  onChange={(e) => setBarCode(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Hs Code */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Hs Code
+                </label>
+                <input
+                  value={order}
+                  onChange={(e) => setOrderLevel(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* UOM */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> UOM
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={showuomdetails}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>{Uom ? Uom : "Select UOM"}</span>
+                    {chevrondwn3 ? <IoChevronDownOutline /> : <IoChevronUp />}
                   </div>
-                </div>
-                <div className="grid grid-cols-3  gap-8 px-8  py-6 my-4 pt-4">
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Item name{" "}
-                    </label>
-                    <input
-                      value={itemname}
-                      onChange={(e) => setItemName(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Bar Code{" "}
-                    </label>
-                    <input
-                      value={barcode}
-                      onChange={(e) => setBarCode(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Category{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showcategories}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {category ? category : "Select Category"}
-                        </span>
-                        {chevrondwn && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
+                  {UOMdata && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="flex items-center border-b px-2 py-1">
+                        <input
+                          type="text"
+                          onChange={filteruom}
+                          className="w-full outline-none text-sm"
+                          placeholder="Search UOM"
+                        />
+                        <IoSearchSharp className="text-gray-500 ml-2" />
                       </div>
-
-                      {data && (
-                        <div className="absolute top-8 bg-gray-50 z-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filterdata}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
+                      <div className="max-h-32 overflow-auto">
+                        {filtereduom.map((uom) => (
+                          <div
+                            key={uom.id}
+                            onClick={() => selectuomvalue(uom.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {uom.title}
                           </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filtereddata.map((category) => (
-                              <div
-                                onClick={() => selectcategory(category.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={category.id}
-                              >
-                                <p className="text-sm">{category.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  col-span-2 h-fit  w-full border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Hs Code{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showhscodes}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {HsCode ? HsCode : "Select Hs Code"}
-                        </span>
-                        {chevrondwn2 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup2 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
+                        ))}
                       </div>
-
-                      {hsCode && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filtercodes}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[100px] overflow-auto">
-                            {filterhscode.map((code) => (
-                              <div
-                                onClick={() => selecthscode(code.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={code.id}
-                              >
-                                <div className="flex flex-row gap-1">
-                                  <p className="text-xs">{code.value}</p>
-
-                                  <p className="text-xs">{code.title}</p>
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
                     </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      UOM{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showuomdetails}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {Uom ? Uom : "Select UOM"}
-                        </span>
-                        {chevrondwn3 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup3 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {UOMdata && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filteruom}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filtereduom.map((uom) => (
-                              <div
-                                onClick={() => selectuomvalue(uom.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={uom.id}
-                              >
-                                <p className="text-sm">{uom.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Min Order Level{" "}
-                    </label>
-                    <input
-                      value={order}
-                      onChange={(e) => setOrderLevel(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Max Order Level{" "}
-                    </label>
-                    <input
-                      value={maxorder}
-                      onChange={(e) => setmaxorder(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Reorder Level{" "}
-                    </label>
-                    <input
-                      value={reorderLevel}
-                      onChange={(e) => setreorderLevel(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                     Payment Method
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={displayrevenue}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {revenueAccount
-                            ? revenueAccount
-                            : "Select payment method"}
-                        </span>
-                        {chevrondwn4 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup4 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {RevenueData && (
-                        <div className="absolute z-50 top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filterrevenue}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filteredrevenue.map((revenue) => (
-                              <div
-                                onClick={() =>
-                                  selectrevenuevalue(revenue.value)
-                                }
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={revenue.id}
-                              >
-                                <p className="text-sm">{revenue.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Assest Account{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={displayassest}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {assestAccount
-                            ? assestAccount
-                            : "Select assest Account"}
-                        </span>
-                        {chevrondwn5 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup5 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {AssestData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filterassests}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filteredassest.map((assest) => (
-                              <div
-                                onClick={() => selectassestvalue(assest.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={assest.id}
-                              >
-                                <p className="text-sm">{assest.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      COGS Account{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={displaycogs}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {cogsAccount ? cogsAccount : "Select COGS Account"}
-                        </span>
-                        {chevrondwn6 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup6 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {cogsData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filtercogsdata}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filtercogs.map((cogs) => (
-                              <div
-                                onClick={() => selectcogsvalue(cogs.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={cogs.id}
-                              >
-                                <p className="text-sm">{cogs.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Invoice Type
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={displayserviceacc}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {serviceAccount
-                            ? serviceAccount
-                            : "Select Invoice Type"}
-                        </span>
-                        {chevrondwn7 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                        
-                          </span>
-                        )}
-                        {chevronup7 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {serviceData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex justify-between border items-center my-1 mx-1 rounded-md border-gray-300 px-2">
-                            <input
-                              type="text"
-                              onChange={filterservicedata}
-                              className="w-full outline-0"
-                            />
-                            <p className="text-gray-600">
-                              <IoSearchSharp />
-                            </p>
-                          </div>
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {filterservice.map((service) => (
-                              <div
-                                onClick={() =>
-                                  selectservicevalue(service.value)
-                                }
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={service.id}
-                              >
-                                <p className="text-sm">{service.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Product description{""}
-                    </label>
-                    <input
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
+                  )}
                 </div>
               </div>
-              <div className="px-2 pt-0">
-                <div className="flex justify-between px-8 pb-4">
-                  <div>
-                    <label>Rate & Tax</label>
+              {/* Payment Method */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Payment Method
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={displayrevenue}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>
+                      {revenueAccount
+                        ? revenueAccount
+                        : "Select payment method"}
+                    </span>
+                    {chevrondwn4 ? <IoChevronDownOutline /> : <IoChevronUp />}
                   </div>
-                  <div></div>
+                  {RevenueData && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="flex items-center border-b px-2 py-1">
+                        <input
+                          type="text"
+                          onChange={filterrevenue}
+                          className="w-full outline-none text-sm"
+                          placeholder="Search Payment Method"
+                        />
+                        <IoSearchSharp className="text-gray-500 ml-2" />
+                      </div>
+                      <div className="max-h-32 overflow-auto">
+                        {filteredrevenue.map((revenue) => (
+                          <div
+                            key={revenue.id}
+                            onClick={() => selectrevenuevalue(revenue.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {revenue.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="grid grid-cols-3 gap-8 px-8 overflow-auto pb-6">
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Quantity
-                    </label>
-                    <input
-                      value={quantity}
-                      onChange={(e) => setQuantity(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                    {/* New Inputs for Tax Fields */}
-                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Extra Tax</label>
-                      <input
-                        value={extraTax}
-                        onChange={(e) => setExtraTax(e.target.value)}
-                        type="number"
-                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                      />
-                    </div>
-                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Further Tax</label>
-                      <input
-                        value={furtherTax}
-                        onChange={(e) => setFurtherTax(e.target.value)}
-                        type="number"
-                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                      />
-                    </div>
-                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Discount</label>
-                      <input
-                        value={discount}
-                        onChange={(e) => setDiscount(e.target.value)}
-                        type="number"
-                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                      />
-                    </div>
-                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Fed Payable</label>
-                      <input
-                        value={fedPayable}
-                        onChange={(e) => setFedPayable(e.target.value)}
-                        type="number"
-                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                      />
-                    </div>
-                    <div className="flex flex-col h-fit w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                      <label className="text-sm pl-0 font-semibold pb-1 text-gray-600">Fixed Notified Value / Retail Price</label>
-                      <input
-                        value={fixedNotifiedValueOrRetailPrice}
-                        onChange={(e) => setFixedNotifiedValueOrRetailPrice(e.target.value)}
-                        type="number"
-                        className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                      />
-                    </div>
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Price
-                    </label>
-                    <input
-                      value={price}
-                      onChange={(e) => setprice(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "> </span>
-                      Sub Amount
-                    </label>
-                    <input
-                      value={price}
-                      onChange={(e) => setprice(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
-                      readOnly
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Rate{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showrates}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {rate ? rate + "%" : "Select Rate"}
-                        </span>
-                        {chevrondwn8 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup8 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {taxdata && (
-                        <div className="absolute top-8 bg-gray-50  w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[100px] overflow-auto">
-                            {rates.map((category) => (
-                              <div
-                                onClick={() => selectrate(category.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={category.id}
-                              >
-                                <p className="text-sm">{category.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Select SRO{" "}
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showsros}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {SRO ? SRO : "Select Rate"}
-                        </span>
-                        {chevrondwn9 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-                        {chevronup9 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {sroData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {sro.map((category) => (
-                              <div
-                                onClick={() => selectsro(category.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={category.id}
-                              >
-                                <p className="text-sm">{category.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col  h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Select SRO Item NO
-                    </label>
-                    <div className="flex relative flex-col">
-                      <div
-                        onClick={showsroitemno}
-                        className="bg-gray-100  flex border  border-gray-200 justify-between items-center px-2 py-[4px] mt-1 hover:border-gray-300 cursor-pointer rounded-md"
-                      >
-                        <span className="text-sm text-gray-600 pl-1">
-                          {SroItemNO ? SroItemNO : "Select Sro Item No"}
-                        </span>
-                        {chevrondwn10 && (
-                          <span className="text-gray-500">
-                            <IoChevronDownOutline />
-                          </span>
-                        )}
-
-                        {chevronup10 && (
-                          <span className="text-gray-500">
-                            <IoChevronUp />
-                          </span>
-                        )}
-                      </div>
-
-                      {sroitemnoData && (
-                        <div className="absolute top-8 bg-gray-50 w-full rounded-b-md ">
-                          <div className="flex flex-col gap-2 px-2 h-[80px] overflow-auto">
-                            {sroitemno.map((category) => (
-                              <div
-                                onClick={() => selectsroitemno(category.value)}
-                                className="hover:bg-blue-500 cursor-pointer  text-gray-600 hover:text-white"
-                                key={category.id}
-                              >
-                                <p className="text-sm">{category.title}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Tax amount
-                    </label>
-                    <input
-                      value={taxAmount}
-                      type="text"
-                      onChange={(e) => setTaxAmount(e.target.value)}
-                      readOnly
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Net amount
-                    </label>
-                    <input
-                      value={netAmount}
-                      readOnly
-                      onChange={(e) => setNetAmount(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-200 cursor-not-allowed mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Fixed Notified Value or Retail Price
-                    </label>
-                    <input
-                      value={fixedNotifiedValueOrRetailPrice}
-                      onChange={e => setFixedNotifiedValueOrRetailPrice(e.target.value)}
-                      type="number"
-                      min="0"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
+              </div>
+              {/* Invoice Type */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Invoice Type
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={displayserviceacc}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>
+                      {serviceAccount ? serviceAccount : "Select Invoice Type"}
+                    </span>
+                    {chevrondwn7 ? <IoChevronDownOutline /> : <IoChevronUp />}
                   </div>
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold "></span>
-                      Sales Tax Withheld At Source
-                    </label>
-                    <input
-                      value={salesTaxWithheldAtSource}
-                      onChange={e => setSalesTaxWithheldAtSource(e.target.value)}
-                      type="number"
-                      min="0"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>
-                  <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                    <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                      <span className="text-red-400 font-semibold ">* </span>
-                      Remarks
-                    </label>
-                    <input
-                      value={remarks}
-                      onChange={(e) => setRemarks(e.target.value)}
-                      type="text"
-                      className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
-                    />
-                  </div>{" "}
+                  {serviceData && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="flex items-center border-b px-2 py-1">
+                        <input
+                          type="text"
+                          onChange={filterservicedata}
+                          className="w-full outline-none text-sm"
+                          placeholder="Search Invoice Type"
+                        />
+                        <IoSearchSharp className="text-gray-500 ml-2" />
+                      </div>
+                      <div className="max-h-32 overflow-auto">
+                        {filterservice.map((service) => (
+                          <div
+                            key={service.id}
+                            onClick={() => selectservicevalue(service.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {service.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
+              </div>
+              {/* Product Description */}
+              <div className="flex flex-col col-span-3">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Product Description
+                </label>
+                <input
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
               </div>
             </div>
           </div>
-
-          <div className="self-end py-4 px-4 absolute bottom-0">
-            <button
-              onClick={() => {
-                const inputsdata = {
-                  itemname,
-                  barcode,
-                  order,
-                  maxorder,
-                  reorderLevel,
-                  category,
-                  HsCode,
-                  Uom,
-                  revenueAccount,
-                  assestAccount,
-                  cogsAccount,
-                  serviceAccount,
-                  file,
-                  quantity: Number(quantity),
-                  price: Number(price),
-                  rate: Number(rate),
-                  SRO,
-                  SroItemNO,
-                  remarks,
-                  taxAmount: Number(taxAmount),
-                  netAmount: Number(netAmount),
-                  description,
-                    extraTax: Number(extraTax),
-                    furtherTax: Number(furtherTax),
-                    discount: Number(discount),
-                    fedPayable: Number(fedPayable),
-                    fixedNotifiedValueOrRetailPrice: Number(fixedNotifiedValueOrRetailPrice),
-                    salesTaxWithheldAtSource: Number(salesTaxWithheldAtSource),
-                };
-                if (edititems && editIndex !== null) {
-                  setItemsData((prev) => {
-                    const updated = [...prev];
-                    updated[editIndex] = {
-                      ...inputsdata,
-                      totalValues: 0, // or provide a calculated value if needed
-                    };
-                    return updated;
-                  });
-                  setInvoiceSection(false);
-                } else {
-                  setItemsData((prev) => [
-                    ...prev,
-                    {
-                      ...inputsdata,
-                      totalValues: 0, // or provide a calculated value if needed
-                    },
-                  ]);
-                  setInvoiceSection(false);
-                }
-                showscrollbar();
-              }}
-              className={`bg-blue-600 text-white px-6 py-1 rounded-md ${
-                !itemname ||
-                !category ||
-                !HsCode ||
-                !Uom ||
-                !revenueAccount ||
-                !assestAccount ||
-                !cogsAccount ||
-                !serviceAccount ||
-                !quantity ||
-                !price ||
-                !description
-                  ? "opacity-50 cursor-not-allowed"
-                  : "cursor-pointer hover:bg-blue-800"
-              }`}
-              disabled={
-                !itemname ||
-                !category ||
-                !HsCode ||
-                !Uom ||
-                !revenueAccount ||
-                !assestAccount ||
-                !cogsAccount ||
-                !serviceAccount ||
-                !quantity ||
-                !price ||
-                !description
-              }
-            >
-              {edititems ? "Update" : "Add"}
-            </button>
+          {/* Rate & Tax */}
+          <div>
+            <label className="text-lg font-semibold text-gray-700 mb-4 block">
+              Rate & Tax
+            </label>
+            <div className="grid grid-cols-3 gap-6">
+              {/* Quantity */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Quantity
+                </label>
+                <input
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Extra Tax */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Extra Tax
+                </label>
+                <input
+                  value={extraTax}
+                  onChange={(e) => setExtraTax(e.target.value)}
+                  type="number"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Further Tax */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Further Tax
+                </label>
+                <input
+                  value={furtherTax}
+                  onChange={(e) => setFurtherTax(e.target.value)}
+                  type="number"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Discount */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Discount
+                </label>
+                <input
+                  value={discount}
+                  onChange={(e) => setDiscount(e.target.value)}
+                  type="number"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Fed Payable */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Fed Payable
+                </label>
+                <input
+                  value={fedPayable}
+                  onChange={(e) => setFedPayable(e.target.value)}
+                  type="number"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Fixed Notified Value / Retail Price */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Fixed Notified Value /
+                  Retail Price
+                </label>
+                <input
+                  value={fixedNotifiedValueOrRetailPrice}
+                  onChange={(e) =>
+                    setFixedNotifiedValueOrRetailPrice(e.target.value)
+                  }
+                  type="number"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Price */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Price
+                </label>
+                <input
+                  value={price}
+                  onChange={(e) => setprice(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Sub Amount */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Sub Amount
+                </label>
+                <input
+                  value={price}
+                  onChange={(e) => setprice(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-100 cursor-not-allowed"
+                  readOnly
+                />
+              </div>
+              {/* Rate */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Rate
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={showrates}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>{rate ? rate + "%" : "Select Rate"}</span>
+                    {chevrondwn8 ? <IoChevronDownOutline /> : <IoChevronUp />}
+                  </div>
+                  {taxdata && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="max-h-40 overflow-auto">
+                        {rates.map((category) => (
+                          <div
+                            key={category.id}
+                            onClick={() => selectrate(category.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {category.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Select SRO */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Select SRO
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={showsros}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>{SRO ? SRO : "Select Rate"}</span>
+                    {chevrondwn9 ? <IoChevronDownOutline /> : <IoChevronUp />}
+                  </div>
+                  {sroData && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="max-h-32 overflow-auto">
+                        {sro.map((category) => (
+                          <div
+                            key={category.id}
+                            onClick={() => selectsro(category.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {category.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Select SRO Item NO */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Select SRO Item NO
+                </label>
+                <div className="relative">
+                  <div
+                    onClick={showsroitemno}
+                    className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
+                  >
+                    <span>{SroItemNO ? SroItemNO : "Select Sro Item No"}</span>
+                    {chevrondwn10 ? <IoChevronDownOutline /> : <IoChevronUp />}
+                  </div>
+                  {sroitemnoData && (
+                    <div className="absolute top-12 left-0 bg-white border rounded shadow w-full z-50">
+                      <div className="max-h-32 overflow-auto">
+                        {sroitemno.map((category) => (
+                          <div
+                            key={category.id}
+                            onClick={() => selectsroitemno(category.value)}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm"
+                          >
+                            {category.title}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+              {/* Tax Amount */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Tax amount
+                </label>
+                <input
+                  value={taxAmount}
+                  type="text"
+                  onChange={(e) => setTaxAmount(e.target.value)}
+                  readOnly
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+              {/* Net Amount */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Net amount
+                </label>
+                <input
+                  value={netAmount}
+                  readOnly
+                  onChange={(e) => setNetAmount(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-100 cursor-not-allowed"
+                />
+              </div>
+              {/* Fixed Notified Value or Retail Price */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Fixed Notified Value
+                  or Retail Price
+                </label>
+                <input
+                  value={fixedNotifiedValueOrRetailPrice}
+                  onChange={(e) =>
+                    setFixedNotifiedValueOrRetailPrice(e.target.value)
+                  }
+                  type="number"
+                  min="0"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Sales Tax Withheld At Source */}
+              <div className="flex flex-col">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  <span className="text-red-400">*</span> Sales Tax Withheld At
+                  Source
+                </label>
+                <input
+                  value={salesTaxWithheldAtSource}
+                  onChange={(e) => setSalesTaxWithheldAtSource(e.target.value)}
+                  type="number"
+                  min="0"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+              {/* Remarks */}
+              <div className="flex flex-col col-span-3">
+                <label className="text-sm font-medium text-gray-700 mb-1">
+                  Remarks
+                </label>
+                <input
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  type="text"
+                  className="h-11 px-3 rounded border border-gray-200 bg-gray-50 focus:outline-blue-300"
+                />
+              </div>
+            </div>
           </div>
         </div>
+        {/* Footer Button */}
+        <div className="flex justify-end px-8 py-2 bg-gray-50 rounded-b-xl border-t border-gray-200">
+          <button
+            onClick={() => {
+              const inputsdata = {
+                itemname,
+                barcode,
+                order,
+                maxorder,
+                reorderLevel,
+                category,
+                HsCode,
+                Uom,
+                revenueAccount,
+                assestAccount,
+                cogsAccount,
+                serviceAccount,
+                file,
+                quantity: Number(quantity),
+                price: Number(price),
+                rate: Number(rate),
+                SRO,
+                SroItemNO,
+                remarks,
+                taxAmount: Number(taxAmount),
+                netAmount: Number(netAmount),
+                description,
+                extraTax: Number(extraTax),
+                furtherTax: Number(furtherTax),
+                discount: Number(discount),
+                fedPayable: Number(fedPayable),
+                fixedNotifiedValueOrRetailPrice: Number(
+                  fixedNotifiedValueOrRetailPrice
+                ),
+                salesTaxWithheldAtSource: Number(salesTaxWithheldAtSource),
+              };
+              if (edititems && editIndex !== null) {
+                setItemsData((prev) => {
+                  const updated = [...prev];
+                  updated[editIndex] = {
+                    ...inputsdata,
+                    totalValues: 0,
+                  };
+                  return updated;
+                });
+                setInvoiceSection(false);
+              } else {
+                setItemsData((prev) => [
+                  ...prev,
+                  {
+                    ...inputsdata,
+                    totalValues: 0,
+                  },
+                ]);
+                setInvoiceSection(false);
+              }
+              showscrollbar();
+            }}
+            className={`py-1 px-8 text-lg font-semibold text-white rounded transition ${
+              !itemname || !order || !Uom || !quantity || !price || !description
+                ? "opacity-50 cursor-not-allowed bg-[#155efdc0]"
+                : "cursor-pointer bg-blue-700 hover:bg-blue-900"
+            }`}
+            disabled={
+              !itemname || !order || !Uom || !quantity || !price || !description
+            }
+          >
+            {edititems ? "Update" : "Add"}
+          </button>
+        </div>
+        <ToastContainer />
       </div>
-      <ToastContainer />
     </div>
   );
 }

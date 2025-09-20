@@ -1,7 +1,8 @@
 "use client";
 import "./globals.css";
+import "./modern-theme.css";
 import Navbar from "./Components/Common/Navbar";
-import Footer from "./Components/Common/Footer";
+// import Footer from "./Components/Common/Footer";
 import { CustomerProvider } from "@/Contexts/MyContext";
 import { ItemsProvider } from "@/Contexts/ItemsContext";
 import { Datacontext } from "@/Contexts/DataContext";
@@ -49,7 +50,7 @@ export default function ProtectedRoute({
                   <div className="min-h-screen  flex flex-col">
                     <Navbar />
                     <div className="flex-1">{children}</div>
-                    <Footer />
+                    {/* <Footer /> */}
                   </div>
                 </IntegrationProvider>
               </CompanyProvider>

@@ -3,6 +3,7 @@ import Herosection from "./Herosection";
 import WhyChooseUs from "./WhyChooseUs";
 import HowitWorks from "./HowitWorks";
 import StartNow from "./StartNow";
+import Footer from "./Common/Footer";
 export default function Landingpage() {
   return (
     <div>
@@ -10,6 +11,7 @@ export default function Landingpage() {
       <WhyChooseUs />
       <HowitWorks />
       <StartNow />
+      <Footer />
     </div>
   );
 }

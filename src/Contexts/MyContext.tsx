@@ -1,22 +1,17 @@
 "use client";
-import { ICity, ICountry, IState } from "country-state-city";
 import React, { createContext, useContext, useState } from "react";
 
 export type InputsData = {
-  customerreceivable: string;
+  // customerreceivable: string;
   name: string;
   description: string;
   CNIC: string;
   status: string;
   address: string;
-  shippingaddress: string;
   Phonenumber: string;
   mobileNumber: string;
   email: string;
   website: string;
-  country: ICountry | null;
-  States: IState | null;
-  city: ICity | null;
   contactperson: string;
   creditLimit: string;
   Site: string;
@@ -38,20 +33,16 @@ type CustomerProviderProps = {
 
 export const CustomerProvider = ({ children }: CustomerProviderProps) => {
   const [Customerdetails, setInputsdata] = useState<InputsData>({
-    customerreceivable: "",
+    // customerreceivable: "",
     name: "",
     description: "",
     CNIC: "",
     status: "",
     address: "",
-    shippingaddress: "",
     Phonenumber: "",
     mobileNumber: "",
     email: "",
     website: "",
-    country: null,
-    States: null,
-    city: null,
     contactperson: "",
     creditLimit: "",
     Site: "",

@@ -6,6 +6,7 @@ import { IoChevronUp } from "react-icons/io5";
 import { businesstypes } from "@/Constants/Framerdata";
 import { useCompanyDetails } from "@/Contexts/Companycontext";
 import { useRouter } from "next/navigation";
+
 export default function Company() {
   const [companyName, setCompanyName] = useState<string>("");
   const [ntn, setNtnNumber] = useState<string>("");
@@ -24,6 +25,7 @@ export default function Company() {
   const [province, setProvince] = useState<string>("");
   const { companyDetails, setCompanyDetails } = useCompanyDetails();
   const router = useRouter();
+
   const savecompanydetails = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const details = {
@@ -64,7 +66,7 @@ export default function Company() {
 
   const setntnvalues = (e: React.ChangeEvent<HTMLInputElement>): void => {
     let inpvalue = e.target.value.replace(/\D/g, "");
-    if (inpvalue.length > 8) inpvalue = inpvalue.slice(0, 8);
+    if (inpvalue.length > 13) inpvalue = inpvalue.slice(0, 13);
     setNtnNumber(inpvalue);
   };
 
@@ -115,94 +117,80 @@ export default function Company() {
   return (
     <div className="flex gap-5 mt-15">
       <Sidebar />
-      <div className="px-14 w-full flex pr-17  items-center">
-        <div className="flex flex-col bg-gray-50  rounded-[6px] w-full ">
-          <div className="flex justify-between bg-gray-100 py-1 rounded-[6px] w-full">
-            <p className="text-lg pl-2 text-gray-600">Company / Buyer details</p>
+      <div className="px-14 w-full flex pr-17 py-4 items-center">
+        <div className="flex flex-col bg-white rounded-lg shadow-lg w-full">
+          <div className="flex justify-between bg-gradient-to-r from-blue-200 to-blue-300 py-4 px-6 rounded-t-lg">
+            <p className="text-lg text-black font-semibold">Buyer details</p>
             <p></p>
           </div>
           <form onSubmit={savecompanydetails}>
-            <div className="grid grid-cols-1 gap-4 px-8 py-4 pb-10">
+            <div className="grid grid-cols-1 gap-4 px-8 py-6">
               <div className="flex gap-4">
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold ">* </span>
-                    Company name{" "}
+                <div className="flex flex-col h-fit w-2/2">
+                  <label className="text-sm font-semibold text-gray-600">
+                    <span className="text-red-400 font-semibold">*</span> Name
                   </label>
                   <input
                     value={companyName}
                     onChange={(e) => setCompanyName(e.target.value)}
                     type="text"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold ">* </span>
-                    NTN{" "}
+                </div>
+                <div className="flex flex-col h-fit w-2/2">
+                  <label className="text-sm font-semibold text-gray-600">
+                    <span className="text-red-400 font-semibold">*</span> NTN / CNIC
                   </label>
                   <input
                     value={ntn}
                     onChange={setntnvalues}
                     type="text"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
+                </div>
               </div>
               <div className="flex gap-4">
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold ">* </span>
-                    Address{" "}
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">
+                    <span className="text-red-400 font-semibold">*</span> Address
                   </label>
                   <input
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
                     type="text"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold ">* </span>
-                    Province{" "}
+                </div>
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">
+                    <span className="text-red-400 font-semibold">*</span> Province
                   </label>
                   <input
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
                     type="text"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
+                </div>
               </div>
-              <div className="flex flex-col h-fit relative  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                  <span className="text-red-400 font-semibold ">* </span>
-                  buisness type{" "}
+              <div className="flex flex-col relative h-fit w-full">
+                <label className="text-sm font-semibold text-gray-600">
+                  <span className="text-red-400 font-semibold">*</span> Registration type
                 </label>
                 <div
                   onClick={hidechvrndwn}
-                  className="text-sm bg-gray-100 py-1 px-2 rounded-md border border-gray-200 text-gray-700 hover:border-gray-300 transition cursor-pointer flex justify-between items-center"
+                  className="text-sm bg-gray-100 py-2 px-3 rounded-md border border-gray-200 text-gray-700 hover:border-gray-300 cursor-pointer flex justify-between items-center"
                 >
-                  <p>{businessType ? businessType : "Select business type"}</p>
-                  {visible && (
-                    <p className="text-gray-500">
-                      <IoChevronDown />
-                    </p>
-                  )}
-                  {display && (
-                    <p>
-                      <IoChevronUp />
-                    </p>
-                  )}
+                  <p>{businessType || "Select registration type"}</p>
+                  {visible ? <IoChevronDown /> : <IoChevronUp />}
                 </div>
                 {businessdata && (
-                  <div className="absolute top-13 rounded-b-sm border border- border-gray-200  bg-gray-100 w-full">
+                  <div className="absolute top-12 left-0 right-0 rounded-b-sm border border-gray-200 bg-gray-100">
                     <div className="flex flex-col">
                       {businesstypes.map((type) => (
                         <div
                           onClick={() => selectvalue(type.value)}
-                          className="text-sm hover:bg-blue-500 cursor-pointer hover:text-white pl-2 py-1"
+                          className="text-sm hover:bg-blue-500 cursor-pointer hover:text-white pl-3 py-2"
                           key={type.id}
                         >
                           <p>{type.title}</p>
@@ -211,93 +199,88 @@ export default function Company() {
                     </div>
                   </div>
                 )}
-              </div>{" "}
-              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                <label className="text-sm pl-0 font-semibold pb-1 flex flex-row-reverse justify-between text-gray-600">
-                  <span className="text-red-400 font-semibold text-xs">
-                    Required only if your company is registered for sales tax.
-                  </span>
-                  <span>GST/STRN </span>
+              </div>
+              <div className="flex flex-col h-fit w-full">
+                <label className="text-sm font-semibold text-gray-600">
+                  <span className="text-red-400 font-semibold">*</span> GST/STRN
                 </label>
                 <input
                   value={gst}
                   onChange={setgstnum}
                   type="text"
-                  className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                  className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                 />
-              </div>{" "}
+              </div>
               <div className="flex gap-4">
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold "> </span>
-                    Phone{" "}
-                  </label>
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">Phone</label>
                   <input
                     value={phonenum}
                     onChange={setphonnodigits}
                     type="text"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
-                <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                  <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                    <span className="text-red-400 font-semibold "> </span>
-                    Email{" "}
-                  </label>
+                </div>
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">Email</label>
                   <input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     type="email"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 mt-1 rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
-                </div>{" "}
+                </div>
               </div>
-              <div className="flex flex-col h-fit  w-12/12 border-gray-400 rounded-sm pb-0 py-1">
-                <label className="text-sm pl-0 font-semibold pb-1  text-gray-600">
-                  <span className="text-red-400 font-semibold "> </span>
-                  Bank details{" "}
-                </label>
-                <div className="flex gap-4 w-full">
+              {/* <div className="flex gap-4">
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">Bank name</label>
                   <input
                     value={bankname}
                     onChange={(e) => setBankName(e.target.value)}
                     type="text"
-                    placeholder="Bank name"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200  w-full focus:ring-gray-300 bg-gray-100 mt-1 placeholder:text-sm rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
+                </div>
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">Branch</label>
                   <input
                     value={branch}
                     onChange={(e) => setBranchName(e.target.value)}
                     type="text"
-                    placeholder="Branch"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 w-full focus:ring-gray-300 bg-gray-100 mt-1 placeholder:text-sm rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
+                </div>
+              </div> */}
+              {/* <div className="flex gap-4">
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">Account</label>
                   <input
                     value={account}
                     onChange={setAccountdigits}
                     type="text"
-                    placeholder=" Account"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 w-full focus:ring-gray-300 bg-gray-100 mt-1 placeholder:text-sm rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
+                </div>
+                <div className="flex flex-col h-fit w-1/2">
+                  <label className="text-sm font-semibold text-gray-600">IBAN</label>
                   <input
                     value={iban}
                     onChange={setIbanregex}
                     type="text"
-                    placeholder="IBAN"
-                    className="py-[2px] pl-3 shadow-sm ring-1 ring-gray-200 w-full focus:ring-gray-300 bg-gray-100 mt-1 placeholder:text-sm rounded-md outline-0"
+                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
                   />
                 </div>
-              </div>{" "}
+              </div> */}
             </div>
-            <div className="flex justify-self-end px-8 pb-3">
+            <div className="flex justify-end px-8 pb-3">
               <button
                 disabled={!companyName || !ntn || !address || !businessType}
                 type="submit"
-                className={` text-white px-5 py-1 rounded-sm  transition ${
+                className={`text-white px-5 py-2 rounded-sm transition ${
                   !companyName || !ntn || !address || !businessType
-                    ? "bg-blue-300 cursor-not-allowed"
-                    : "bg-[#223f8f] cursor-pointer hover:bg-[#1a3274]"
-                } `}
+                    ? "bg-[#4b9efe] cursor-not-allowed"
+                    : "bg-[#2d81fe] cursor-pointer hover:bg-[#1f67d2]"
+                }`}
               >
                 Save
               </button>

@@ -15,6 +15,8 @@ import { useRouter } from "next/navigation";
 import { useCompanyDetails } from "@/Contexts/Companycontext";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import Link from "next/link";
+// import { hsCodeUomMap, getAllowedUomsForHs } from "@/Constants/hsCodeUomMap";
+// import { normalizeUom } from "@/Constants/uomNormalization";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
@@ -69,20 +71,20 @@ export default function Home() {
   };
   // allusersData
 
-  const senddatatofbr = (): void => {
-    if (!integrationdetails?.environemnt || !integrationdetails.token) {
-      const btn = document.getElementById("validate-btn");
+  // const senddatatofbr = (index:number): void => {
+  //   if (!integrationdetails?.environemnt || !integrationdetails.token) {
+  //     const btn = document.getElementById("validate-btn");
 
-      if (btn) {
-        btn.textContent = "add token!";
-      }
-      alert("add environement and token!");
-      router.push("/integration");
-      return;
-    }
-  };
+  //     if (btn) {
+  //       btn.textContent = "add token!";
+  //     }
+  //     alert("add environement and token!");
+  //     router.push("/integration");
+  //     return;
+  //   }
+  // };
 
-  const validatefromfbr = async () => {
+  const validatefromfbr = async (index: number) => {
     const btn = document.getElementById("validate-btn");
 
     if (btn) {
@@ -123,11 +125,50 @@ export default function Home() {
     //   return isNaN(num) ? 0 : num;
     // };
 
-    const rawhsCode = String(allusersData[0].Itemdetails[0].HsCode);
-    const foramttedhsCode = rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4);
+    // HS code normalization: keep digits for submission, optionally format with dot for display
+    // const inputHs = String(allusersData?.[0]?.Itemdetails?.[0]?.HsCode || "");
+    // const rawhsCode = inputHs.replace(/\D/g, ""); // '01012100'
+    // const formattedhsCode =
+    //   rawhsCode.length > 4
+    //     ? rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4)
+    //     : rawhsCode;
 
-    console.log(foramttedhsCode, "-formatted hs code");
+    // // Pre-validate UoM against HS Code mapping (client-side safety)
+    // const selectedUomRaw = String(allusersData[0].Itemdetails[0].Uom || "");
+    // const selectedUom = normalizeUom(selectedUomRaw);
+    // const allowedUoms = getAllowedUomsForHs(rawhsCode);
+    // const isAllowed = Array.isArray(allowedUoms)
+    //   ? allowedUoms.some((u) => {
+    //       const uLower = String(u).trim().toLowerCase();
+    //       const selLower = String(selectedUom).trim().toLowerCase();
+    //       if (uLower === selLower) return true; // direct label match
+    //       // try normalized code match as fallback (e.g., Liter <-> LTR)
+    //       return (
+    //         normalizeUom(u).toLowerCase() ===
+    //         normalizeUom(selectedUom).toLowerCase()
+    //       );
+    //     })
+    //   : undefined;
 
+    // if (!allowedUoms) {
+    //   if (btn) btn.textContent = "Validate";
+    //   alert(
+    //     `Allowed UoMs for HS Code ${rawhsCode} are not configured. Please update hsCodeUomMap.ts before posting.`
+    //   );
+    //   return;
+    // }
+
+    // if (!isAllowed) {
+    //   if (btn) btn.textContent = "Validate";
+    //   alert(
+    //     `UoM "${selectedUom}" is not allowed for HS Code ${formattedhsCode}. Allowed: ${allowedUoms.join(
+    //       ", "
+    //     )}`
+    //   );
+    //   return;
+    // }
+
+    // console.log(formattedhsCode, "formatted hsCode");
     // Build FBR-compliant payload
     const invoiceitems = {
       invoiceType: sanitizeString(
@@ -150,10 +191,10 @@ export default function Home() {
       buyerRegistrationType: companyDetails?.businessType,
       items: [
         {
-          hsCode: "0101.2100",
+          hsCode: allusersData[0].Itemdetails[0].order, // FBR expects 4+4 formatted
           productDescription: allusersData[0].Itemdetails[0].description,
           rate: allusersData[0].Itemdetails[0].rate + "%",
-          uoM: "Numbers, pieces, units",
+          uoM: allusersData[0].Itemdetails[0].Uom,
           quantity: allusersData[0].Itemdetails[0].quantity,
           fixedNotifiedValueOrRetailPrice: 0.0,
           salesTaxWithheldAtSource:
@@ -220,35 +261,37 @@ export default function Home() {
       <Sidebar />
       <div className="pt-10 flex flex-col pb-30 w-full">
         <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm mr-18.5">
-          <div className=" flex bg-gray-50 items-center rounded-sm  px-4 py-2 justify-between">
+          <div className="flex items-center justify-between bg-gray-50 px-6 py-3 rounded-md shadow-sm">
             {companyDetails ? (
-              <h3 className="text-xl  text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-700">
                 {companyDetails?.companyName}
               </h3>
             ) : (
               <Link href="/company">
-                <h3 className="text-blue-600 hover:underline cursor-pointer">
-                  Add company
-                </h3>
+                <button className="bg-[#2d80ff] cursor-pointer text-white px-5 py-2 rounded-sm text-sm hover:bg-[#1c74fb] transition">
+                  Add Company
+                </button>
               </Link>
             )}
+
             {viewData && (
               <p
                 onClick={showdetails}
-                className="cursor-pointer hover:text-gray-600"
+                className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
               >
-                <FiEye />
+                <FiEye size={20} />
               </p>
             )}
             {hideData && (
               <p
                 onClick={hidedetails}
-                className="cursor-pointer hover:text-gray-600"
+                className="cursor-pointer text-gray-500 hover:text-gray-700 transition"
               >
-                <FiEyeOff />
+                <FiEyeOff size={20} />
               </p>
             )}
           </div>
+
           {details && (
             <div className="mx-4 mr-4 px-4  bg-white border py-2 border-gray-200 rounded-sm my-4">
               {companyDetails ? (
@@ -339,18 +382,12 @@ export default function Home() {
         </div>
         <div className="px-13.5 pt-25 pr-18.5">
           {display && (
-            <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-sm justify-self-center">
-              <div className="flex flex-col justify-between px-4 pt-3">
-                {display && (
-                  <>
-                    <Addnewdata showhiddendiv={showhiddendiv} />
-                  </>
-                )}
+            <div className="bg-gray-50 w-full shadow-xl shadow-gray-100 h-full rounded-md">
+              <div className="flex flex-col justify-between px-6 pt-4">
+                {display && <Addnewdata showhiddendiv={showhiddendiv} />}
               </div>
-              {/* Just comment */}
 
-              {/* {display && ( */}
-              <div className="flex flex-col gap-4 px-10 h-10/12 justify-center  py-6">
+              <div className="flex flex-col gap-4 px-10 py-6 h-10/12">
                 {Array.isArray(allusersData) && allusersData.length > 0 ? (
                   allusersData.map(
                     (
@@ -359,21 +396,23 @@ export default function Home() {
                     ) => (
                       <div
                         key={index}
-                        className="border border-gray-200 shadow-sm bg-white rounded-lg p-5 hover:shadow-md transition mt-4"
+                        className="border border-gray-200 bg-white rounded-md shadow-sm p-5 hover:shadow-md transition"
                       >
+                        {/* TOP ROW */}
                         <div className="flex flex-col">
-                          <div className="flex justify-between items-center">
-                            <div className="flex flex-wrap gap-8">
-                              <div className="flex flex-col gap-1">
+                          <div className="flex justify-between items-start">
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 w-full">
+                              {/* Invoice Details */}
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
-                                  {/* {allusersData} */}
                                   Invoice No
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
                                   {data.invoiceNo}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Voucher
                                 </span>
@@ -381,7 +420,8 @@ export default function Home() {
                                   09765567
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Date
                                 </span>
@@ -389,7 +429,8 @@ export default function Home() {
                                   {data.Transactiondatendtype?.date}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Customer
                                 </span>
@@ -397,7 +438,8 @@ export default function Home() {
                                   {data.Customerdetails?.name}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Amount
                                 </span>
@@ -405,7 +447,8 @@ export default function Home() {
                                   {data.Itemdetails?.[0]?.price}
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Status
                                 </span>
@@ -413,7 +456,8 @@ export default function Home() {
                                   post / un-post
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Validate
                                 </span>
@@ -421,7 +465,8 @@ export default function Home() {
                                   Valid / In-valid
                                 </p>
                               </div>
-                              <div className="flex flex-col gap-1">
+
+                              <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   FBR Invoice No
                                 </span>
@@ -431,11 +476,11 @@ export default function Home() {
                               </div>
                             </div>
 
-                            <div className="flex ml-6 gap-4">
-                              {/* <div className="flex gap-4"> */}
+                            {/* Action Buttons */}
+                            <div className="flex items-center gap-3 ml-6 mt-2">
                               <button
                                 onClick={() => toggleCustomerDetails(index)}
-                                className="  text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
+                                className="text-gray-600 hover:text-gray-900 transition text-xl"
                               >
                                 {selectedCustomerIndex === index ? (
                                   <FiEyeOff />
@@ -443,41 +488,34 @@ export default function Home() {
                                   <FiEye />
                                 )}
                               </button>
+
                               <button
                                 onClick={() => deleteitem(index)}
-                                className="text-gray-600 cursor-pointer  rounded-md text-xl hover:text-gray-900 hover:bg--800 transition"
+                                className="text-gray-600 hover:text-red-600 transition text-xl"
                               >
                                 <RiDeleteBin6Line />
                               </button>
-                              {/* </div> */}
                             </div>
                           </div>
-                          <div className="flex gap-4 pt-6">
+
+                          {/* Send to FBR Button */}
+                          <div className="flex pt-6">
                             <button
-                              // onClick={senddatatofbr}
-                              // onClick={() => deleteitem(index)}
-                              id="validate-btn"
-                              onClick={validatefromfbr}
-                              className="text-white bg-yellow-600 font-semibold px-4 py-1 rounded-sm cursor-pointer hover:bg-yellow-700 transition"
+                              onClick={() => validatefromfbr(index)}
+                              className="bg-yellow-600 text-white font-semibold px-4 py-1 rounded-sm hover:bg-yellow-700 transition"
                             >
-                              Validate
-                              {/* <RiDeleteBin6Line /> */}
-                            </button>
-                            <button
-                              onClick={senddatatofbr}
-                              // onClick={() => deleteitem(index)}
-                              className="text-white bg-blue-600 font-semibold px-6 py-1 rounded-sm cursor-pointer hover:bg-blue-700 transition"
-                            >
-                              Send
-                              {/* <RiDeleteBin6Line /> */}
+                              Send to FBR
                             </button>
                           </div>
                         </div>
+
+                        {/* COLLAPSIBLE DETAILS */}
                         {selectedCustomerIndex === index && (
-                          <div className="bg-gray-50 border border-gray-200 p-5 mt-5 rounded-md">
-                            <div className="flex flex-col md:flex-row justify-between gap-10">
+                          <div className="bg-gray-50 border border-gray-200 p-5 mt-6 rounded-md">
+                            <div className="flex flex-col md:flex-row gap-8">
+                              {/* Customer Details */}
                               <div className="flex-1">
-                                <h3 className="font-semibold text-lg mb-3 text-gray-700">
+                                <h3 className="font-semibold text-lg text-gray-700 mb-3">
                                   Customer Details
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
@@ -506,10 +544,6 @@ export default function Home() {
                                     {data.Customerdetails?.creditLimit}
                                   </p>
                                   <p>
-                                    <strong>Receivable:</strong>{" "}
-                                    {data.Customerdetails?.customerreceivable}
-                                  </p>
-                                  <p>
                                     <strong>Description:</strong>{" "}
                                     {data.Customerdetails?.description}
                                   </p>
@@ -525,15 +559,12 @@ export default function Home() {
                                     <strong>Address:</strong>{" "}
                                     {data.Customerdetails?.address}
                                   </p>
-                                  <p>
-                                    <strong>Shipping:</strong>{" "}
-                                    {data.Customerdetails?.shippingaddress}
-                                  </p>
                                 </div>
                               </div>
 
+                              {/* Transaction + Item Details */}
                               <div className="flex-1">
-                                <h3 className="font-semibold text-lg mb-3 text-gray-700">
+                                <h3 className="font-semibold text-lg text-gray-700 mb-3">
                                   Transaction
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
@@ -551,7 +582,7 @@ export default function Home() {
                                   </p>
                                 </div>
 
-                                <h3 className="font-semibold text-lg mt-5 mb-3 text-gray-700">
+                                <h3 className="font-semibold text-lg text-gray-700 mt-5 mb-3">
                                   Item Details
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
@@ -616,7 +647,7 @@ export default function Home() {
                     )
                   )
                 ) : (
-                  <p className="text-center text-gray-500 flex text-lg py-20  items-center gap-2 self-center">
+                  <p className="text-center text-gray-500 text-lg py-20 flex items-center justify-center gap-2">
                     No Customer Data Found!
                     <Image
                       src={searching}
@@ -627,7 +658,6 @@ export default function Home() {
                   </p>
                 )}
               </div>
-              {/* // )} */}
             </div>
           )}
         </div>
