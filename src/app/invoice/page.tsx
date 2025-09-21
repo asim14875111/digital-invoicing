@@ -28,6 +28,10 @@ export default function Home() {
   const [details, setDetails] = useState(false);
   const { integrationdetails } = UseintegrationDetails();
   const router = useRouter();
+  const [validationStatus, setValidationStatus] = useState<{
+    [key: number]: string;
+  }>({});
+
   // Explicitly type allusersData if possible, e.g.:
   // const { allusersData = [], setAllUsersData } = context as { allusersData: YourDataType[]; setAllUsersData: (data: YourDataType[]) => void } || {};
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
@@ -85,26 +89,15 @@ export default function Home() {
   // };
 
   const validatefromfbr = async (index: number) => {
-    const btn = document.getElementById("validate-btn");
+    setValidationStatus((prev) => ({ ...prev, [index]: "Sending..." }));
 
-    if (btn) {
-      btn.textContent = "Validating...";
-    }
     if (!integrationdetails?.environemnt || !integrationdetails.token) {
-      alert("add environement and token!");
+      alert("Add environment and token!");
       router.push("/integration");
+      setValidationStatus((prev) => ({ ...prev, [index]: "Validate Again" }));
       return;
     }
 
-    // Helper to format date as yyyy-MM-dd
-    // const formatDate = (dateStr: string): string => {
-    //   if (!dateStr) return "";
-    //   const d = new Date(dateStr);
-    //   if (isNaN(d.getTime())) return "";
-    //   return d.toISOString().slice(0, 10);
-    // };
-
-    // Helper to sanitize string (no nulls, no dashes for CNIC/NTN)
     const sanitizeString = (
       val: string | number | undefined | null,
       removeDashes = false
@@ -114,117 +107,61 @@ export default function Home() {
       return removeDashes ? str.replace(/-/g, "") : str;
     };
 
-    const scenarioId = allusersData[0].Transactiondatendtype.types.value;
-    console.log(scenarioId, "-scenario id");
-
-    // Helper to sanitize number (no nulls)
-    // const sanitizeNumber = (
-    //   val: string | number | undefined | null
-    // ): number => {
-    //   const num = Number(val);
-    //   return isNaN(num) ? 0 : num;
-    // };
-
-    // HS code normalization: keep digits for submission, optionally format with dot for display
-    // const inputHs = String(allusersData?.[0]?.Itemdetails?.[0]?.HsCode || "");
-    // const rawhsCode = inputHs.replace(/\D/g, ""); // '01012100'
-    // const formattedhsCode =
-    //   rawhsCode.length > 4
-    //     ? rawhsCode.slice(0, 4) + "." + rawhsCode.slice(4)
-    //     : rawhsCode;
-
-    // // Pre-validate UoM against HS Code mapping (client-side safety)
-    // const selectedUomRaw = String(allusersData[0].Itemdetails[0].Uom || "");
-    // const selectedUom = normalizeUom(selectedUomRaw);
-    // const allowedUoms = getAllowedUomsForHs(rawhsCode);
-    // const isAllowed = Array.isArray(allowedUoms)
-    //   ? allowedUoms.some((u) => {
-    //       const uLower = String(u).trim().toLowerCase();
-    //       const selLower = String(selectedUom).trim().toLowerCase();
-    //       if (uLower === selLower) return true; // direct label match
-    //       // try normalized code match as fallback (e.g., Liter <-> LTR)
-    //       return (
-    //         normalizeUom(u).toLowerCase() ===
-    //         normalizeUom(selectedUom).toLowerCase()
-    //       );
-    //     })
-    //   : undefined;
-
-    // if (!allowedUoms) {
-    //   if (btn) btn.textContent = "Validate";
-    //   alert(
-    //     `Allowed UoMs for HS Code ${rawhsCode} are not configured. Please update hsCodeUomMap.ts before posting.`
-    //   );
-    //   return;
-    // }
-
-    // if (!isAllowed) {
-    //   if (btn) btn.textContent = "Validate";
-    //   alert(
-    //     `UoM "${selectedUom}" is not allowed for HS Code ${formattedhsCode}. Allowed: ${allowedUoms.join(
-    //       ", "
-    //     )}`
-    //   );
-    //   return;
-    // }
-
-    // console.log(formattedhsCode, "formatted hsCode");
-    // Build FBR-compliant payload
     const invoiceitems = {
       invoiceType: sanitizeString(
-        allusersData?.[0]?.Itemdetails?.[0]?.serviceAccount
+        allusersData?.[index]?.Itemdetails?.[0]?.serviceAccount
       ),
-      invoiceDate: allusersData[0].Transactiondatendtype.date,
-      sellerBusinessName: allusersData[0].Customerdetails.name,
-      sellerProvince: allusersData[0].Customerdetails.Site,
+      invoiceDate: allusersData[index].Transactiondatendtype.date,
+      sellerBusinessName: allusersData[index].Customerdetails.name,
+      sellerProvince: allusersData[index].Customerdetails.Site,
       sellerNTNCNIC: sanitizeString(
-        allusersData?.[0]?.Customerdetails?.CNIC,
+        allusersData?.[index]?.Customerdetails?.CNIC,
         true
       ),
-      sellerAddress: allusersData[0].Customerdetails.address,
+      sellerAddress: allusersData[index].Customerdetails.address,
       buyerNTNCNIC: companyDetails?.ntn,
       buyerBusinessName: companyDetails?.companyName,
       buyerProvince: companyDetails?.province,
       buyerAddress: companyDetails?.address,
-      invoiceRefNo: "INV-" + allusersData[0].invoiceNo,
-      scenarioId: allusersData[0].Transactiondatendtype.types.value,
+      invoiceRefNo: "INV-" + allusersData[index].invoiceNo,
+      scenarioId: allusersData[index].Transactiondatendtype.types.value,
       buyerRegistrationType: companyDetails?.businessType,
       items: [
         {
-          hsCode: allusersData[0].Itemdetails[0].order, // FBR expects 4+4 formatted
-          productDescription: allusersData[0].Itemdetails[0].description,
-          rate: allusersData[0].Itemdetails[0].rate + "%",
-          uoM: allusersData[0].Itemdetails[0].Uom,
-          quantity: allusersData[0].Itemdetails[0].quantity,
+          hsCode: allusersData[index].Itemdetails[0].order,
+          productDescription: allusersData[index].Itemdetails[0].description,
+          rate: allusersData[index].Itemdetails[0].rate + "%",
+          uoM: allusersData[index].Itemdetails[0].Uom,
+          quantity: allusersData[index].Itemdetails[0].quantity,
           fixedNotifiedValueOrRetailPrice: 0.0,
           salesTaxWithheldAtSource:
-            allusersData[0].Itemdetails[0].salesTaxWithheldAtSource,
-          extraTax: allusersData[0].Itemdetails[0].extraTax,
-          furtherTax: allusersData[0].Itemdetails[0].furtherTax,
-          sroScheduleNo: allusersData[0].Itemdetails[0].SRO,
-          fedPayable: allusersData[0].Itemdetails[0].fedPayable,
-          discount: allusersData[0].Itemdetails[0].discount,
+            allusersData[index].Itemdetails[0].salesTaxWithheldAtSource,
+          extraTax: allusersData[index].Itemdetails[0].extraTax,
+          furtherTax: allusersData[index].Itemdetails[0].furtherTax,
+          sroScheduleNo: allusersData[index].Itemdetails[0].SRO,
+          fedPayable: allusersData[index].Itemdetails[0].fedPayable,
+          discount: allusersData[index].Itemdetails[0].discount,
           totalValues:
-            Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) +
-            (Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) *
-              Number(allusersData[0].Itemdetails[0].rate)) /
+            Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) +
+            (Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) *
+              Number(allusersData[index].Itemdetails[0].rate)) /
               100 +
-            Number(allusersData[0].Itemdetails[0].fedPayable || 0) +
-            Number(allusersData[0].Itemdetails[0].extraTax || 0) +
-            Number(allusersData[0].Itemdetails[0].furtherTax || 0) -
-            Number(allusersData[0].Itemdetails[0].discount || 0),
+            Number(allusersData[index].Itemdetails[0].fedPayable || 0) +
+            Number(allusersData[index].Itemdetails[0].extraTax || 0) +
+            Number(allusersData[index].Itemdetails[0].furtherTax || 0) -
+            Number(allusersData[index].Itemdetails[0].discount || 0),
           valueSalesExcludingST:
-            Number(allusersData[0].Itemdetails[0].price) *
-            Number(allusersData[0].Itemdetails[0].quantity),
+            Number(allusersData[index].Itemdetails[0].price) *
+            Number(allusersData[index].Itemdetails[0].quantity),
           salesTaxApplicable:
-            (Number(allusersData[0].Itemdetails[0].price) *
-              Number(allusersData[0].Itemdetails[0].quantity) *
-              Number(allusersData[0].Itemdetails[0].rate)) /
+            (Number(allusersData[index].Itemdetails[0].price) *
+              Number(allusersData[index].Itemdetails[0].quantity) *
+              Number(allusersData[index].Itemdetails[0].rate)) /
             100,
-          saleType: allusersData[0].Transactiondatendtype.types.title,
-          sroItemSerialNo: allusersData[0].Itemdetails[0].SroItemNO,
+          saleType: allusersData[index].Transactiondatendtype.types.title,
+          sroItemSerialNo: allusersData[index].Itemdetails[0].SroItemNO,
         },
       ],
     };
@@ -242,18 +179,17 @@ export default function Home() {
 
       const data = await res.json();
       console.log("Validation response", data);
-      const btn = document.getElementById("validate-btn");
 
-      if (btn) {
-        btn.textContent = "Validated!";
+      if (res.ok) {
+        setValidationStatus((prev) => ({ ...prev, [index]: "Sended" }));
+      } else {
+        setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
       }
     } catch (err) {
       console.log(err, "Error");
+      setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
+      alert(err)
     }
-
-    console.log("Buyer CNIC/NTN:", invoiceitems.buyerNTNCNIC);
-    // console.log("Registration Type:", invoiceitems.buyerRegistrationType);
-    console.log("Token:", integrationdetails.token);
   };
 
   return (
@@ -320,15 +256,15 @@ export default function Home() {
                     </div>
                     <div className="flex flex-row items-center gap-1">
                       <label>Bank name:</label>
-                      <p className="text-sm text-gray-600">
+                      {/* <p className="text-sm text-gray-600">
                         {companyDetails.bankname}
-                      </p>
+                      </p> */}
                     </div>
                     <div className="flex flex-row items-center gap-1">
                       <label>Bank branch:</label>
-                      <p className="text-sm text-gray-600">
+                      {/* <p className="text-sm text-gray-600">
                         {companyDetails.branch}
-                      </p>
+                      </p> */}
                     </div>
                   </div>
                   <div className="flex flex-col  gap-1">
@@ -358,15 +294,15 @@ export default function Home() {
                     </div>
                     <div className="flex flex-row items-center gap-1">
                       <label>Bank account no:</label>
-                      <p className="text-sm text-gray-600">
+                      {/* <p className="text-sm text-gray-600">
                         {companyDetails.account}
-                      </p>
+                      </p> */}
                     </div>
                     <div className="flex flex-row items-center gap-1">
-                      <label>Iban:</label>
+                      {/* <label>Iban:</label>
                       <p className="text-sm text-gray-600">
                         {companyDetails.iban}
-                      </p>
+                      </p> */}
                     </div>
                   </div>{" "}
                 </div>
@@ -502,9 +438,16 @@ export default function Home() {
                           <div className="flex pt-6">
                             <button
                               onClick={() => validatefromfbr(index)}
-                              className="bg-yellow-600 text-white font-semibold px-4 py-1 rounded-sm hover:bg-yellow-700 transition"
+                              disabled={validationStatus[index] === "Validated"} // disable if already validated
+                              className={`px-4 py-1 rounded-sm font-semibold transition ${
+                                validationStatus[index] === "Validated"
+                                  ? "bg-green-500 text-white cursor-not-allowed"
+                                  : validationStatus[index] === "Sending..."
+                                  ? "bg-yellow-600 text-white"
+                                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                              }`}
                             >
-                              Send to FBR
+                              {validationStatus[index] || "Send to FBR"}
                             </button>
                           </div>
                         </div>

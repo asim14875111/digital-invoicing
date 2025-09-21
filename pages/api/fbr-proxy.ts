@@ -31,9 +31,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       },
     });
     res.status(200).json(response.data);
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Debug: log error from FBR
-    console.error('FBR API Error:', error.response?.data || error.message);
-    res.status(error.response?.status || 500).json(error.response?.data || { error: error.message });
+    if (axios.isAxiosError(error)) {
+      console.error('FBR API Error:', error.response?.data || error.message);
+      res.status(error.response?.status || 500).json(error.response?.data || { error: error.message });
+    } else if (error instanceof Error) {
+      console.error('FBR API Error:', error.message);
+      res.status(500).json({ error: error.message });
+    } else {
+      console.error('FBR API Error:', error);
+      res.status(500).json({ error: 'An unknown error occurred' });
+    }
   }
 }

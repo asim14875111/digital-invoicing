@@ -139,7 +139,8 @@ export default function Company() {
                 </div>
                 <div className="flex flex-col h-fit w-2/2">
                   <label className="text-sm font-semibold text-gray-600">
-                    <span className="text-red-400 font-semibold">*</span> NTN / CNIC
+                    <span className="text-red-400 font-semibold">*</span> NTN /
+                    CNIC
                   </label>
                   <input
                     value={ntn}
@@ -152,7 +153,8 @@ export default function Company() {
               <div className="flex gap-4">
                 <div className="flex flex-col h-fit w-1/2">
                   <label className="text-sm font-semibold text-gray-600">
-                    <span className="text-red-400 font-semibold">*</span> Address
+                    <span className="text-red-400 font-semibold">*</span>{" "}
+                    Address
                   </label>
                   <input
                     value={address}
@@ -163,7 +165,8 @@ export default function Company() {
                 </div>
                 <div className="flex flex-col h-fit w-1/2">
                   <label className="text-sm font-semibold text-gray-600">
-                    <span className="text-red-400 font-semibold">*</span> Province
+                    <span className="text-red-400 font-semibold">*</span>{" "}
+                    Province
                   </label>
                   <input
                     value={province}
@@ -175,7 +178,8 @@ export default function Company() {
               </div>
               <div className="flex flex-col relative h-fit w-full">
                 <label className="text-sm font-semibold text-gray-600">
-                  <span className="text-red-400 font-semibold">*</span> Registration type
+                  <span className="text-red-400 font-semibold">*</span>{" "}
+                  Registration type
                 </label>
                 <div
                   onClick={hidechvrndwn}
@@ -213,7 +217,9 @@ export default function Company() {
               </div>
               <div className="flex gap-4">
                 <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">Phone</label>
+                  <label className="text-sm font-semibold text-gray-600">
+                    Phone
+                  </label>
                   <input
                     value={phonenum}
                     onChange={setphonnodigits}
@@ -222,7 +228,9 @@ export default function Company() {
                   />
                 </div>
                 <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">Email</label>
+                  <label className="text-sm font-semibold text-gray-600">
+                    Email
+                  </label>
                   <input
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -279,7 +287,7 @@ export default function Company() {
                 className={`text-white px-5 py-2 rounded-sm transition ${
                   !companyName || !ntn || !address || !businessType
                     ? "bg-[#4b9efe] cursor-not-allowed"
-                    : "bg-[#2d81fe] cursor-pointer hover:bg-[#1f67d2]"
+                    : "bg-[#2d81fe] cursor-pointer hover:bg-[#1972f7]"
                 }`}
               >
                 Save

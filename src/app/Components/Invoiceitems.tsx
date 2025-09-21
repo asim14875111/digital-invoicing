@@ -972,8 +972,8 @@ export default function Invoiceitems({
             }}
             className={`py-1 px-8 text-lg font-semibold text-white rounded transition ${
               !itemname || !order || !Uom || !quantity || !price || !description
-                ? "opacity-50 cursor-not-allowed bg-[#155efdc0]"
-                : "cursor-pointer bg-blue-700 hover:bg-blue-900"
+                ? "opacity-50 cursor-not-allowed bg-[#155dfd]"
+                : "cursor-pointer bg-blue-800"
             }`}
             disabled={
               !itemname || !order || !Uom || !quantity || !price || !description
