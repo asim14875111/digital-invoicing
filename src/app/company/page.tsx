@@ -27,6 +27,10 @@ export default function Company() {
   const router = useRouter();
 
   const savecompanydetails = (e: React.FormEvent<HTMLFormElement>) => {
+    const btn = document.getElementById("save-btn")
+    if(btn){
+      btn.innerHTML = "saving..."
+    }
     e.preventDefault();
     const details = {
       companyName,
@@ -242,6 +246,7 @@ export default function Company() {
             </div>
             <div className="flex justify-end px-8 pb-3">
               <button
+              id="save-btn"
                 disabled={!companyName || !ntn || !address || !businessType}
                 type="submit"
                 className={`text-white px-5 py-2 rounded-sm transition ${

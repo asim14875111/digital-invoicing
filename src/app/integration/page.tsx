@@ -30,6 +30,10 @@ export default function Integration() {
   };
 
   const saveIntegrationDetails = (e: React.FormEvent<HTMLFormElement>) => {
+    const btn = document.getElementById("save-btn")
+    if(btn){
+      btn.innerHTML = "saving..."
+    }
     e.preventDefault();
     const details = { environemnt: environment, token };
     setIntegrationdetails(details);
@@ -106,6 +110,7 @@ export default function Integration() {
             {/* Save Button */}
             <div className="flex justify-end px-8 pb-5">
               <button
+              id="save-btn"
                 type="submit"
                 disabled={!environment || !token}
                 className={`text-white px-5 py-2 rounded-sm transition ${

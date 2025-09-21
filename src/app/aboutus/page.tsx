@@ -1,6 +1,6 @@
 import React from "react";
 import { aboutuscards } from "@/Constants/Framerdata";
-export default function Aboutus() {
+export default function AboutusPage() {
   return (
     <div>
       <div className="text-center pt-40">

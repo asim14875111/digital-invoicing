@@ -1,6 +1,5 @@
 // src/app/api/validate-invoice/route.ts
 import { NextRequest, NextResponse } from "next/server";
-
 // POST /api/validate-invoice
 export async function POST(req: NextRequest) {
   try {
@@ -54,9 +53,6 @@ export async function POST(req: NextRequest) {
         : typeof err === "string"
         ? err
         : "Internal server error";
-    return NextResponse.json(
-      { error: errorMessage },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
