@@ -1,6 +1,6 @@
 import React from "react";
 import { aboutuscards } from "@/Constants/Framerdata";
-export default function AboutusPage() {
+export default function aboutus() {
   return (
     <div>
       <div className="text-center pt-40">
@@ -10,6 +10,7 @@ export default function AboutusPage() {
           invoicing solutions since 2024
         </p>
       </div>
+      {/* Just comment */}
       <div className="flex max-w-[1100px] justify-self-center gap-6 justify-center pt-20 pb-20">
         {aboutuscards.map((card) => (
           <div
