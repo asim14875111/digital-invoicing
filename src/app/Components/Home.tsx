@@ -1,5 +1,6 @@
 import React from "react";
 import Herosection from "./Herosection";
+// Just comment
 import WhyChooseUs from "./WhyChooseUs";
 import HowitWorks from "./HowitWorks";
 import StartNow from "./StartNow";
