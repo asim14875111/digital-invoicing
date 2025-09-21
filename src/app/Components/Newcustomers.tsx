@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoChevronUp, IoChevronDownOutline } from "react-icons/io5";
-import { customerreceivables, Status, Sites } from "@/Constants/Framerdata";
+import {  Status, Sites } from "@/Constants/Framerdata";
 import { ToastContainer, toast } from "react-toastify";
 import { useCustomer } from "@/Contexts/MyContext";
 // import Select from "react-select";
@@ -24,14 +24,14 @@ export default function Newcustomers({
   hidedetailssection,
   setDetailsSection,
 }: NewcustomersProps) {
-  const [chevronDown, setchevronDown] = useState(true);
-  const [chevronup, setChevronup] = useState(false);
+  // const [chevronDown, setchevronDown] = useState(true);
+  // const [chevronup, setChevronup] = useState(false);
   const [chevronDown2, setchevronDown2] = useState(true);
   const [chevronup2, setChevronup2] = useState(false);
-  const [receivablesData, setreceivablesData] = useState(false);
+  // const [receivablesData, setreceivablesData] = useState(false);
   const [StautsData, setStautsData] = useState(false);
   const [SitesData, setSitesData] = useState(false);
-  const [customerreceivable, setData] = useState("");
+  // const [, setData] = useState("");
   const [status, SetStatus] = useState("");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -53,18 +53,18 @@ export default function Newcustomers({
 
   const { Customerdetails, setInputsdata } = useCustomer();
 
-  const showcustomerreceivables = () => {
-    setchevronDown(!chevronDown);
-    setChevronup(!chevronup);
-    setreceivablesData(!receivablesData);
-  };
+  // const showcustomerreceivables = () => {
+  //   setchevronDown(!chevronDown);
+  //   setChevronup(!chevronup);
+  //   setreceivablesData(!receivablesData);
+  // };
 
-  const setreceivable = (value: string) => {
-    setData(value);
-    setreceivablesData(false);
-    setChevronup(false);
-    setchevronDown(true);
-  };
+  // const setreceivable = (value: string) => {
+  //   setData(value);
+  //   setreceivablesData(false);
+  //   setChevronup(false);
+  //   setchevronDown(true);
+  // };
 
   const addcustomerdetails = () => {
     document.body.style.overflow = "auto";

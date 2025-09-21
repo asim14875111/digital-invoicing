@@ -239,46 +239,6 @@ export default function Company() {
                   />
                 </div>
               </div>
-              {/* <div className="flex gap-4">
-                <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">Bank name</label>
-                  <input
-                    value={bankname}
-                    onChange={(e) => setBankName(e.target.value)}
-                    type="text"
-                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
-                  />
-                </div>
-                <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">Branch</label>
-                  <input
-                    value={branch}
-                    onChange={(e) => setBranchName(e.target.value)}
-                    type="text"
-                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
-                  />
-                </div>
-              </div> */}
-              {/* <div className="flex gap-4">
-                <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">Account</label>
-                  <input
-                    value={account}
-                    onChange={setAccountdigits}
-                    type="text"
-                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
-                  />
-                </div>
-                <div className="flex flex-col h-fit w-1/2">
-                  <label className="text-sm font-semibold text-gray-600">IBAN</label>
-                  <input
-                    value={iban}
-                    onChange={setIbanregex}
-                    type="text"
-                    className="mt-1 py-2 pl-3 shadow-sm ring-1 ring-gray-200 focus:ring-gray-300 bg-gray-100 rounded-md outline-none"
-                  />
-                </div>
-              </div> */}
             </div>
             <div className="flex justify-end px-8 pb-3">
               <button
