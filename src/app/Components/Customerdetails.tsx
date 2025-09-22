@@ -202,7 +202,6 @@ export default function Customerdetails({ hidedetailsection }: InvoicingdataProp
             )}
           </div>
         </div>
-
         {/* Customer Details */}
         <div className="flex flex-col w-fit">
           <p className="text-sm font-medium text-gray-700">
