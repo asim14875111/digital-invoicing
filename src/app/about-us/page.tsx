@@ -21,6 +21,7 @@ export default function aboutus() {
             <p className="text-sm text-gray-500 max-w-[600px] font-light pt-4">
               {card.desc}
             </p>
+            {/* Just comment */}
           </div>
         ))}
       </div>
