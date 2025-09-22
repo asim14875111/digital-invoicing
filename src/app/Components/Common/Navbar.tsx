@@ -15,13 +15,11 @@ import { auth } from "@/firebaseConfig";
 import { onAuthStateChanged, updateEmail, updatePassword, User } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-// import app from "../../../firebaseConfig";
 export default function Navbar() {
   const router = useRouter();
 
   const [visible, setIsVisible] = useState<boolean>(false);
   const [display, setIsDisplay] = useState<boolean>(false);
-  // const [showname, setshownname] = useState<boolean>(false);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const mydivref = useRef<HTMLDivElement>(null);
   const divref = useRef<HTMLDivElement>(null);
@@ -38,7 +36,6 @@ export default function Navbar() {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-  // setshownname(!!user); // removed, not needed
       if (user) {
         setEmail(user.email || "");
       } else {
