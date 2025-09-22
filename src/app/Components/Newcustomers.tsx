@@ -147,7 +147,7 @@ export default function Newcustomers({
   return (
     <div>
       <div className="fixed w-full bg-black/40 inset-0 z-60 px-6 py-12 flex justify-center overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
-        <div className="bg-white text-black w-full max-w-6xl rounded-xl shadow-lg">
+        <div className="bg-white relative text-black w-full max-w-6xl rounded-xl shadow-lg">
           {/* Header */}
           <div className="flex justify-between bg-gray-100 rounded-t-xl px-6 py-3 border-b border-gray-200">
             <p className="text-xl font-semibold text-gray-800">
@@ -456,7 +456,7 @@ export default function Newcustomers({
             </div>
 
             {/* Footer */}
-            <div className="flex justify-end px-6 py-2 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+            <div className="flex justify-end px-6 absolute -bottom-10 w-full py-2 border-t border-gray-200 bg-gray-50 rounded-b-xl">
               <button
                 className={`px-8 py-1.5 rounded-md text-white font-medium transition ${
                   // !customerreceivable ||
