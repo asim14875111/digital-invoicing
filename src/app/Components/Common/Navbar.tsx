@@ -260,7 +260,7 @@ export default function Navbar() {
             </Link>  
           {/* </div> */}
           <div className="flex gap-5 items-center">
-            <Link href="/aboutus">
+            <Link href="/about-us">
               <p className="text-[15px] font-medium text-gray-600 cursor-pointer hover:text-blue-600 transition">
                 About Us
               </p>
