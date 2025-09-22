@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Addnewdata from "../Components/Addnewdata";
 import Invoicingdata from "../Components/Invoicingdata";
 import { Datacontext } from "@/Contexts/DataContext";
@@ -28,6 +28,13 @@ export default function Home() {
   const [details, setDetails] = useState(false);
   const { integrationdetails } = UseintegrationDetails();
   const router = useRouter();
+  type ValidationResponse = {
+    status?: string;
+    [key: string]: unknown;
+  };
+  const [responses, setResponses] = useState<{
+    [key: number]: ValidationResponse;
+  }>({});
   const [validationStatus, setValidationStatus] = useState<{
     [key: number]: string;
   }>({});
@@ -179,7 +186,9 @@ export default function Home() {
 
       const data = await res.json();
       console.log("Validation response", data);
-
+      // useEffect(() => {
+      setResponses((prev) => ({ ...prev, [index]: data }));
+      // }, [response]);
       if (res.ok) {
         setValidationStatus((prev) => ({ ...prev, [index]: "Sended" }));
       } else {
@@ -188,7 +197,7 @@ export default function Home() {
     } catch (err) {
       console.log(err, "Error");
       setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
-      alert(err)
+      alert(err);
     }
   };
 
@@ -234,10 +243,10 @@ export default function Home() {
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
                     <label className="text-xl font-semibold text-gray-700 pb-2">
-                      Company details
+                      buyer details
                     </label>
                     <div className="flex flex-row items-center gap-1">
-                      <label>Company name:</label>
+                      <label>Name:</label>
                       <p className="text-sm text-gray-600">
                         {companyDetails.companyName}
                       </p>
@@ -254,18 +263,18 @@ export default function Home() {
                         {companyDetails.phonenum}
                       </p>
                     </div>
-                    <div className="flex flex-row items-center gap-1">
+                    {/* <div className="flex flex-row items-center gap-1">
                       <label>Bank name:</label>
                       {/* <p className="text-sm text-gray-600">
                         {companyDetails.bankname}
                       </p> */}
-                    </div>
-                    <div className="flex flex-row items-center gap-1">
+                    {/* </div> */}
+                    {/* <div className="flex flex-row items-center gap-1">
                       <label>Bank branch:</label>
                       {/* <p className="text-sm text-gray-600">
                         {companyDetails.branch}
                       </p> */}
-                    </div>
+                    {/* </div> */}
                   </div>
                   <div className="flex flex-col  gap-1">
                     <div className="flex flex-row items-center gap-1">
@@ -292,18 +301,18 @@ export default function Home() {
                         {companyDetails.email}
                       </p>
                     </div>
-                    <div className="flex flex-row items-center gap-1">
+                    {/* <div className="flex flex-row items-center gap-1">
                       <label>Bank account no:</label>
                       {/* <p className="text-sm text-gray-600">
                         {companyDetails.account}
                       </p> */}
-                    </div>
-                    <div className="flex flex-row items-center gap-1">
+                    {/* </div> */}
+                    {/* <div className="flex flex-row items-center gap-1">
                       {/* <label>Iban:</label>
                       <p className="text-sm text-gray-600">
                         {companyDetails.iban}
                       </p> */}
-                    </div>
+                    {/* </div> */}
                   </div>{" "}
                 </div>
               ) : (
@@ -343,19 +352,19 @@ export default function Home() {
                                 <span className="text-xs font-semibold text-gray-500">
                                   Invoice No
                                 </span>
-                                <p className="text-sm font-medium text-gray-700">
-                                  {data.invoiceNo}
+                                <p className="text-sm font-medium flex text-gray-700">
+                                  INV-{data.invoiceNo}
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-0.5">
+                              {/* <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Voucher
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
                                   09765567
                                 </p>
-                              </div>
+                              </div> */}
 
                               <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
@@ -375,62 +384,78 @@ export default function Home() {
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-0.5">
+                              {/* <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Amount
                                 </span>
                                 <p className="text-sm font-medium text-green-600">
                                   {data.Itemdetails?.[0]?.price}
                                 </p>
-                              </div>
+                              </div> */}
 
                               <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Status
                                 </span>
                                 <p className="text-sm font-medium text-yellow-600">
-                                  post / un-post
+                                  {(
+                                    responses[index]?.data as {
+                                      validationResponse?: { status?: string };
+                                      invoiceNumber?: string;
+                                    }
+                                  )?.validationResponse?.status || "Invalid"}
                                 </p>
                               </div>
 
-                              <div className="flex flex-col gap-0.5">
+                              {/* <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   Validate
                                 </span>
                                 <p className="text-sm font-medium text-blue-600">
                                   Valid / In-valid
                                 </p>
-                              </div>
+                              </div> */}
 
                               <div className="flex flex-col gap-0.5">
                                 <span className="text-xs font-semibold text-gray-500">
                                   FBR Invoice No
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
-                                  G056765487735245
+                                  {typeof responses[index]?.data === "object" &&
+                                  responses[index]?.data !== null &&
+                                  "invoiceNumber" in responses[index].data
+                                    ? (
+                                        responses[index].data as {
+                                          invoiceNumber?: string;
+                                        }
+                                      ).invoiceNumber || "Pending"
+                                    : "Pending"}
                                 </p>
                               </div>
                             </div>
 
                             {/* Action Buttons */}
                             <div className="flex items-center gap-3 ml-6 mt-2">
-                              <button
-                                onClick={() => toggleCustomerDetails(index)}
-                                className="text-gray-600 hover:text-gray-900 transition text-xl"
-                              >
-                                {selectedCustomerIndex === index ? (
-                                  <FiEyeOff />
-                                ) : (
-                                  <FiEye />
-                                )}
-                              </button>
+                              <div>
+                                <button
+                                  onClick={() => toggleCustomerDetails(index)}
+                                  className="text-gray-600 hover:text-gray-900 transition text-xl"
+                                >
+                                  {selectedCustomerIndex === index ? (
+                                    <FiEyeOff />
+                                  ) : (
+                                    <FiEye />
+                                  )}
+                                </button>
+                                {/* <p>View details</p> */}
+                              </div>
 
-                              <button
+                              {/* <button
                                 onClick={() => deleteitem(index)}
                                 className="text-gray-600 hover:text-red-600 transition text-xl"
                               >
                                 <RiDeleteBin6Line />
-                              </button>
+                              </button> */}
                             </div>
                           </div>
 
@@ -519,10 +544,10 @@ export default function Home() {
                                     <strong>Type:</strong>{" "}
                                     {data.Transactiondatendtype?.types?.value}
                                   </p>
-                                  <p>
+                                  {/* <p>
                                     <strong>Remarks:</strong>{" "}
                                     {data.Transactiondatendtype?.remarks}
-                                  </p>
+                                  </p> */}
                                 </div>
 
                                 <h3 className="font-semibold text-lg text-gray-700 mt-5 mb-3">
@@ -537,13 +562,13 @@ export default function Home() {
                                     <strong>Barcode:</strong>{" "}
                                     {data.Itemdetails?.[0]?.barcode}
                                   </p>
-                                  <p>
+                                  {/* <p>
                                     <strong>Category:</strong>{" "}
                                     {data.Itemdetails?.[0]?.category}
-                                  </p>
+                                  </p> */}
                                   <p>
                                     <strong>HS Code:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.HsCode}
+                                    {data.Itemdetails?.[0]?.order}
                                   </p>
                                   <p>
                                     <strong>SRO:</strong>{" "}
@@ -557,10 +582,10 @@ export default function Home() {
                                     <strong>UOM:</strong>{" "}
                                     {data.Itemdetails?.[0]?.Uom}
                                   </p>
-                                  <p>
+                                  {/* <p>
                                     <strong>Asset Account:</strong>{" "}
                                     {data.Itemdetails?.[0]?.assestAccount}
-                                  </p>
+                                  </p> */}
                                   <p>
                                     <strong>Price:</strong>{" "}
                                     {data.Itemdetails?.[0]?.price?.toString()}

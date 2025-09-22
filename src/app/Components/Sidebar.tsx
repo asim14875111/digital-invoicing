@@ -111,7 +111,7 @@ export default function Sidebar() {
             }}
           >
             <button
-              className="absolute right-4 top-4 text-gray-400 hover:text-red-500 transition-colors text-2xl"
+              className="absolute right-4 top-4 text-gray-400 cursor-pointer hover:text-red-500 transition-colors text-2xl"
               onClick={() => setShowLogoutModal(false)}
             >
               &times;
@@ -130,14 +130,14 @@ export default function Sidebar() {
 
             <div className="flex gap-4 w-full justify-center">
               <button
-                className="px-6 py-2 rounded-xl border border-gray-300 bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all"
+                className="px-6 py-2 rounded-xl border cursor-pointer border-gray-300 bg-gray-100 text-gray-700 font-medium hover:bg-gray-200 transition-all"
                 onClick={() => setShowLogoutModal(false)}
                 type="button"
               >
                 No
               </button>
               <button
-                className="px-6 py-2 rounded-xl bg-red-600 text-white font-medium hover:bg-red-700 shadow-md transition-all"
+                className="px-6 py-2 rounded-xl bg-red-600 cursor-pointer text-white font-medium hover:bg-red-700 shadow-md transition-all"
                 onClick={handleLogout}
                 type="button"
               >

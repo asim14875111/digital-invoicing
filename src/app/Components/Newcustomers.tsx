@@ -146,7 +146,7 @@ export default function Newcustomers({
 
   return (
     <div>
-      <div className="fixed w-full bg-black/40 inset-0 z-60 px-6 py-12 flex justify-center overflow-y-auto scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
+      <div className="fixed w-full bg-black/40 inset-0 z-60 px-6 py-12 flex justify-center overflow-y-auto items-center scrollbar-thin scrollbar-track-gray-100 scrollbar-thumb-gray-300">
         <div className="bg-white relative text-black w-full max-w-6xl rounded-xl shadow-lg">
           {/* Header */}
           <div className="flex justify-between bg-gray-100 rounded-t-xl px-6 py-3 border-b border-gray-200">
