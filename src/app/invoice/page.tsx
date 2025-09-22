@@ -205,7 +205,7 @@ export default function Home() {
             ) : (
               <Link href="/company">
                 <button className="bg-[#2d80ff] cursor-pointer text-white px-5 py-2 rounded-sm text-sm hover:bg-[#1c74fb] transition">
-                  Add Company
+                  Add Buyer
                 </button>
               </Link>
             )}
