@@ -2,21 +2,20 @@
 import React, { useContext, useEffect, useState } from "react";
 import Addnewdata from "../Components/Addnewdata";
 import Invoicingdata from "../Components/Invoicingdata";
-import { Datacontext } from "@/Contexts/DataContext";
+import { Datacontext, AllUsersDataType } from "@/Contexts/DataContext";
 import { UseintegrationDetails } from "@/Contexts/integrationcontext";
-// import searching from "../../../assests/images/icons8-search-in-list-100.png";
 import Sidebar from "../Components/Sidebar";
 import searching from "../../assests/images/icons8-search-in-list-100.png";
 import Image from "next/image";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi";
-
 import { useRouter } from "next/navigation";
 import { useCompanyDetails } from "@/Contexts/Companycontext";
-import { RiDeleteBin6Line } from "react-icons/ri";
 import Link from "next/link";
-// import { hsCodeUomMap, getAllowedUomsForHs } from "@/Constants/hsCodeUomMap";
-// import { normalizeUom } from "@/Constants/uomNormalization";
+import { auth } from "@/firebaseConfig";
+import { database } from "@/firebaseConfig";
+import { onValue, push, ref, update } from "firebase/database";
+import { toast } from "react-toastify";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
@@ -25,11 +24,108 @@ export default function Home() {
   const [hideData, sethideData] = useState<boolean>(false);
   const { companyDetails } = useCompanyDetails();
   const { allusersData = [], setAllUsersData } = context || {};
+  type firebasebuyerdetails = {
+    companyName: string;
+    ntn: number | string;
+    address: string;
+    gst: string;
+    phonenum: number | string;
+    email: number | string;
+    bankname: string;
+    branch: string;
+    account: number | string;
+    iban: number | string;
+    businessType: string;
+    province: string;
+  };
+  const [buyerDetails, setBuyerDetails] = useState<firebasebuyerdetails | null>(
+    null
+  );
   const [details, setDetails] = useState(false);
+
+  type FirebaseInvoice = {
+    id?: string;
+    date?: string;
+    Invoicenum?: number;
+    customer?: {
+      name?: string;
+      CNIC?: string;
+      mobileNumber?: string;
+      email?: string;
+      status?: string;
+      creditLimit?: string;
+      description?: string;
+      contactperson?: string;
+      Site?: string;
+      address?: string;
+    };
+    types?: {
+      date?: string;
+      value?: string;
+      title?: string;
+      remarks?: string;
+    };
+    items?: FBItemType[];
+    // items?: Array<{
+    itemname?: string;
+    barcode?: string;
+    order?: string;
+    SRO?: string;
+    SroItemNO?: string;
+    Uom?: string;
+    price?: number | string;
+    quantity?: number | string;
+    remarks?: string;
+    taxAmount?: number | string;
+    netAmount?: number | string;
+    fbrinvoiceno?: string;
+    fbrTimestamp?: string;
+    fbrValidationStatus?: string;
+    // }>; // replaced by FBItemType[]
+  };
+
+  type FBItemType = Partial<{
+    itemname: string;
+    barcode: string;
+    order: string;
+    SRO: string;
+    SroItemNO: string;
+    Uom: string;
+    price: number | string;
+    quantity: number | string;
+    remarks: string;
+    taxAmount: number | string;
+    netAmount: number | string;
+    serviceAccount: string;
+    rate: number | string;
+    fedPayable: number | string;
+    extraTax: number | string;
+    furtherTax: number | string;
+    discount: number | string;
+    salesTaxWithheldAtSource: number | null | undefined;
+    description: string;
+  }>;
+
+  const [firebasedata, setfirebasedata] = useState<FirebaseInvoice[]>([]);
   const { integrationdetails } = UseintegrationDetails();
   const router = useRouter();
   type ValidationResponse = {
     status?: string;
+    data?: {
+      invoiceNumber?: string;
+      validationResponse?: {
+        status?: string;
+        error?: string;
+
+        invoiceStatuses?: {
+          error?: string;
+        };
+      };
+      fault?: {
+        description?: string;
+      };
+      [key: string]: unknown;
+    };
     [key: string]: unknown;
   };
   const [responses, setResponses] = useState<{
@@ -38,6 +134,8 @@ export default function Home() {
   const [validationStatus, setValidationStatus] = useState<{
     [key: number]: string;
   }>({});
+
+  // map function moved into the useEffect below to avoid changing dependencies
 
   // Explicitly type allusersData if possible, e.g.:
   // const { allusersData = [], setAllUsersData } = context as { allusersData: YourDataType[]; setAllUsersData: (data: YourDataType[]) => void } || {};
@@ -63,12 +161,12 @@ export default function Home() {
     );
   };
 
-  const deleteitem = (index: number): void => {
-    const deleted = allusersData.filter((_, idx) => idx !== index);
-    if (setAllUsersData) {
-      setAllUsersData(deleted);
-    }
-  };
+  // const deleteitem = (index: number): void => {
+  //   const deleted = allusersData.filter((_, idx) => idx !== index);
+  //   if (setAllUsersData) {
+  //     setAllUsersData(deleted);
+  //   }
+  // };
 
   const showdetails = (): void => {
     setViewData(false);
@@ -96,12 +194,41 @@ export default function Home() {
   // };
 
   const validatefromfbr = async (index: number) => {
+    const data = firebasedata[index];
+
     setValidationStatus((prev) => ({ ...prev, [index]: "Sending..." }));
 
     if (!integrationdetails?.environemnt || !integrationdetails.token) {
       alert("Add environment and token!");
       router.push("/integration");
-      setValidationStatus((prev) => ({ ...prev, [index]: "Validate Again" }));
+      setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
+      return;
+    }
+
+    // Prefer the CompanyProvider context but fall back to the buyerDetails
+    // that we also load directly from firebase. This prevents a false
+    // 'Add buyer details' alert after a page refresh when the context may
+    // not yet be populated but firebase does contain buyer details.
+    const effectiveCompany = companyDetails || buyerDetails;
+
+    const isCompanyDetailsValid = (
+      c: firebasebuyerdetails | null | undefined
+    ): boolean => {
+      if (!c) return false;
+      return (
+        typeof c.companyName === "string" &&
+        c.companyName.trim() !== "" &&
+        (typeof c.ntn === "string" || typeof c.ntn === "number") &&
+        String(c.ntn).trim() !== "" &&
+        typeof c.address === "string" &&
+        c.address.trim() !== ""
+      );
+    };
+
+    if (!isCompanyDetailsValid(effectiveCompany)) {
+      alert("Add buyer details!");
+      router.push("/company");
+      setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
       return;
     }
 
@@ -113,62 +240,70 @@ export default function Home() {
       const str = String(val);
       return removeDashes ? str.replace(/-/g, "") : str;
     };
+    const fbItem: FBItemType =
+      (data?.items?.[0] as FBItemType) ||
+      (allusersData?.[index]?.Itemdetails?.[0] as FBItemType) ||
+      {};
+
+    const price = Number(fbItem.price ?? 0);
+    const qty = Number(fbItem.quantity ?? 0);
+    const rate = Number(fbItem.rate ?? 0);
+    const fedPayable = Number(fbItem.fedPayable ?? 0);
+    const extraTax = Number(fbItem.extraTax ?? 0);
+    const furtherTax = Number(fbItem.furtherTax ?? 0);
+    const discount = Number(fbItem.discount ?? 0);
+
+    const valueSalesExcludingST = price * qty;
+    const salesTaxApplicable = (valueSalesExcludingST * rate) / 100;
+    const totalValues =
+      valueSalesExcludingST +
+      salesTaxApplicable +
+      fedPayable +
+      extraTax +
+      furtherTax -
+      discount;
 
     const invoiceitems = {
-      invoiceType: sanitizeString(
-        allusersData?.[index]?.Itemdetails?.[0]?.serviceAccount
-      ),
-      invoiceDate: allusersData[index].Transactiondatendtype.date,
-      sellerBusinessName: allusersData[index].Customerdetails.name,
-      sellerProvince: allusersData[index].Customerdetails.Site,
-      sellerNTNCNIC: sanitizeString(
-        allusersData?.[index]?.Customerdetails?.CNIC,
-        true
-      ),
-      sellerAddress: allusersData[index].Customerdetails.address,
-      buyerNTNCNIC: companyDetails?.ntn,
-      buyerBusinessName: companyDetails?.companyName,
-      buyerProvince: companyDetails?.province,
-      buyerAddress: companyDetails?.address,
-      invoiceRefNo: "INV-" + allusersData[index].invoiceNo,
-      scenarioId: allusersData[index].Transactiondatendtype.types.value,
-      buyerRegistrationType: companyDetails?.businessType,
+      invoiceType:
+        sanitizeString(
+          // prefer firebase field if available, otherwise fallback to local allusersData
+          fbItem.serviceAccount ??
+            allusersData?.[index]?.Itemdetails?.[0]?.serviceAccount
+        ) || "",
+      invoiceDate: data?.date ?? "",
+      buyerBusinessName: data?.customer?.name ?? "",
+      buyerProvince: data?.customer?.Site ?? "",
+      buyerNTNCNIC: sanitizeString(data?.customer?.CNIC, true),
+      buyerAddress: data?.customer?.address ?? "",
+      sellerNTNCNIC: effectiveCompany?.ntn ?? "",
+      sellerBusinessName: effectiveCompany?.companyName ?? "",
+      sellerProvince: effectiveCompany?.province ?? "",
+      sellerAddress: effectiveCompany?.address ?? "",
+      invoiceRefNo: "INV-" + (data?.Invoicenum ?? ""),
+      scenarioId: data?.types?.value ?? "",
+      buyerRegistrationType: data?.customer?.status,
       items: [
         {
-          hsCode: allusersData[index].Itemdetails[0].order,
-          productDescription: allusersData[index].Itemdetails[0].description,
-          rate: allusersData[index].Itemdetails[0].rate + "%",
-          uoM: allusersData[index].Itemdetails[0].Uom,
-          quantity: allusersData[index].Itemdetails[0].quantity,
+          hsCode: fbItem.order ?? "",
+          productDescription: fbItem.itemname ?? fbItem.description ?? "",
+          rate: rate ? `${rate}%` : "",
+          uoM: fbItem.Uom ?? "",
+          quantity: qty,
           fixedNotifiedValueOrRetailPrice: 0.0,
-          salesTaxWithheldAtSource:
-            allusersData[index].Itemdetails[0].salesTaxWithheldAtSource,
-          extraTax: allusersData[index].Itemdetails[0].extraTax,
-          furtherTax: allusersData[index].Itemdetails[0].furtherTax,
-          sroScheduleNo: allusersData[index].Itemdetails[0].SRO,
-          fedPayable: allusersData[index].Itemdetails[0].fedPayable,
-          discount: allusersData[index].Itemdetails[0].discount,
-          totalValues:
-            Number(allusersData[index].Itemdetails[0].price) *
-              Number(allusersData[index].Itemdetails[0].quantity) +
-            (Number(allusersData[index].Itemdetails[0].price) *
-              Number(allusersData[index].Itemdetails[0].quantity) *
-              Number(allusersData[index].Itemdetails[0].rate)) /
-              100 +
-            Number(allusersData[index].Itemdetails[0].fedPayable || 0) +
-            Number(allusersData[index].Itemdetails[0].extraTax || 0) +
-            Number(allusersData[index].Itemdetails[0].furtherTax || 0) -
-            Number(allusersData[index].Itemdetails[0].discount || 0),
-          valueSalesExcludingST:
-            Number(allusersData[index].Itemdetails[0].price) *
-            Number(allusersData[index].Itemdetails[0].quantity),
-          salesTaxApplicable:
-            (Number(allusersData[index].Itemdetails[0].price) *
-              Number(allusersData[index].Itemdetails[0].quantity) *
-              Number(allusersData[index].Itemdetails[0].rate)) /
-            100,
-          saleType: allusersData[index].Transactiondatendtype.types.title,
-          sroItemSerialNo: allusersData[index].Itemdetails[0].SroItemNO,
+          salesTaxWithheldAtSource: fbItem.salesTaxWithheldAtSource ?? null,
+          extraTax: extraTax || 0,
+          furtherTax: furtherTax || 0,
+          sroScheduleNo: fbItem.SRO ?? "",
+          fedPayable: fedPayable || 0,
+          discount: discount || 0,
+          totalValues,
+          valueSalesExcludingST,
+          salesTaxApplicable,
+          saleType:
+            data?.types?.title ??
+            allusersData?.[index]?.Transactiondatendtype?.types?.title ??
+            "",
+          sroItemSerialNo: fbItem.SroItemNO ?? "",
         },
       ],
     };
@@ -186,11 +321,52 @@ export default function Home() {
 
       const data = await res.json();
       console.log("Validation response", data);
-      // useEffect(() => {
       setResponses((prev) => ({ ...prev, [index]: data }));
-      // }, [response]);
+
+      // extract invoice number from response (support multiple shapes)
+      const invoiceNumber =
+        data?.data?.invoiceNumber || data?.invoiceNumber || null;
+
       if (res.ok) {
-        setValidationStatus((prev) => ({ ...prev, [index]: "Sended" }));
+        // try to derive a human-friendly validation status
+        const validationStatusFromResponse =
+          (data?.data?.validationResponse?.status as string | undefined) ||
+          (data?.validationResponse?.status as string | undefined) ||
+          (data?.data?.validationResponse as string | undefined) ||
+          null;
+
+        const humanStatus = validationStatusFromResponse || "Valid";
+
+        setValidationStatus((prev) => ({ ...prev, [index]: "Sent" }));
+
+        // persist FBR invoice number and validation status to firebase under the invoice record
+        try {
+          const user = auth?.currentUser;
+          if (user) {
+            const invoiceId = firebasedata?.[index]?.id;
+            if (invoiceId && invoiceNumber) {
+              const invRef = ref(
+                database,
+                `User_data/${user.uid}/invoices/${invoiceId}`
+              );
+              await update(invRef, {
+                fbrinvoiceno: invoiceNumber,
+                fbrTimestamp: new Date().toISOString(),
+                fbrValidationStatus: humanStatus,
+              });
+            } else if (invoiceNumber) {
+              // fallback: create a small record for fbr invoice if invoice record missing
+              const dbref = ref(database, `User_data/${user.uid}/invoices`);
+              await push(dbref, {
+                fbrinvoiceno: invoiceNumber,
+                fbrTimestamp: new Date().toISOString(),
+                fbrValidationStatus: humanStatus,
+              });
+            }
+          }
+        } catch (err) {
+          console.error(err, "Error saving FBR invoice number to firebase");
+        }
       } else {
         setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
       }
@@ -199,7 +375,150 @@ export default function Home() {
       setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
       alert(err);
     }
+
+    // No extra push here; fbr invoice persistence handled above when response is successful.
   };
+
+  // Import data from firebase data base and map it
+  // import { onValue, ref } from "firebase/database";
+
+  useEffect(() => {
+    const user = auth?.currentUser;
+    if (!user) {
+      // toast.error("user is not registered");
+      return;
+    }
+
+    const datRef = ref(database, `User_data/${user.uid}/invoices`);
+
+    // Listen for realtime updates
+    const unsubscribe = onValue(datRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const dataObj = snapshot.val();
+        const dataArr: FirebaseInvoice[] = Object.entries(dataObj).map(
+          ([id, value]) => ({
+            id,
+            ...(value as FirebaseInvoice),
+          })
+        );
+        const mapped: AllUsersDataType[] = dataArr.map((fi) => ({
+          Transactiondatendtype: {
+            date: fi.date ?? "",
+            types: {
+              value: fi.types?.value ?? "",
+              title: fi.types?.title ?? "",
+            },
+            remarks: fi.types?.remarks ?? "",
+          },
+          Customerdetails: {
+            name: fi.customer?.name ?? "",
+            description: fi.customer?.description ?? "",
+            CNIC: fi.customer?.CNIC ?? "",
+            status: fi.customer?.status ?? "",
+            address: fi.customer?.address ?? "",
+            Phonenumber: "",
+            mobileNumber: fi.customer?.mobileNumber ?? "",
+            email: fi.customer?.email ?? "",
+            website: "",
+            contactperson: fi.customer?.contactperson ?? "",
+            creditLimit: fi.customer?.creditLimit ?? "",
+            Site: fi.customer?.Site ?? "",
+          },
+          Itemdetails:
+            fi.items?.map((it) => ({
+              itemname: it.itemname ?? "",
+              barcode: it.barcode ?? "",
+              order: it.order ?? "",
+              maxorder: "0",
+              reorderLevel: "0",
+              category: "",
+              HsCode: "",
+              Uom: it.Uom ?? "",
+              revenueAccount: "",
+              assestAccount: "",
+              cogsAccount: "",
+              serviceAccount: it.serviceAccount ?? "",
+              file: null,
+              quantity: Number(it.quantity ?? 0),
+              price: Number(it.price ?? 0),
+              rate: Number(it.rate ?? 0),
+              SRO: it.SRO ?? "",
+              SroItemNO: it.SroItemNO ?? "",
+              remarks: it.remarks ?? "",
+              taxAmount:
+                typeof it.taxAmount === "number"
+                  ? it.taxAmount
+                  : Number(it.taxAmount ?? 0),
+              netAmount:
+                typeof it.netAmount === "number"
+                  ? it.netAmount
+                  : Number(it.netAmount ?? 0),
+              description: (it as { description?: string }).description ?? "",
+              totalValues: 0,
+              extraTax: Number(it.extraTax ?? 0),
+              furtherTax: Number(it.furtherTax ?? 0),
+              discount: Number(it.discount ?? 0),
+              fedPayable: Number(it.fedPayable ?? 0),
+              salesTaxWithheldAtSource: Number(
+                it.salesTaxWithheldAtSource ?? 0
+              ),
+              fixedNotifiedValueOrRetailPrice: 0,
+            })) ?? [],
+        }));
+
+        if (setAllUsersData) {
+          setAllUsersData(mapped);
+        }
+        setfirebasedata(dataArr as FirebaseInvoice[]);
+      } else {
+        console.log("No data available");
+      }
+    });
+
+    // Cleanup listener on unmount
+    return () => unsubscribe();
+  }, [setAllUsersData]);
+
+  useEffect(() => {
+    const user = auth?.currentUser;
+    if (!user) {
+      toast.error("User is not registered!");
+      return;
+    }
+    const dataref = ref(database, `User_data/${user.uid}/companydetails`);
+
+    const unsubscribe = onValue(dataref, (snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        // Possible shapes:
+        // 1) flat object with fields (companyName, ntn, ...)
+        // 2) object with a 'details' child { details: { ...fields } }
+        // 3) map/object of keyed entries -> take first value
+        let details: firebasebuyerdetails | null = null;
+
+        if (data.details && typeof data.details === "object") {
+          details = data.details as firebasebuyerdetails;
+        } else if (data.companyName || data.ntn || data.address || data.gst) {
+          details = data as firebasebuyerdetails;
+        } else if (typeof data === "object") {
+          const vals = Object.values(data);
+          if (vals.length > 0 && typeof vals[0] === "object") {
+            details = vals[0] as firebasebuyerdetails;
+          }
+        }
+
+        if (setBuyerDetails) setBuyerDetails(details ?? null);
+        console.log(details, "Buyer details loaded from firebase");
+      }
+
+      return () => unsubscribe();
+    });
+  }, [setBuyerDetails]);
+
+  console.log(firebasedata, "data getted from firebase");
+
+  console.log(responses, "Response from fbr on sending invoice");
 
   return (
     <div className="flex mt-15 w-full">
@@ -207,14 +526,17 @@ export default function Home() {
       <div className="pt-10 flex flex-col pb-30 w-full">
         <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm mr-18.5">
           <div className="flex items-center justify-between bg-gray-50 px-6 py-3 rounded-md shadow-sm">
-            {companyDetails ? (
-              <h3 className="text-lg font-semibold text-gray-700">
-                {companyDetails?.companyName}
-              </h3>
+            {buyerDetails ? (
+              <div className="flex gap-1 items-center">
+                <p className="text-xl text-gray-800 font-semibold">Company:</p>
+                <h3 className="text-lg font-semibold text-gray-700">
+                  {buyerDetails.companyName}
+                </h3>
+              </div>
             ) : (
               <Link href="/company">
                 <button className="bg-[#2d80ff] cursor-pointer text-white px-5 py-2 rounded-sm text-sm hover:bg-[#1c74fb] transition">
-                  Add Buyer
+                  Add Company
                 </button>
               </Link>
             )}
@@ -239,30 +561,25 @@ export default function Home() {
 
           {details && (
             <div className="mx-4 mr-4 px-4  bg-white border py-2 border-gray-200 rounded-sm my-4">
-              {companyDetails ? (
+              {buyerDetails ? (
                 <div className="flex justify-between items-center">
                   <div className="flex flex-col">
                     <label className="text-xl font-semibold text-gray-700 pb-2">
-                      buyer details
+                      Company details
                     </label>
                     <div className="flex flex-row items-center gap-1">
                       <label>Name:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.companyName}
+                        {buyerDetails.companyName}
                       </p>
                     </div>
                     <div className="flex flex-row items-center gap-1">
                       <label>Address:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.address}
+                        {buyerDetails.address}
                       </p>
                     </div>
-                    <div className="flex flex-row items-center gap-1">
-                      <label>Phone:</label>
-                      <p className="text-sm text-gray-600">
-                        {companyDetails.phonenum}
-                      </p>
-                    </div>
+
                     {/* <div className="flex flex-row items-center gap-1">
                       <label>Bank name:</label>
                       {/* <p className="text-sm text-gray-600">
@@ -278,39 +595,45 @@ export default function Home() {
                   </div>
                   <div className="flex flex-col  gap-1">
                     <div className="flex flex-row items-center gap-1">
-                      <label>NTN:</label>
+                      <label>NTN/CNIC:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.ntn}
+                        {buyerDetails.ntn}
                       </p>
                     </div>
                     <div className="flex flex-row items-center gap-1">
+                      <label>Phone:</label>
+                      <p className="text-sm text-gray-600">
+                        {buyerDetails.phonenum}
+                      </p>
+                    </div>
+                    {/* <div className="flex flex-row items-center gap-1">
                       <label>Business Type:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.businessType}
+                        {buyerDetails.businessType}
                       </p>
                     </div>
                     <div className="flex flex-row items-center gap-1">
                       <label>GST/STRN:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.gst}
+                        {buyerDetails.gst}
                       </p>
-                    </div>
+                    </div> */}
                     <div className="flex flex-row items-center gap-1">
                       <label>Email:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.email}
+                        {buyerDetails.email}
                       </p>
                     </div>
                     {/* <div className="flex flex-row items-center gap-1">
                       <label>Bank account no:</label>
                       {/* <p className="text-sm text-gray-600">
-                        {companyDetails.account}
+                        {buyerDetails.account}
                       </p> */}
                     {/* </div> */}
                     {/* <div className="flex flex-row items-center gap-1">
                       {/* <label>Iban:</label>
                       <p className="text-sm text-gray-600">
-                        {companyDetails.iban}
+                        {buyerDetails.iban}
                       </p> */}
                     {/* </div> */}
                   </div>{" "}
@@ -333,17 +656,28 @@ export default function Home() {
               </div>
 
               <div className="flex flex-col gap-4 px-10 py-6 h-10/12">
-                {Array.isArray(allusersData) && allusersData.length > 0 ? (
-                  allusersData.map(
-                    (
-                      data: import("@/Contexts/DataContext").AllUsersDataType,
-                      index: number
-                    ) => (
+                {Array.isArray(firebasedata) && firebasedata.length > 0 ? (
+                  firebasedata.map((data, index: number) => {
+                    // compute persisted and response invoice numbers
+                    const persistedFbr =
+                      (data as FirebaseInvoice)?.fbrinvoiceno ?? null;
+                    const responseInvoiceNumber =
+                      (
+                        responses[index]?.data as
+                          | { invoiceNumber?: string }
+                          | undefined
+                      )?.invoiceNumber ?? null;
+                    const isSent = Boolean(
+                      persistedFbr || responseInvoiceNumber
+                    );
+                    const displayedInvoiceNo =
+                      persistedFbr || responseInvoiceNumber || null;
+
+                    return (
                       <div
                         key={index}
                         className="border border-gray-200 bg-white rounded-md shadow-sm p-5 hover:shadow-md transition"
                       >
-                        {/* TOP ROW */}
                         <div className="flex flex-col">
                           <div className="flex justify-between items-start">
                             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 w-full">
@@ -353,7 +687,7 @@ export default function Home() {
                                   Invoice No
                                 </span>
                                 <p className="text-sm font-medium flex text-gray-700">
-                                  INV-{data.invoiceNo}
+                                  INV-{data.Invoicenum}
                                 </p>
                               </div>
 
@@ -371,7 +705,7 @@ export default function Home() {
                                   Date
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
-                                  {data.Transactiondatendtype?.date}
+                                  {data.date}
                                 </p>
                               </div>
 
@@ -380,7 +714,7 @@ export default function Home() {
                                   Customer
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
-                                  {data.Customerdetails?.name}
+                                  {data.customer?.name}
                                 </p>
                               </div>
 
@@ -398,12 +732,20 @@ export default function Home() {
                                   Status
                                 </span>
                                 <p className="text-sm font-medium text-yellow-600">
-                                  {(
-                                    responses[index]?.data as {
-                                      validationResponse?: { status?: string };
-                                      invoiceNumber?: string;
-                                    }
-                                  )?.validationResponse?.status || "Invalid"}
+                                  {
+                                    // prefer persisted validation status from firebase record
+                                    (data as FirebaseInvoice)
+                                      ?.fbrValidationStatus ||
+                                      (
+                                        responses[index]?.data as {
+                                          validationResponse?: {
+                                            status?: string;
+                                          };
+                                          invoiceNumber?: string;
+                                        }
+                                      )?.validationResponse?.status ||
+                                      "Invalid"
+                                  }
                                 </p>
                               </div>
 
@@ -421,15 +763,7 @@ export default function Home() {
                                   FBR Invoice No
                                 </span>
                                 <p className="text-sm font-medium text-gray-700">
-                                  {typeof responses[index]?.data === "object" &&
-                                  responses[index]?.data !== null &&
-                                  "invoiceNumber" in responses[index].data
-                                    ? (
-                                        responses[index].data as {
-                                          invoiceNumber?: string;
-                                        }
-                                      ).invoiceNumber || "Pending"
-                                    : "Pending"}
+                                  {displayedInvoiceNo || "Pending"}
                                 </p>
                               </div>
                             </div>
@@ -439,7 +773,7 @@ export default function Home() {
                               <div>
                                 <button
                                   onClick={() => toggleCustomerDetails(index)}
-                                  className="text-gray-600 hover:text-gray-900 transition text-xl"
+                                  className="text-gray-600 cursor-pointer hover:text-gray-900 transition text-xl"
                                 >
                                   {selectedCustomerIndex === index ? (
                                     <FiEyeOff />
@@ -460,20 +794,77 @@ export default function Home() {
                           </div>
 
                           {/* Send to FBR Button */}
-                          <div className="flex pt-6">
+                          <div className="flex flex-col w-fit gap-2 pt-6">
                             <button
                               onClick={() => validatefromfbr(index)}
-                              disabled={validationStatus[index] === "Validated"} // disable if already validated
-                              className={`px-4 py-1 rounded-sm font-semibold transition ${
-                                validationStatus[index] === "Validated"
+                              disabled={isSent}
+                              className={`px-4 py-1 rounded-sm font-semibold w-fit transition ${
+                                isSent
+                                  ? "bg-green-600 text-white cursor-not-allowed opacity-95"
+                                  : validationStatus[index] === "Validated"
                                   ? "bg-green-500 text-white cursor-not-allowed"
                                   : validationStatus[index] === "Sending..."
                                   ? "bg-yellow-600 text-white"
-                                  : "bg-blue-600 hover:bg-blue-700 text-white"
+                                  : "bg-blue-600 hover:bg-blue-700 cursor-pointer text-white"
                               }`}
                             >
-                              {validationStatus[index] || "Send to FBR"}
+                              {isSent
+                                ? "Sent"
+                                : validationStatus[index] || "Send to FBR"}
                             </button>
+                            <div className="flex gap-0.5">
+                              {/* <span className="text-xs font-semibold text-gray-500">
+                                Response from fbr
+                              </span> */}
+                              <div className="text-sm font-medium text-red-500">
+                                {(() => {
+                                  const resp = responses[index] ?? {};
+                                  const d = (resp as ValidationResponse).data ?? resp;
+                                  const faultDesc =
+                                    (d?.fault && typeof d.fault === "object" && "description" in d.fault)
+                                      ? (d.fault as { description?: string }).description
+                                      : d?.fault ?? null;
+                                  const validationError =
+                                    (d?.validationResponse &&
+                                      typeof d.validationResponse === "object" &&
+                                      "error" in d.validationResponse
+                                      ? (d.validationResponse as { error?: string }).error
+                                      : undefined) ??
+                                    (typeof d?.validationResponse === "string"
+                                      ? d.validationResponse
+                                      : null);
+                                  const invoiceStatuses =
+                                    (d?.validationResponse &&
+                                      typeof d.validationResponse === "object" &&
+                                      "invoiceStatuses" in d.validationResponse
+                                      ? (d.validationResponse as { invoiceStatuses?: unknown }).invoiceStatuses
+                                      : undefined) ??
+                                    (d && "invoiceStatuses" in d
+                                      ? (d as { invoiceStatuses?: unknown }).invoiceStatuses
+                                      : undefined) ??
+                                    null;
+                                  const invoiceStatusError = Array.isArray(
+                                    invoiceStatuses
+                                  )
+                                    ? invoiceStatuses
+                                        .map((s: { error?: string }) => s?.error)
+                                        .filter(Boolean)
+                                        .join("; ")
+                                    : (invoiceStatuses && typeof invoiceStatuses === "object" && "error" in invoiceStatuses
+                                        ? (invoiceStatuses as { error?: string }).error
+                                        : null);
+                                  const displayError =
+                                    faultDesc ||
+                                    validationError ||
+                                    invoiceStatusError;
+                                  return displayError ? (
+                                    <p className="text-xs max-w-200">
+                                      {String(displayError)}
+                                    </p>
+                                  ) : null;
+                                })()}
+                              </div>
+                            </div>
                           </div>
                         </div>
 
@@ -484,65 +875,60 @@ export default function Home() {
                               {/* Customer Details */}
                               <div className="flex-1">
                                 <h3 className="font-semibold text-lg text-gray-700 mb-3">
-                                  Customer Details
+                                  Customer / Seller Details
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
                                   <p>
-                                    <strong>Name:</strong>{" "}
-                                    {data.Customerdetails?.name}
+                                    <strong>Name:</strong> {data.customer?.name}
                                   </p>
                                   <p>
                                     <strong>CNIC/NTN:</strong>{" "}
-                                    {data.Customerdetails?.CNIC}
+                                    {data.customer?.CNIC}
                                   </p>
                                   <p>
                                     <strong>Mobile:</strong>{" "}
-                                    {data.Customerdetails?.mobileNumber}
+                                    {data.customer?.mobileNumber}
                                   </p>
                                   <p>
                                     <strong>Email:</strong>{" "}
-                                    {data.Customerdetails?.email}
+                                    {data.customer?.email}
                                   </p>
                                   <p>
                                     <strong>Status:</strong>{" "}
-                                    {data.Customerdetails?.status}
+                                    {data.customer?.status}
                                   </p>
                                   <p>
                                     <strong>Credit Limit:</strong>{" "}
-                                    {data.Customerdetails?.creditLimit}
+                                    {data.customer?.creditLimit}
                                   </p>
                                   <p>
                                     <strong>Description:</strong>{" "}
-                                    {data.Customerdetails?.description}
+                                    {data.customer?.description}
                                   </p>
                                   <p>
                                     <strong>Contact Person:</strong>{" "}
-                                    {data.Customerdetails?.contactperson}
+                                    {data.customer?.contactperson}
                                   </p>
                                   <p>
-                                    <strong>Site:</strong>{" "}
-                                    {data.Customerdetails?.Site}
+                                    <strong>Province:</strong>{" "}
+                                    {data.customer?.Site}
                                   </p>
                                   <p>
                                     <strong>Address:</strong>{" "}
-                                    {data.Customerdetails?.address}
+                                    {data.customer?.address}
                                   </p>
                                 </div>
                               </div>
-
-                              {/* Transaction + Item Details */}
                               <div className="flex-1">
                                 <h3 className="font-semibold text-lg text-gray-700 mb-3">
                                   Transaction
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
                                   <p>
-                                    <strong>Date:</strong>{" "}
-                                    {data.Transactiondatendtype?.date}
+                                    <strong>Date:</strong> {data.date}
                                   </p>
                                   <p>
-                                    <strong>Type:</strong>{" "}
-                                    {data.Transactiondatendtype?.types?.value}
+                                    <strong>Type:</strong> {data.types?.title}
                                   </p>
                                   {/* <p>
                                     <strong>Remarks:</strong>{" "}
@@ -556,11 +942,11 @@ export default function Home() {
                                 <div className="space-y-1 text-sm text-gray-600">
                                   <p>
                                     <strong>Name:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.itemname}
+                                    {data.items?.[0]?.itemname}
                                   </p>
                                   <p>
                                     <strong>Barcode:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.barcode}
+                                    {data.items?.[0]?.barcode}
                                   </p>
                                   {/* <p>
                                     <strong>Category:</strong>{" "}
@@ -568,19 +954,17 @@ export default function Home() {
                                   </p> */}
                                   <p>
                                     <strong>HS Code:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.order}
+                                    {data.items?.[0]?.order}
                                   </p>
                                   <p>
-                                    <strong>SRO:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.SRO}
+                                    <strong>SRO:</strong> {data.items?.[0]?.SRO}
                                   </p>
                                   <p>
                                     <strong>SRO Item:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.SroItemNO}
+                                    {data.items?.[0]?.SroItemNO}
                                   </p>
                                   <p>
-                                    <strong>UOM:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.Uom}
+                                    <strong>UOM:</strong> {data.items?.[0]?.Uom}
                                   </p>
                                   {/* <p>
                                     <strong>Asset Account:</strong>{" "}
@@ -588,23 +972,23 @@ export default function Home() {
                                   </p> */}
                                   <p>
                                     <strong>Price:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.price?.toString()}
+                                    {data.items?.[0]?.price?.toString()}
                                   </p>
                                   <p>
                                     <strong>Quantity:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.quantity?.toString()}
+                                    {data.items?.[0]?.quantity?.toString()}
                                   </p>
                                   <p>
                                     <strong>Remarks:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.remarks}
+                                    {data.items?.[0]?.remarks}
                                   </p>
                                   <p>
                                     <strong>Tax Amount:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.taxAmount}
+                                    {data.items?.[0]?.taxAmount}
                                   </p>
                                   <p>
                                     <strong>Net Amount:</strong>{" "}
-                                    {data.Itemdetails?.[0]?.netAmount}
+                                    {data.items?.[0]?.netAmount}
                                   </p>
                                 </div>
                               </div>
@@ -612,8 +996,8 @@ export default function Home() {
                           </div>
                         )}
                       </div>
-                    )
-                  )
+                    );
+                  })
                 ) : (
                   <p className="text-center text-gray-500 text-lg py-20 flex items-center justify-center gap-2">
                     No Customer Data Found!

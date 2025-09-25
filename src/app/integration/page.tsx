@@ -4,11 +4,18 @@ import Sidebar from "../Components/Sidebar";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { UseintegrationDetails } from "@/Contexts/integrationcontext";
 import { useRouter } from "next/navigation";
-
+import { auth, database } from "../../firebaseConfig";
+// import { doc, setDoc } from "firebase/firestore";
+import { child, ref, update, get } from "firebase/database";
+// import { Timestamp } from "firebase/firestore";
+// import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, User } from "firebase/auth";
+import { toast } from "react-toastify";
 export default function Integration() {
   const [environmentDropdownOpen, setEnvironmentDropdownOpen] = useState(false);
   const [environment, setEnvironment] = useState<string>("");
   const [token, setToken] = useState("");
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const { integrationdetails, setIntegrationdetails } = UseintegrationDetails();
   const router = useRouter();
 
@@ -16,6 +23,18 @@ export default function Integration() {
     { id: 1, title: "Sandbox", value: "sandbox" },
     { id: 2, title: "Production", value: "production" },
   ];
+
+  useEffect(() => {
+      if (!auth) return;
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (user) {
+          setCurrentUser(user);
+        } else {
+          setCurrentUser(null);
+        }
+      });
+      return () => unsubscribe();
+    }, []);
 
   useEffect(() => {
     if (integrationdetails) {
@@ -29,16 +48,76 @@ export default function Integration() {
     setEnvironmentDropdownOpen(false);
   };
 
-  const saveIntegrationDetails = (e: React.FormEvent<HTMLFormElement>) => {
-    const btn = document.getElementById("save-btn")
-    if(btn){
-      btn.innerHTML = "saving..."
+  const saveIntegrationDetails = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
+    const btn = document.getElementById("save-btn");
+    if (btn) {
+      btn.innerHTML = "saving...";
     }
     e.preventDefault();
     const details = { environemnt: environment, token };
     setIntegrationdetails(details);
     router.push("/invoice");
+
+    // const user = auth?.currentUser;
+    if (!currentUser) {
+      console.error("User is not registered");
+      return;
+    }
+    try {
+      const dbRef = ref(database, `User_data/${currentUser.uid}/integration`);
+      await update(dbRef, {
+        environment,
+        token,
+        timestamp: new Date().toISOString(),
+      });
+    } catch (err) {
+      console.error(err, "Error from firebase");
+    }
   };
+
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        toast.error("User is not registered");
+        return;
+      }
+      try {
+        const dbRef = ref(database);
+        get(child(dbRef, `User_data/${user.uid}/integration`)).then(
+          (snapshot) => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              setEnvironment(data.environment);
+              setToken(data.token);
+            }
+          }
+        );
+      } catch (err) {
+        console.log(err, "Error from firebase on getting data");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // useEffect(()=>{
+  // if(!auth) return
+
+  // const unsubscribe = onAuthStateChanged(auth,async(user)=>{
+  //   if(user){
+  //     const userdata = doc(db,"iris",user.uid,"token_and_environment","integration")
+
+  //     const unsubscribefirestore = onSnapshot(userdata,(snapshot)=>{
+  //       const data = snapshot.id
+  //       setEnvironment(data.)
+  //     })
+  //   }
+  // })
+
+  // },[])
 
   return (
     <div className="flex pt-15 gap-2">
@@ -110,7 +189,7 @@ export default function Integration() {
             {/* Save Button */}
             <div className="flex justify-end px-8 pb-5">
               <button
-              id="save-btn"
+                id="save-btn"
                 type="submit"
                 disabled={!environment || !token}
                 className={`text-white px-5 py-2 rounded-sm transition ${

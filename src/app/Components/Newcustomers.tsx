@@ -2,9 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { IoChevronUp, IoChevronDownOutline } from "react-icons/io5";
-import {  Status, Sites } from "@/Constants/Framerdata";
+import { Status, Sites } from "@/Constants/Framerdata";
 import { ToastContainer, toast } from "react-toastify";
 import { useCustomer } from "@/Contexts/MyContext";
+import { auth, database } from "@/firebaseConfig";
+import { push, ref } from "firebase/database";
 // import Select from "react-select";
 // import {
 // Country,
@@ -93,6 +95,22 @@ export default function Newcustomers({
     } else {
       setDetailsSection(false);
       setInputsdata(inputsData);
+
+      // persist this customer to firebase so it shows in dropdown on refresh
+      try {
+        const user = auth?.currentUser;
+        if (!user) {
+          toast.error("User not authenticated");
+        } else {
+          const dbRef = ref(database, `User_data/${user.uid}/customers`);
+          push(dbRef, {
+            ...inputsData,
+            timeStamp: new Date().toISOString(),
+          });
+        }
+      } catch (err) {
+        console.error(err, "Error saving customer to firebase");
+      }
     }
   };
 
@@ -150,9 +168,7 @@ export default function Newcustomers({
         <div className="bg-white relative text-black w-full max-w-6xl rounded-xl shadow-lg">
           {/* Header */}
           <div className="flex justify-between bg-gray-100 rounded-t-xl px-6 py-3 border-b border-gray-200">
-            <p className="text-xl font-semibold text-gray-800">
-              Customer Details
-            </p>
+            <p className="text-xl font-semibold text-gray-800">Buyer Details</p>
             <button
               onClick={hidedetailssection}
               className="text-2xl hover:scale-110 transition cursor-pointer text-red-600"
@@ -269,7 +285,18 @@ export default function Newcustomers({
                   </div>
                 )}
               </div>
-
+              <div className="flex flex-col w-full col-span-1">
+                <label className="text-sm font-medium text-gray-700">
+                  <span className="text-red-500">* </span>
+                  Address
+                </label>
+                <input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  type="text"
+                  className="mt-2 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
+                />
+              </div>
               {/* Province */}
               <div className="relative w-full">
                 <label className="text-sm font-medium text-gray-700">
@@ -303,18 +330,6 @@ export default function Newcustomers({
                 )}
               </div>
 
-              <div className="flex flex-col w-full col-span-1">
-                <label className="text-sm font-medium text-gray-700">
-                  <span className="text-red-500">* </span>
-                  Address
-                </label>
-                <input
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  type="text"
-                  className="mt-2 px-3 py-2 border border-gray-300 rounded-md bg-gray-50 shadow-sm focus:ring-2 focus:ring-blue-500 outline-none"
-                />
-              </div>
               {/* 
               <div className="flex flex-col w-full col-span-3">
                 <label className="text-sm font-medium text-gray-700">
@@ -460,22 +475,14 @@ export default function Newcustomers({
               <button
                 className={`px-8 py-1.5 rounded-md text-white font-medium transition ${
                   // !customerreceivable ||
-                  !name ||
-                  !CNIC ||
-                  !status ||
-                  !address ||
-                  !Site
+                  !name || !CNIC || !status || !address || !Site
                     ? "bg-blue-500 opacity-50 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700 cursor-pointer"
                 }`}
                 onClick={addcustomerdetails}
                 disabled={
                   // !customerreceivable ||
-                  !name ||
-                  !CNIC ||
-                  !status ||
-                  !address ||
-                  !Site
+                  !name || !CNIC || !status || !address || !Site
                 }
               >
                 Add

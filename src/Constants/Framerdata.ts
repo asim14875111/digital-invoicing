@@ -242,16 +242,6 @@ export const Status = [
     title: "Unregistered",
     value: "Unregistered",
   },
-  {
-    id: 3,
-    title: "Unregistered Distributor",
-    value: "Unregistered Distributor",
-  },
-  {
-    id: 4,
-    title: "Retail Consumer",
-    value: "Retail Consumer",
-  },
 ];
 
 export const Sites = [
@@ -1189,15 +1179,5 @@ export const businesstypes = [
     id: 2,
     title: "Unregistered",
     value: "Unregistered",
-  },
-  // {
-  //   id: 3,
-  //   title: "Unregistered Distributor",
-  //   value: "Unregistered Distributor",
-  // },
-  // {
-  //   id: 4,
-  //   title: "Retail Consumer",
-  //   value: "Retail Consumer",
-  // },
+  }
 ];

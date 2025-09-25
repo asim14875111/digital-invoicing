@@ -48,7 +48,7 @@ export default function Sidebar() {
   const navItems = [
     {
       href: "/company",
-      label: "Buyer details",
+      label: "Company details",
       icon: <BuildingOffice2Icon className="w-5 h-5" />,
     },
     {

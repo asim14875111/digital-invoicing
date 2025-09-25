@@ -1,5 +1,7 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 export type InputsData = {
   // customerreceivable: string;
@@ -48,6 +50,30 @@ export const CustomerProvider = ({ children }: CustomerProviderProps) => {
     Site: "",
 
   });
+
+  // Reset customer details on sign-out
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        setInputsdata({
+          name: "",
+          description: "",
+          CNIC: "",
+          status: "",
+          address: "",
+          Phonenumber: "",
+          mobileNumber: "",
+          email: "",
+          website: "",
+          contactperson: "",
+          creditLimit: "",
+          Site: "",
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <CustomerContext.Provider value={{ Customerdetails, setInputsdata }}>

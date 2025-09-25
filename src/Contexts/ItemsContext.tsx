@@ -1,5 +1,7 @@
 "use client";
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { auth } from "@/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 
 export type InputsData = {
   itemname: string;
@@ -46,6 +48,17 @@ type ItemsProviderProps = {
 
 export const ItemsProvider = ({ children }: ItemsProviderProps) => {
   const [Itemdetails, setItemsData] = useState<InputsData[]>([]);
+
+  // Clear items when user signs out
+  useEffect(() => {
+    if (!auth) return;
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        setItemsData([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   return (
     <ItemsContext.Provider value={{ Itemdetails, setItemsData }}>
