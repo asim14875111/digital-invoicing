@@ -14,6 +14,7 @@ import { useCompanyDetails } from "@/Contexts/Companycontext";
 import Link from "next/link";
 import { auth } from "@/firebaseConfig";
 import { database } from "@/firebaseConfig";
+import { onAuthStateChanged } from "firebase/auth";
 import { onValue, push, ref, update } from "firebase/database";
 import { toast } from "react-toastify";
 export default function Home() {
@@ -381,140 +382,148 @@ export default function Home() {
 
   // Import data from firebase data base and map it
   // import { onValue, ref } from "firebase/database";
-
   useEffect(() => {
-    const user = auth?.currentUser;
-    if (!user) {
-      // toast.error("user is not registered");
-      return;
-    }
-
-    const datRef = ref(database, `User_data/${user.uid}/invoices`);
-
-    // Listen for realtime updates
-    const unsubscribe = onValue(datRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const dataObj = snapshot.val();
-        const dataArr: FirebaseInvoice[] = Object.entries(dataObj).map(
-          ([id, value]) => ({
-            id,
-            ...(value as FirebaseInvoice),
-          })
-        );
-        const mapped: AllUsersDataType[] = dataArr.map((fi) => ({
-          Transactiondatendtype: {
-            date: fi.date ?? "",
-            types: {
-              value: fi.types?.value ?? "",
-              title: fi.types?.title ?? "",
-            },
-            remarks: fi.types?.remarks ?? "",
-          },
-          Customerdetails: {
-            name: fi.customer?.name ?? "",
-            description: fi.customer?.description ?? "",
-            CNIC: fi.customer?.CNIC ?? "",
-            status: fi.customer?.status ?? "",
-            address: fi.customer?.address ?? "",
-            Phonenumber: "",
-            mobileNumber: fi.customer?.mobileNumber ?? "",
-            email: fi.customer?.email ?? "",
-            website: "",
-            contactperson: fi.customer?.contactperson ?? "",
-            creditLimit: fi.customer?.creditLimit ?? "",
-            Site: fi.customer?.Site ?? "",
-          },
-          Itemdetails:
-            fi.items?.map((it) => ({
-              itemname: it.itemname ?? "",
-              barcode: it.barcode ?? "",
-              order: it.order ?? "",
-              maxorder: "0",
-              reorderLevel: "0",
-              category: "",
-              HsCode: "",
-              Uom: it.Uom ?? "",
-              revenueAccount: "",
-              assestAccount: "",
-              cogsAccount: "",
-              serviceAccount: it.serviceAccount ?? "",
-              file: null,
-              quantity: Number(it.quantity ?? 0),
-              price: Number(it.price ?? 0),
-              rate: Number(it.rate ?? 0),
-              SRO: it.SRO ?? "",
-              SroItemNO: it.SroItemNO ?? "",
-              remarks: it.remarks ?? "",
-              taxAmount:
-                typeof it.taxAmount === "number"
-                  ? it.taxAmount
-                  : Number(it.taxAmount ?? 0),
-              netAmount:
-                typeof it.netAmount === "number"
-                  ? it.netAmount
-                  : Number(it.netAmount ?? 0),
-              description: (it as { description?: string }).description ?? "",
-              totalValues: 0,
-              extraTax: Number(it.extraTax ?? 0),
-              furtherTax: Number(it.furtherTax ?? 0),
-              discount: Number(it.discount ?? 0),
-              fedPayable: Number(it.fedPayable ?? 0),
-              salesTaxWithheldAtSource: Number(
-                it.salesTaxWithheldAtSource ?? 0
-              ),
-              fixedNotifiedValueOrRetailPrice: 0,
-            })) ?? [],
-        }));
-
-        if (setAllUsersData) {
-          setAllUsersData(mapped);
-        }
-        setfirebasedata(dataArr as FirebaseInvoice[]);
-      } else {
-        console.log("No data available");
+    if(!auth) return
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (!user) {
+        toast.error("User is not logged in!");
+        return;
       }
+
+      const datRef = ref(database, `User_data/${user.uid}/invoices`);
+
+      const unsubscribeDb = onValue(datRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const dataObj = snapshot.val();
+          const dataArr: FirebaseInvoice[] = Object.entries(dataObj).map(
+            ([id, value]) => ({
+              id,
+              ...(value as FirebaseInvoice),
+            })
+          );
+
+          const mapped: AllUsersDataType[] = dataArr.map((fi) => ({
+            Transactiondatendtype: {
+              date: fi.date ?? "",
+              types: {
+                value: fi.types?.value ?? "",
+                title: fi.types?.title ?? "",
+              },
+              remarks: fi.types?.remarks ?? "",
+            },
+            Customerdetails: {
+              name: fi.customer?.name ?? "",
+              description: fi.customer?.description ?? "",
+              CNIC: fi.customer?.CNIC ?? "",
+              status: fi.customer?.status ?? "",
+              address: fi.customer?.address ?? "",
+              Phonenumber: "",
+              mobileNumber: fi.customer?.mobileNumber ?? "",
+              email: fi.customer?.email ?? "",
+              website: "",
+              contactperson: fi.customer?.contactperson ?? "",
+              creditLimit: fi.customer?.creditLimit ?? "",
+              Site: fi.customer?.Site ?? "",
+            },
+            Itemdetails:
+              fi.items?.map((it) => ({
+                itemname: it.itemname ?? "",
+                barcode: it.barcode ?? "",
+                order: it.order ?? "",
+                maxorder: "0",
+                reorderLevel: "0",
+                category: "",
+                HsCode: "",
+                Uom: it.Uom ?? "",
+                revenueAccount: "",
+                assestAccount: "",
+                cogsAccount: "",
+                serviceAccount: it.serviceAccount ?? "",
+                file: null,
+                quantity: Number(it.quantity ?? 0),
+                price: Number(it.price ?? 0),
+                rate: Number(it.rate ?? 0),
+                SRO: it.SRO ?? "",
+                SroItemNO: it.SroItemNO ?? "",
+                remarks: it.remarks ?? "",
+                taxAmount:
+                  typeof it.taxAmount === "number"
+                    ? it.taxAmount
+                    : Number(it.taxAmount ?? 0),
+                netAmount:
+                  typeof it.netAmount === "number"
+                    ? it.netAmount
+                    : Number(it.netAmount ?? 0),
+                description: (it as { description?: string }).description ?? "",
+                totalValues: 0,
+                extraTax: Number(it.extraTax ?? 0),
+                furtherTax: Number(it.furtherTax ?? 0),
+                discount: Number(it.discount ?? 0),
+                fedPayable: Number(it.fedPayable ?? 0),
+                salesTaxWithheldAtSource: Number(
+                  it.salesTaxWithheldAtSource ?? 0
+                ),
+                fixedNotifiedValueOrRetailPrice: 0,
+              })) ?? [],
+          }));
+
+          if (setAllUsersData) {
+            setAllUsersData(mapped);
+          }
+          setfirebasedata(dataArr as FirebaseInvoice[]);
+        } else {
+          console.log("No data available");
+        }
+      });
+
+      // cleanup DB listener
+      return () => unsubscribeDb();
     });
 
-    // Cleanup listener on unmount
-    return () => unsubscribe();
+    // cleanup auth listener
+    return () => unsubscribeAuth();
   }, [setAllUsersData]);
 
+  // --- Fetch company details ---
   useEffect(() => {
-    const user = auth?.currentUser;
-    if (!user) {
-      toast.error("User is not registered!");
-      return;
-    }
-    const dataref = ref(database, `User_data/${user.uid}/companydetails`);
-
-    const unsubscribe = onValue(dataref, (snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-
-        // Possible shapes:
-        // 1) flat object with fields (companyName, ntn, ...)
-        // 2) object with a 'details' child { details: { ...fields } }
-        // 3) map/object of keyed entries -> take first value
-        let details: firebasebuyerdetails | null = null;
-
-        if (data.details && typeof data.details === "object") {
-          details = data.details as firebasebuyerdetails;
-        } else if (data.companyName || data.ntn || data.address || data.gst) {
-          details = data as firebasebuyerdetails;
-        } else if (typeof data === "object") {
-          const vals = Object.values(data);
-          if (vals.length > 0 && typeof vals[0] === "object") {
-            details = vals[0] as firebasebuyerdetails;
-          }
+      if (!auth) return;
+      const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+        if (!user) {
+          toast.error("User is not logged in!");
+          return;
         }
-
-        if (setBuyerDetails) setBuyerDetails(details ?? null);
-        console.log(details, "Buyer details loaded from firebase");
-      }
-
-      return () => unsubscribe();
-    });
-  }, [setBuyerDetails]);
+  
+        const dataref = ref(database, `User_data/${user.uid}/companydetails`);
+  
+        const unsubscribeDb = onValue(dataref, (snapshot) => {
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+  
+            let details: firebasebuyerdetails | null = null;
+  
+            if (data.details && typeof data.details === "object") {
+              details = data.details as firebasebuyerdetails;
+            } else if (data.companyName || data.ntn || data.address || data.gst) {
+              details = data as firebasebuyerdetails;
+            } else if (typeof data === "object") {
+              const vals = Object.values(data);
+              if (vals.length > 0 && typeof vals[0] === "object") {
+                details = vals[0] as firebasebuyerdetails;
+              }
+            }
+  
+            if (setBuyerDetails) setBuyerDetails(details ?? null);
+            console.log(details, "Buyer details loaded from firebase");
+          }
+        });
+  
+        // cleanup DB listener
+        return () => unsubscribeDb();
+      });
+  
+      // cleanup auth listener
+      return () => unsubscribeAuth();
+    }, [setBuyerDetails]);
 
   console.log(firebasedata, "data getted from firebase");
 
@@ -941,7 +950,6 @@ export default function Home() {
                                 <div className="flex flex-col gap-4">
                                   <div>Company/seller details</div>
                                   <div>Buyer details</div>
-
                                 </div>
                               </div>
                               <div className="flex-1">
@@ -959,7 +967,7 @@ export default function Home() {
                                     <strong>Remarks:</strong>{" "}
                                     {data.Transactiondatendtype?.remarks}
                                   </p> */}
-                                {/* </div> */} 
+                                {/* </div> */}
 
                                 <h3 className="font-semibold text-lg text-gray-700 mt-5 mb-3">
                                   Item Details
