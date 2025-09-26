@@ -232,7 +232,9 @@ export default function Customerdetails({
       !Itemdetails[0]?.itemname
     ) {
       toast.error("Please make sure all mandatory fields are filled in.");
-    } else {
+    }
+    
+    else {
       const newNumber: number = generateRandomInt(1000000000, 9999999999);
       setRandomNumbers([newNumber]);
       const postbtn = document.getElementById("posting-data");

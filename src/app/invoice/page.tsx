@@ -386,7 +386,7 @@ export default function Home() {
     if(!auth) return
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        toast.error("User is not logged in!");
+        // toast.error("User is not logged in!");
         return;
       }
 
