@@ -629,18 +629,18 @@ export const rates = [
 export const sro = [
   {
     id: 1,
-    value: "S1000012",
-    title: "FED 1st Schedule",
+    value: "EIGHTH SCHEDULE Table 1",
+    title: "EIGHTH SCHEDULE Table 1",
   },
   {
     id: 2,
-    value: "S1000047",
-    title: "946(I)/2013",
+    value: "6th Schd Table I",
+    title: "6th Schd Table I",
   },
   {
     id: 3,
-    value: "S1000055",
-    title: "572(I)/2014",
+    value: "327(I)/2008",
+    title: "327(I)/2008",
   },
   {
     id: 4,
@@ -989,57 +989,57 @@ export const sro = [
   },
   {
     id: 73,
-    value: "S1000404",
+    value: "1450(I)/2021",
     title: "1450(I)/2021",
   },
   {
     id: 74,
-    value: "S1000408",
-    title: "1579(1)/2021",
+    value: "NINTH SCHEDULE",
+    title: "NINTH SCHEDULE",
   },
   {
     id: 75,
-    value: "S1000412",
-    title: "1604(I)/2021",
+    value: "ICTO TABLE I",
+    title: "ICTO TABLE I",
   },
   {
     id: 76,
-    value: "S1000416",
-    title: "01(I)/2022",
+    value: "6th Schd Table III",
+    title: "6th Schd Table III",
   },
   {
     id: 77,
-    value: "S1000420",
-    title: "88(I)/2022",
+    value: "581(1)/2024",
+    title: "581(1)/2024",
   },
   {
     id: 78,
-    value: "S1000424",
-    title: "183(I)/2022",
+    value: "297(I)/2023-Table-I",
+    title: "297(I)/2023-Table-I",
   },
   {
     id: 79,
-    value: "S1000429",
+    value: "321(I)/2022",
     title: "321(I)/2022",
   },
   {
     id: 80,
-    value: "S1000431",
+    value: "ICTO Table II",
     title: "ICTO Table II",
   },
   {
     id: 81,
-    value: "S1000433",
+    value: "1212(I)/2018",
     title: "1212(I)/2018",
   },
   {
     id: 82,
-    value: "S1000441",
+    value: "1636(1)/2022",
     title: "1636(1)/2022",
   },
   {
     id: 83,
-    value: "S1000446",
+    value: "9th Schedule",
     title: "9th Schedule",
   },
   {
@@ -1066,28 +1066,68 @@ export const sro = [
 export const sroitemno = [
   {
     id: 1,
-    title: "sro 1",
-    value: "sro 1",
+    title: "4",
+    value: "4",
   },
   {
     id: 2,
-    title: "sro 2",
-    value: "sro 2",
+    title: "1",
+    value: "1",
   },
   {
     id: 3,
-    title: "sro 3",
-    value: "sro 3",
+    title: "100",
+    value: "100",
   },
   {
     id: 4,
-    title: "sro 4",
-    value: "sro 4",
+    title: "82",
+    value: "82",
   },
   {
     id: 5,
-    title: "sro 5",
-    value: "sro 5",
+    title: "70",
+    value: "70",
+  },
+  {
+    id: 6,
+    title: "1(A)",
+    value: "1(A)",
+  },
+  {
+    id: 7,
+    title: "1(ii)(ii)(a)",
+    value: "1(ii)(ii)(a)",
+  },
+  {
+    id: 8,
+    title: "20",
+    value: "20",
+  },
+  {
+    id: 9,
+    title: "56",
+    value: "56",
+  },
+  {
+    id: 10,
+    title: "12",
+    value: "12",
+  },
+  {
+    id: 11,
+    title: "Region-I",
+    value: "Region-I",
+  },
+  {
+    id: 12,
+    title: "81",
+    value: "81",
+  },
+  {
+    id: 13,
+    title: "70",
+    value: "70",
   },
 ];
 
@@ -1179,5 +1219,5 @@ export const businesstypes = [
     id: 2,
     title: "Unregistered",
     value: "Unregistered",
-  }
+  },
 ];
