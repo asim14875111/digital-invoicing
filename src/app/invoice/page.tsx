@@ -523,7 +523,7 @@ export default function Home() {
   return (
     <div className="flex mt-15 w-full">
       <Sidebar />
-      <div className="pt-10 flex flex-col pb-30 w-full h-[100vh] overflow-auto ">
+      <div className="pt-10 flex flex-col pb-30 w-full h-[100vh]">
         <div className="flex mx-13.5 flex-col bg-gray-50  rounded-b-sm mr-18.5">
           <div className="flex items-center justify-between bg-gray-50 px-6 py-3 rounded-md shadow-sm">
             {buyerDetails ? (

@@ -170,7 +170,7 @@ export default function Company() {
   return (
     <div className="flex gap-5 mt-15">
       <Sidebar />
-      <div className="px-14 w-full flex pr-17 pb-12  items-center">
+      <div className="px-14 w-full flex pr-17 pb-12  items-center overflow-auto">
         <div className="flex flex-col bg-white rounded-lg shadow-lg w-full">
           <div className="flex justify-between bg-gradient-to-r from-blue-200 to-blue-300 py-4 px-6 rounded-t-lg">
             <p className="text-lg text-black font-semibold">

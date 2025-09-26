@@ -64,7 +64,7 @@ export default function Sidebar() {
   ];
 
   return (
-    <div className="sidebar w-82 h-screen bg-gradient-to-b from-blue-50 via-blue-100 to-blue-200 text-gray-800 flex flex-col p-6 shadow-xl">
+    <div className="sidebar w-82 h-screen bg-gradient-to-b  from-blue-50 via-blue-100 to-blue-200 text-gray-800 flex flex-col p-6 shadow-xl">
       <h2 className="text-lg font-semibold tracking-wide mb-10 text-gray-600 uppercase">
         Dashboard
       </h2>

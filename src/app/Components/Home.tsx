@@ -7,7 +7,7 @@ import StartNow from "./StartNow";
 import Footer from "./Common/Footer";
 export default function Landingpage() {
   return (
-    <div>
+    <div className="overflow-auto">
       <Herosection />
       <WhyChooseUs />
       <HowitWorks />
