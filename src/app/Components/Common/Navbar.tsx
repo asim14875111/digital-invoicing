@@ -27,6 +27,7 @@ export default function Navbar() {
   const [password, setPassword] = useState("");
   const [loginemail, setLoginEmail] = useState("");
   const [loginpswrd, setLoginpswrd] = useState("");
+  const [authLoading, setAuthLoading] = useState<boolean>(false);
   const [settings, showSettings] = useState<boolean>(false);
   const showloginform = (): void => {
     setIsVisible(true);
@@ -93,12 +94,13 @@ export default function Navbar() {
 
   const handlesignin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setAuthLoading(true);
     try {
       if (!auth) {
         toast.error("Authentication server not initiliazed");
         return;
       }
-      await createUserWithEmailAndPassword(auth, email, password);
+  await createUserWithEmailAndPassword(auth, email, password);
 
       console.log("sign up successfully");
       toast.success("Account created!");
@@ -128,17 +130,20 @@ export default function Navbar() {
       } else {
         toast.error("Something went wrong. Please try again!");
       }
+    } finally {
+      setAuthLoading(false);
     }
   };
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setAuthLoading(true);
     try {
       if (!auth) {
         toast.error("Authentication service not initialized.");
         return;
       }
-      await signInWithEmailAndPassword(auth, loginemail, loginpswrd);
+  await signInWithEmailAndPassword(auth, loginemail, loginpswrd);
       console.log("Sign in successfully");
       toast.success("Sign in successfully!");
       router.push("/company");
@@ -170,6 +175,8 @@ export default function Navbar() {
       } else {
         toast.error("An unknown error occurred");
       }
+    } finally {
+      setAuthLoading(false);
     }
   };
 
@@ -389,6 +396,7 @@ export default function Navbar() {
                     type="email"
                     placeholder="Enter you email"
                     className="border pl-4 border-gray-300 py-1 rounded-lg mt-1 placeholder:text-sm focus:border-gray-400"
+                    disabled={authLoading}
                   />
                 </div>
                 <div className="flex flex-col pt-4">
@@ -401,14 +409,16 @@ export default function Navbar() {
                     type="password"
                     placeholder="Enter you password"
                     className="border pl-4 border-gray-300 py-1 rounded-lg mt-1 placeholder:text-sm focus:border-gray-400"
+                    disabled={authLoading}
                   />
                 </div>
                 <div className="pt-6">
                   <button
                     type="submit"
                     className="font-semibold bg-[#2d8eb8] text-white w-full py-2 text-center text-sm rounded-md cursor-pointer hover:bg-[#206482]"
+                    disabled={authLoading}
                   >
-                    Sign in
+                    {authLoading ? "Signing in..." : "Sign in"}
                   </button>
                 </div>
                 <div className="pt-4 pb-6">
@@ -483,6 +493,7 @@ export default function Navbar() {
                         type="email"
                         placeholder="Enter you email"
                         className="border pl-4 border-gray-300 py-1 rounded-lg mt-1 placeholder:text-sm focus:border-gray-400"
+                        disabled={authLoading}
                       />
                     </div>
                     <div className="flex flex-col pt-3">
@@ -495,6 +506,7 @@ export default function Navbar() {
                         type="password"
                         placeholder="Enter you password"
                         className="border pl-4 border-gray-300 py-1 rounded-lg mt-1 placeholder:text-sm focus:border-gray-400"
+                        disabled={authLoading}
                       />
                     </div>
                   </div>
@@ -503,8 +515,9 @@ export default function Navbar() {
                   <button
                     type="submit"
                     className="font-semibold w-full bg-[#2d8eb8] text-white py-2 text-center text-sm rounded-md cursor-pointer hover:bg-[#206482]"
+                    disabled={authLoading}
                   >
-                    Sign up
+                    {authLoading ? "Signing up..." : "Sign up"}
                   </button>
                 </div>
                 <div className="pt-4 pb-6">

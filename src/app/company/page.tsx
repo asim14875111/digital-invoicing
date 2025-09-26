@@ -75,7 +75,7 @@ export default function Company() {
     if (!auth) return;
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        console.error("User is not registered");
+        console.log("User is not registered");
         return;
       }
       try {

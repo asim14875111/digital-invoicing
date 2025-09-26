@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { useItems } from "@/Contexts/ItemsContext";
+import { auth } from "@/firebaseConfig";
+import { database } from "@/firebaseConfig";
+import { push, ref } from "firebase/database";
 import { ToastContainer } from "react-toastify";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoChevronUp } from "react-icons/io5";
@@ -16,6 +19,7 @@ import { invoicetype } from "@/Constants/Framerdata";
 import { rates } from "@/Constants/Framerdata";
 import { sro } from "@/Constants/Framerdata";
 import { sroitemno } from "@/Constants/Framerdata";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 
 type itemsProps = {
   setInvoiceSection: React.Dispatch<React.SetStateAction<boolean>>;
@@ -96,6 +100,13 @@ export default function Invoiceitems({
   const [taxdata, setTaxData] = useState<boolean>(false);
   const [sroData, setSroData] = useState<boolean>(false);
   const [sroitemnoData, setsroitemnoData] = useState<boolean>(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const uomRef = useRef<HTMLDivElement>(null);
+  const revenueRef = useRef<HTMLDivElement>(null);
+  const serviceRef = useRef<HTMLDivElement>(null);
+  const rateRef = useRef<HTMLDivElement>(null);
+  const sroRef = useRef<HTMLDivElement>(null);
+  const sroItemRef = useRef<HTMLDivElement>(null);
   // const [filtereddata, setFilteredData] = useState(categories);
   const [filtereduom, setFilteredUom] = useState(uomdata);
   const [filteredrevenue, setfilteredrevenue] = useState(paymentmethod);
@@ -166,6 +177,62 @@ export default function Invoiceitems({
       setDescription(edititems.description || "");
     }
   }, [edititems]);
+
+  // Close dropdowns when clicking outside the modal
+  useOnClickOutside(modalRef, () => {
+    setUOMData(false);
+    setRevenuedata(false);
+    setAssestData(false);
+    setcogsData(false);
+    setserviceData(false);
+    setTaxData(false);
+    setSroData(false);
+    setsroitemnoData(false);
+  });
+
+  useOnClickOutside(uomRef, () => {
+    setUOMData(false);
+    setChevronDown3(true);
+    setChevronup3(false);
+  });
+  useOnClickOutside(revenueRef, () => {
+    setRevenuedata(false);
+    setChevronDown4(true);
+    setChevronup4(false);
+  });
+  useOnClickOutside(serviceRef, () => {
+    setserviceData(false);
+    setChevronDown7(true);
+    setChevronup7(false);
+  });
+  useOnClickOutside(rateRef, () => {
+    setTaxData(false);
+    setChevronDown8(true);
+    setChevronup8(false);
+  });
+  useOnClickOutside(sroRef, () => {
+    setSroData(false);
+    setChevronDown9(true);
+    setChevronup9(false);
+  });
+  useOnClickOutside(sroItemRef, () => {
+    setsroitemnoData(false);
+    setChevronDown10(true);
+    setChevronup10(false);
+  });
+
+
+  // Close dropdowns when clicking outside modal
+  useOnClickOutside(modalRef, () => {
+    setUOMData(false);
+    setRevenuedata(false);
+    setAssestData(false);
+    setcogsData(false);
+    setserviceData(false);
+    setTaxData(false);
+    setSroData(false);
+    setsroitemnoData(false);
+  });
 
   // const showcategories = (): void => {
   //   if (chevrondwn) {
@@ -433,7 +500,7 @@ export default function Invoiceitems({
   }, [price, rate]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000063]">
+    <div ref={modalRef} className="fixed inset-0 z-50 flex items-center justify-center bg-[#00000063]">
       <div className="bg-white w-full max-w-6xl rounded-xl shadow-lg relative">
         {/* Header */}
         <div className="flex justify-between items-center px-8 py-4 rounded-t-xl border-b border-gray-200 bg-gray-50">
@@ -475,7 +542,7 @@ export default function Invoiceitems({
             </div>
             <div className="grid grid-cols-3 gap-6">
               {/* Item Name */}
-              <div className="flex flex-col">
+              <div ref={uomRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> Item name
                 </label>
@@ -515,7 +582,7 @@ export default function Invoiceitems({
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> UOM
                 </label>
-                <div className="relative">
+                <div ref={uomRef} className="relative">
                   <div
                     onClick={showuomdetails}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -550,11 +617,11 @@ export default function Invoiceitems({
                 </div>
               </div>
               {/* Payment Method */}
-              <div className="flex flex-col">
+              <div ref={revenueRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> Payment Method
                 </label>
-                <div className="relative">
+                <div ref={revenueRef} className="relative">
                   <div
                     onClick={displayrevenue}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -593,11 +660,11 @@ export default function Invoiceitems({
                 </div>
               </div>
               {/* Invoice Type */}
-              <div className="flex flex-col">
+              <div ref={serviceRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> Invoice Type
                 </label>
-                <div className="relative">
+                <div ref={serviceRef} className="relative">
                   <div
                     onClick={displayserviceacc}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -654,7 +721,7 @@ export default function Invoiceitems({
             </label>
             <div className="grid grid-cols-3 gap-6">
               {/* Quantity */}
-              <div className="flex flex-col">
+              <div ref={rateRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> Quantity
                 </label>
@@ -758,7 +825,7 @@ export default function Invoiceitems({
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   <span className="text-red-400">*</span> Rate
                 </label>
-                <div className="relative">
+                <div ref={rateRef} className="relative">
                   <div
                     onClick={showrates}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -784,11 +851,11 @@ export default function Invoiceitems({
                 </div>
               </div>
               {/* Select SRO */}
-              <div className="flex flex-col">
+              <div ref={sroRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   Select SRO
                 </label>
-                <div className="relative">
+                <div ref={sroRef} className="relative">
                   <div
                     onClick={showsros}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -814,11 +881,11 @@ export default function Invoiceitems({
                 </div>
               </div>
               {/* Select SRO Item NO */}
-              <div className="flex flex-col">
+              <div ref={sroItemRef} className="flex flex-col">
                 <label className="text-sm font-medium text-gray-700 mb-1">
                   Select SRO Item NO
                 </label>
-                <div className="relative">
+                <div ref={sroItemRef} className="relative">
                   <div
                     onClick={showsroitemno}
                     className="h-11 px-3 rounded border border-gray-200 bg-gray-50 flex items-center justify-between cursor-pointer"
@@ -961,6 +1028,7 @@ export default function Invoiceitems({
                 });
                 setInvoiceSection(false);
               } else {
+                // add locally
                 setItemsData((prev) => [
                   ...prev,
                   {
@@ -968,6 +1036,32 @@ export default function Invoiceitems({
                     totalValues: 0,
                   },
                 ]);
+                // persist to user's allitems in realtime database
+                const user = auth?.currentUser;
+                if (user) {
+                  try {
+                    const allItemsRef = ref(database, `User_data/${user.uid}/allitems`);
+                    // push a flattened object for realtime DB: replace undefined with null (RTDB doesn't accept undefined)
+                    const sanitizedEntries = Object.entries(inputsdata).map(
+                      ([k, v]) => [k, v === undefined ? null : v]
+                    );
+                    const sanitized = Object.fromEntries(sanitizedEntries) as Record<
+                      string,
+                      unknown
+                    >;
+                    // ensure file is null so uploads/listing won't carry a File object
+                    if (Object.prototype.hasOwnProperty.call(sanitized, "file")) {
+                      sanitized.file = null;
+                    }
+                    sanitized.timeStamp = new Date().toISOString();
+
+                    push(allItemsRef, sanitized).catch((err) =>
+                      console.error("Error saving allitem:", err)
+                    );
+                  } catch (err) {
+                    console.error(err, "error saving allitems");
+                  }
+                }
                 setInvoiceSection(false);
               }
               showscrollbar();

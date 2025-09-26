@@ -3,7 +3,8 @@ import { IoChevronUp } from "react-icons/io5";
 import { IoChevronDownOutline } from "react-icons/io5";
 import { IoIosSearch } from "react-icons/io";
 import { transactiondata } from "../../Constants/Framerdata";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Newcustomers from "./Newcustomers";
 import { useCustomer } from "@/Contexts/MyContext";
 import { ToastContainer, toast } from "react-toastify";
@@ -35,6 +36,8 @@ export default function Customerdetails({
   const [chevronup, setChevronup] = useState<boolean>(false);
   const [chevrondown, setChevrondown] = useState<boolean>(true);
   const [filteredData, setFilteredData] = useState(transactiondata);
+  const transactionRef = useRef<HTMLDivElement>(null);
+  const customerRef = useRef<HTMLDivElement>(null);
   const [visible, setIsVisible] = useState<boolean>(true);
   const [unvisible, setIsUnvisible] = useState<boolean>(false);
   const [detailssection, setDetailsSection] = useState<boolean>(false);
@@ -64,15 +67,43 @@ export default function Customerdetails({
   const { Itemdetails, setItemsData } = useItems();
   type ItemType = { itemname: string };
 
+  type SavedItem = {
+    id: string;
+    itemname?: string;
+    [key: string]: unknown;
+  };
+
   console.log(Customerdetails.name);
 
   const [edititems, setEditItems] = useState<ItemType | null>(null);
   const [alldata] = useState({});
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [invoiceSection, setInvoiceSection] = useState<boolean>(false);
+  const [allItemsOpen, setAllItemsOpen] = useState<boolean>(false);
+  const [allItems, setAllItems] = useState<SavedItem[]>([]);
+  const allItemsRefEl = useRef<HTMLDivElement>(null);
+  const [allItemsSearch, setAllItemsSearch] = useState<string>("");
   const [remarks, setRemarks] = useState("");
   const context = useContext(Datacontext);
-  const [invoiceNo, setRandomNumbers] = useState<number[]>([]);
+  const [, setRandomNumbers] = useState<number[]>([]);
+
+  // close dropdowns when clicking outside
+  useOnClickOutside(transactionRef, () => {
+    setTransactionTypes(false);
+    setChevronup(false);
+    setChevrondown(true);
+  });
+
+  useOnClickOutside(customerRef, () => {
+    setCustomerDetails(false);
+    setIsVisible(true);
+    setIsUnvisible(false);
+  });
+
+  // close all items dropdown
+  useOnClickOutside(allItemsRefEl, () => {
+    setAllItemsOpen(false);
+  });
 
   const setAllUsersData = context?.setAllUsersData;
 
@@ -293,6 +324,23 @@ export default function Customerdetails({
     setInvoiceSection(true);
   };
 
+  // load saved allitems for current user
+  useEffect(() => {
+    const user = auth?.currentUser;
+    if (!user) return;
+    const dbRef = ref(database, `User_data/${user.uid}/allitems`);
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const val = snapshot.val();
+        const arr = Object.entries(val).map(([id, v]) => ({ id, ...(v as unknown as Record<string, unknown>) } as SavedItem));
+        setAllItems(arr);
+      } else {
+        setAllItems([]);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
 
   const deleteitem = (i: number): void => {
     const updatedItems = Itemdetails.filter((_, idx) => idx !== i);
@@ -325,7 +373,7 @@ export default function Customerdetails({
           <p className="text-sm font-medium text-gray-700">
             <span className="text-red-500">* </span>Transaction Type
           </p>
-          <div className="relative mt-2 w-[280px]">
+          <div ref={transactionRef} className="relative mt-2 w-[280px]">
             <p
               onClick={showtransactiontypes}
               className="flex cursor-pointer items-center justify-between rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 shadow-sm hover:border-blue-400"
@@ -369,7 +417,7 @@ export default function Customerdetails({
           <p className="text-sm font-medium text-gray-700">
             <span className="text-red-500">* </span>Buyer Details
           </p>
-          <div className="relative mt-2 w-[280px]">
+          <div ref={customerRef} className="relative mt-2 w-[280px]">
             <p
               onClick={showcustomerdetails}
               className="flex cursor-pointer items-center justify-between rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-sm text-gray-700 shadow-sm hover:border-blue-400"
@@ -462,13 +510,100 @@ export default function Customerdetails({
       </div>
       <ToastContainer />
       <div className="flex justify-between items-center pt-8">
-        <button
-          onClick={showdetailssection}
-          className="flex items-center gap-2 rounded-lg cursor-pointer bg-blue-600 px-5 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700 hover:shadow-lg transition"
-        >
-          <span className="text-red-400">*</span> Add New Item{" "}
-          <MdOutlineAdd />
-        </button>
+        <div className="flex items-center">
+          <button
+            onClick={showdetailssection}
+            className="flex items-center gap-2 rounded-l-lg cursor-pointer bg-blue-600 pl-5 pr-3 py-2 text-sm font-medium text-white shadow-md hover:bg-blue-700 hover:shadow-lg transition"
+          >
+            <span className="text-red-400">*</span> Add New Item
+            <MdOutlineAdd />
+          </button>
+          <div ref={allItemsRefEl} className="relative">
+            <button
+              onClick={() => setAllItemsOpen((s) => !s)}
+              className="h-9 mt-1.5 cursor-pointer px-3 rounded-r-lg border  bg-blue-600 hover:bg-blue-700 text-sm text-gray-700 shadow-sm "
+            >
+              {allItemsOpen ? <IoChevronUp className="text-white" /> : <IoChevronDownOutline className="text-white" />}
+            </button>
+            {allItemsOpen && (
+              <div className="absolute top-full left-0 mt-1 w-80 rounded-lg border bg-white shadow-lg z-20">
+                <div className="px-2 py-2 text-sm text-gray-600 border-b">
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      value={allItemsSearch}
+                      onChange={(e) => setAllItemsSearch(e.target.value)}
+                      placeholder="Search saved items"
+                      className="w-full border-none outline-none text-sm px-2"
+                    />
+                    <IoIosSearch className="text-gray-500" />
+                  </div>
+                </div>
+                <div className="max-h-18 overflow-auto  rounded-b-lg">
+                  {allItems.length ? (
+                    allItems
+                      .filter((it) =>
+                        (it.itemname || "")
+                          .toString()
+                          .toLowerCase()
+                          .includes(allItemsSearch.toLowerCase())
+                      )
+                      .map((it) => {
+                        const s = it as SavedItem;
+                        const handleAdd = () => {
+                          const newItem = {
+                            itemname: s.itemname?.toString() || "",
+                            barcode: (s.barcode ? String(s.barcode) : ""),
+                            order: (s.order ? String(s.order) : ""),
+                            maxorder: (s.maxorder ? String(s.maxorder) : ""),
+                            reorderLevel: (s.reorderLevel ? String(s.reorderLevel) : ""),
+                            category: (s.category ? String(s.category) : ""),
+                            HsCode: (s.HsCode ? String(s.HsCode) : ""),
+                            Uom: (s.Uom ? String(s.Uom) : ""),
+                            revenueAccount: (s.revenueAccount ? String(s.revenueAccount) : ""),
+                            assestAccount: (s.assestAccount ? String(s.assestAccount) : ""),
+                            cogsAccount: (s.cogsAccount ? String(s.cogsAccount) : ""),
+                            serviceAccount: (s.serviceAccount ? String(s.serviceAccount) : ""),
+                            file: null,
+                            quantity: Number(s.quantity as unknown) || 0,
+                            price: Number(s.price as unknown) || 0,
+                            rate: Number(s.rate as unknown) || 0,
+                            SRO: (s.SRO ? String(s.SRO) : ""),
+                            SroItemNO: (s.SroItemNO ? String(s.SroItemNO) : ""),
+                            remarks: (s.remarks ? String(s.remarks) : ""),
+                            taxAmount: Number(s.taxAmount as unknown) || 0,
+                            netAmount: Number(s.netAmount as unknown) || 0,
+                            description: (s.description ? String(s.description) : ""),
+                            totalValues: 0,
+                            extraTax: Number(s.extraTax as unknown) || 0,
+                            furtherTax: Number(s.furtherTax as unknown) || 0,
+                            discount: Number(s.discount as unknown) || 0,
+                            fedPayable: Number(s.fedPayable as unknown) || 0,
+                            salesTaxWithheldAtSource: Number(s.salesTaxWithheldAtSource as unknown) || 0,
+                            fixedNotifiedValueOrRetailPrice: Number(s.fixedNotifiedValueOrRetailPrice as unknown) || 0,
+                          } as import("@/Contexts/ItemsContext").InputsData;
+                          setItemsData((prev) => [...prev, newItem]);
+                          setAllItemsOpen(false);
+                          setAllItemsSearch("");
+                        };
+                        return (
+                          <div
+                            key={s.id}
+                            onClick={handleAdd}
+                            className="px-3 py-2 hover:bg-blue-100 cursor-pointer text-sm text-gray-700"
+                          >
+                            {s.itemname}
+                          </div>
+                        );
+                      })
+                  ) : (
+                    <div className="px-3 py-2 text-sm text-gray-500">!No saved items</div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
         <button
           id="posting-data"
           onClick={submitdata}

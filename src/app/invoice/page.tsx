@@ -67,8 +67,7 @@ export default function Home() {
       remarks?: string;
     };
     items?: FBItemType[];
-    // items?: Array<{
-    itemname?: string;
+     itemname?: string;
     barcode?: string;
     order?: string;
     SRO?: string;
@@ -82,8 +81,7 @@ export default function Home() {
     fbrinvoiceno?: string;
     fbrTimestamp?: string;
     fbrValidationStatus?: string;
-    // }>; // replaced by FBItemType[]
-  };
+   };
 
   type FBItemType = Partial<{
     itemname: string;
@@ -135,11 +133,7 @@ export default function Home() {
   const [validationStatus, setValidationStatus] = useState<{
     [key: number]: string;
   }>({});
-
-  // map function moved into the useEffect below to avoid changing dependencies
-
-  // Explicitly type allusersData if possible, e.g.:
-  // const { allusersData = [], setAllUsersData } = context as { allusersData: YourDataType[]; setAllUsersData: (data: YourDataType[]) => void } || {};
+ 
   const [selectedCustomerIndex, setSelectedCustomerIndex] = useState<
     number | null
   >(null);
@@ -205,11 +199,7 @@ export default function Home() {
       setValidationStatus((prev) => ({ ...prev, [index]: "Send Again" }));
       return;
     }
-
-    // Prefer the CompanyProvider context but fall back to the buyerDetails
-    // that we also load directly from firebase. This prevents a false
-    // 'Add buyer details' alert after a page refresh when the context may
-    // not yet be populated but firebase does contain buyer details.
+ 
     const effectiveCompany = companyDetails || buyerDetails;
 
     const isCompanyDetailsValid = (
@@ -267,8 +257,7 @@ export default function Home() {
     const invoiceitems = {
       invoiceType:
         sanitizeString(
-          // prefer firebase field if available, otherwise fallback to local allusersData
-          fbItem.serviceAccount ??
+           fbItem.serviceAccount ??
             allusersData?.[index]?.Itemdetails?.[0]?.serviceAccount
         ) || "",
       invoiceDate: data?.date ?? "",
@@ -324,13 +313,11 @@ export default function Home() {
       console.log("Validation response", data);
       setResponses((prev) => ({ ...prev, [index]: data }));
 
-      // extract invoice number from response (support multiple shapes)
-      const invoiceNumber =
+       const invoiceNumber =
         data?.data?.invoiceNumber || data?.invoiceNumber || null;
 
       if (res.ok) {
-        // try to derive a human-friendly validation status
-        const validationStatusFromResponse =
+         const validationStatusFromResponse =
           (data?.data?.validationResponse?.status as string | undefined) ||
           (data?.validationResponse?.status as string | undefined) ||
           (data?.data?.validationResponse as string | undefined) ||
@@ -340,8 +327,7 @@ export default function Home() {
 
         setValidationStatus((prev) => ({ ...prev, [index]: "Sent" }));
 
-        // persist FBR invoice number and validation status to firebase under the invoice record
-        try {
+         try {
           const user = auth?.currentUser;
           if (user) {
             const invoiceId = firebasedata?.[index]?.id;
@@ -377,11 +363,8 @@ export default function Home() {
       alert(err);
     }
 
-    // No extra push here; fbr invoice persistence handled above when response is successful.
-  };
-
-  // Import data from firebase data base and map it
-  // import { onValue, ref } from "firebase/database";
+   };
+ 
   useEffect(() => {
     if(!auth) return
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
@@ -476,16 +459,13 @@ export default function Home() {
         }
       });
 
-      // cleanup DB listener
-      return () => unsubscribeDb();
+       return () => unsubscribeDb();
     });
 
-    // cleanup auth listener
-    return () => unsubscribeAuth();
+     return () => unsubscribeAuth();
   }, [setAllUsersData]);
 
-  // --- Fetch company details ---
-  useEffect(() => {
+   useEffect(() => {
       if (!auth) return;
       const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
         if (!user) {

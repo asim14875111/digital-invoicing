@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import Sidebar from "../Components/Sidebar";
 import { IoChevronDown, IoChevronUp } from "react-icons/io5";
 import { UseintegrationDetails } from "@/Contexts/integrationcontext";
@@ -13,6 +14,9 @@ import { onAuthStateChanged, User } from "firebase/auth";
 import { toast } from "react-toastify";
 export default function Integration() {
   const [environmentDropdownOpen, setEnvironmentDropdownOpen] = useState(false);
+  const envRef = useRef<HTMLDivElement>(null);
+  // close environment dropdown when clicking outside
+  useOnClickOutside(envRef, () => setEnvironmentDropdownOpen(false));
   const [environment, setEnvironment] = useState<string>("");
   const [token, setToken] = useState("");
   const [currentUser, setCurrentUser] = useState<User | null>(null);
@@ -152,11 +156,11 @@ export default function Integration() {
               </div>
 
               {/* Environment Dropdown */}
-              <div className="flex flex-col relative">
+              <div ref={envRef} className="flex flex-col relative">
                 <label className="text-sm font-semibold text-gray-600">
                   <span className="text-red-400">*</span> Environment
                 </label>
-                <div
+                <div ref={envRef}
                   onClick={() =>
                     setEnvironmentDropdownOpen(!environmentDropdownOpen)
                   }
@@ -183,6 +187,7 @@ export default function Integration() {
                     ))}
                   </div>
                 )}
+              
               </div>
             </div>
 

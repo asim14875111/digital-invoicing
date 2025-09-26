@@ -1,5 +1,6 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import useOnClickOutside from "@/hooks/useOnClickOutside";
 import { RxCross2 } from "react-icons/rx";
 import { IoChevronUp, IoChevronDownOutline } from "react-icons/io5";
 import { Status, Sites } from "@/Constants/Framerdata";
@@ -26,10 +27,7 @@ export default function Newcustomers({
   hidedetailssection,
   setDetailsSection,
 }: NewcustomersProps) {
-  // const [chevronDown, setchevronDown] = useState(true);
-  // const [chevronup, setChevronup] = useState(false);
-  const [chevronDown2, setchevronDown2] = useState(true);
-  const [chevronup2, setChevronup2] = useState(false);
+  // chevrons derived from dropdown booleans to avoid desync
   // const [receivablesData, setreceivablesData] = useState(false);
   const [StautsData, setStautsData] = useState(false);
   const [SitesData, setSitesData] = useState(false);
@@ -46,8 +44,9 @@ export default function Newcustomers({
   const [mobileNumber, setmobileNumber] = useState("");
   const [email, setEmail] = useState("");
   const [website, setWebsite] = useState("");
-  const [sitechvrnup, setSitechvrnup] = useState(false);
-  const [sitechvrndwn, setSitechvrndwn] = useState(true);
+  // site chevrons are derived from SitesData
+  const statusRef = useRef<HTMLDivElement>(null);
+  const siteRef = useRef<HTMLDivElement>(null);
   // const [country, setSelectedCountry] = useState<ICountry | null>(null);
   // const [States, setSelectedState] = useState<IState | null>(null);
   // const [city, setSelectedCity] = useState<ICity | null>(null);
@@ -138,27 +137,28 @@ export default function Newcustomers({
 
   const showstatus = () => {
     setStautsData(!StautsData);
-    setchevronDown2(!chevronDown2);
-    setChevronup2(!chevronup2);
   };
 
   const showsites = () => {
     setSitesData(!SitesData);
-    setSitechvrndwn(!sitechvrndwn);
-    setSitechvrnup(!sitechvrnup);
   };
 
+  // close dropdowns when clicking outside
+  useOnClickOutside(statusRef, () => {
+    setStautsData(false);
+  });
+
+  useOnClickOutside(siteRef, () => {
+    setSitesData(false);
+  });
+
   const slectsites = (value: string) => {
-    setSitechvrndwn(true);
-    setSitechvrnup(false);
     setSitesData(false);
     SetSite(value);
   };
 
   const setstatus = (value: string) => {
     setStautsData(false);
-    setChevronup2(false);
-    setchevronDown2(true);
     SetStatus(value);
   };
 
@@ -254,7 +254,7 @@ export default function Newcustomers({
               </div>
 
               {/* Status */}
-              <div className="relative w-full">
+              <div ref={statusRef} className="relative w-full">
                 <label className="text-sm font-medium text-gray-700">
                   <span className="text-red-500">*</span> Status
                 </label>
@@ -265,10 +265,10 @@ export default function Newcustomers({
                   <p className="text-sm text-gray-600">
                     {status || "Select Status"}
                   </p>
-                  {chevronDown2 ? (
-                    <IoChevronDownOutline className="text-gray-500" />
-                  ) : (
+                  {StautsData ? (
                     <IoChevronUp className="text-gray-500" />
+                  ) : (
+                    <IoChevronDownOutline className="text-gray-500" />
                   )}
                 </div>
                 {StautsData && (
@@ -298,7 +298,7 @@ export default function Newcustomers({
                 />
               </div>
               {/* Province */}
-              <div className="relative w-full">
+              <div ref={siteRef} className="relative w-full">
                 <label className="text-sm font-medium text-gray-700">
                   <span className="text-red-500">*</span> Province
                 </label>
@@ -309,10 +309,10 @@ export default function Newcustomers({
                   <p className="text-sm text-gray-600">
                     {Site || "Select Province"}
                   </p>
-                  {sitechvrndwn ? (
-                    <IoChevronDownOutline className="text-gray-500" />
-                  ) : (
+                  {SitesData ? (
                     <IoChevronUp className="text-gray-500" />
+                  ) : (
+                    <IoChevronDownOutline className="text-gray-500" />
                   )}
                 </div>
                 {SitesData && (
