@@ -11,9 +11,8 @@ const firebaseConfig = {
   messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-  databaseURL:
-    "https://invoicing-9e1b0-default-rtdb.asia-southeast1.firebasedatabase.app",  // 👈
-};
+  databaseURL:process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL,
+}
 // Comment
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 
