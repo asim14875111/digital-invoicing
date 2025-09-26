@@ -16,6 +16,7 @@ import { auth } from "@/firebaseConfig";
 import { database } from "@/firebaseConfig";
 import { onValue, push, ref, update } from "firebase/database";
 import { toast } from "react-toastify";
+import { onAuthStateChanged } from "firebase/auth";
 export default function Home() {
   const [visible, setIsVisible] = useState(false);
   const [display, setDisplay] = useState(true);
@@ -382,102 +383,125 @@ export default function Home() {
   // Import data from firebase data base and map it
   // import { onValue, ref } from "firebase/database";
 
+  // ...existing code...
   useEffect(() => {
-    const user = auth?.currentUser;
-    if (!user) {
-      // toast.error("user is not registered");
-      return;
+    if (typeof window === "undefined") return; // only run in browser
+    let off: (() => void) | null = null;
+    let unsubAuth: (() => void) | null = null;
+
+    const setupAuthListener = (authClient: typeof auth) => {
+      unsubAuth = authClient
+        ? onAuthStateChanged(authClient, (user) => {
+            // clear previous db listener if user signs out
+            if (!user) {
+              if (off) {
+                off();
+                off = null;
+              }
+              return;
+            }
+
+            const datRef = ref(database, `User_data/${user.uid}/invoices`);
+            // attach realtime listener and store its unsubscribe
+            off = onValue(datRef, (snapshot) => {
+              if (snapshot.exists()) {
+                const dataObj = snapshot.val();
+                const dataArr: FirebaseInvoice[] = Object.entries(dataObj).map(
+                  ([id, value]) => ({ id, ...(value as FirebaseInvoice) })
+                );
+                const mapped: AllUsersDataType[] = dataArr.map((fi) => ({
+                  Transactiondatendtype: {
+                    date: fi.date ?? "",
+                    types: {
+                      value: fi.types?.value ?? "",
+                      title: fi.types?.title ?? "",
+                    },
+                    remarks: fi.types?.remarks ?? "",
+                  },
+                  Customerdetails: {
+                    name: fi.customer?.name ?? "",
+                    description: fi.customer?.description ?? "",
+                    CNIC: fi.customer?.CNIC ?? "",
+                    status: fi.customer?.status ?? "",
+                    address: fi.customer?.address ?? "",
+                    Phonenumber: "",
+                    mobileNumber: fi.customer?.mobileNumber ?? "",
+                    email: fi.customer?.email ?? "",
+                    website: "",
+                    contactperson: fi.customer?.contactperson ?? "",
+                    creditLimit: fi.customer?.creditLimit ?? "",
+                    Site: fi.customer?.Site ?? "",
+                  },
+                  Itemdetails:
+                    fi.items?.map((it) => ({
+                      itemname: it.itemname ?? "",
+                      barcode: it.barcode ?? "",
+                      order: it.order ?? "",
+                      maxorder: "0",
+                      reorderLevel: "0",
+                      category: "",
+                      HsCode: "",
+                      Uom: it.Uom ?? "",
+                      revenueAccount: "",
+                      assestAccount: "",
+                      cogsAccount: "",
+                      serviceAccount: it.serviceAccount ?? "",
+                      file: null,
+                      quantity: Number(it.quantity ?? 0),
+                      price: Number(it.price ?? 0),
+                      rate: Number(it.rate ?? 0),
+                      SRO: it.SRO ?? "",
+                      SroItemNO: it.SroItemNO ?? "",
+                      remarks: it.remarks ?? "",
+                      taxAmount:
+                        typeof it.taxAmount === "number"
+                          ? it.taxAmount
+                          : Number(it.taxAmount ?? 0),
+                      netAmount:
+                        typeof it.netAmount === "number"
+                          ? it.netAmount
+                          : Number(it.netAmount ?? 0),
+                      description:
+                        (it as { description?: string }).description ?? "",
+                      totalValues: 0,
+                      extraTax: Number(it.extraTax ?? 0),
+                      furtherTax: Number(it.furtherTax ?? 0),
+                      discount: Number(it.discount ?? 0),
+                      fedPayable: Number(it.fedPayable ?? 0),
+                      salesTaxWithheldAtSource: Number(
+                        it.salesTaxWithheldAtSource ?? 0
+                      ),
+                      fixedNotifiedValueOrRetailPrice: 0,
+                    })) ?? [],
+                }));
+
+                if (setAllUsersData) {
+                  setAllUsersData(mapped);
+                }
+                setfirebasedata(dataArr as FirebaseInvoice[]);
+              } else {
+                console.log("No data available");
+              }
+            });
+          })
+        : () => {};
+    };
+
+    if (auth) {
+      setupAuthListener(auth);
+    } else {
+      import("firebase/auth").then((m) => {
+        const authClient = m.getAuth();
+        setupAuthListener(authClient);
+      });
     }
 
-    const datRef = ref(database, `User_data/${user.uid}/invoices`);
-
-    // Listen for realtime updates
-    const unsubscribe = onValue(datRef, (snapshot) => {
-      if (snapshot.exists()) {
-        const dataObj = snapshot.val();
-        const dataArr: FirebaseInvoice[] = Object.entries(dataObj).map(
-          ([id, value]) => ({
-            id,
-            ...(value as FirebaseInvoice),
-          })
-        );
-        const mapped: AllUsersDataType[] = dataArr.map((fi) => ({
-          Transactiondatendtype: {
-            date: fi.date ?? "",
-            types: {
-              value: fi.types?.value ?? "",
-              title: fi.types?.title ?? "",
-            },
-            remarks: fi.types?.remarks ?? "",
-          },
-          Customerdetails: {
-            name: fi.customer?.name ?? "",
-            description: fi.customer?.description ?? "",
-            CNIC: fi.customer?.CNIC ?? "",
-            status: fi.customer?.status ?? "",
-            address: fi.customer?.address ?? "",
-            Phonenumber: "",
-            mobileNumber: fi.customer?.mobileNumber ?? "",
-            email: fi.customer?.email ?? "",
-            website: "",
-            contactperson: fi.customer?.contactperson ?? "",
-            creditLimit: fi.customer?.creditLimit ?? "",
-            Site: fi.customer?.Site ?? "",
-          },
-          Itemdetails:
-            fi.items?.map((it) => ({
-              itemname: it.itemname ?? "",
-              barcode: it.barcode ?? "",
-              order: it.order ?? "",
-              maxorder: "0",
-              reorderLevel: "0",
-              category: "",
-              HsCode: "",
-              Uom: it.Uom ?? "",
-              revenueAccount: "",
-              assestAccount: "",
-              cogsAccount: "",
-              serviceAccount: it.serviceAccount ?? "",
-              file: null,
-              quantity: Number(it.quantity ?? 0),
-              price: Number(it.price ?? 0),
-              rate: Number(it.rate ?? 0),
-              SRO: it.SRO ?? "",
-              SroItemNO: it.SroItemNO ?? "",
-              remarks: it.remarks ?? "",
-              taxAmount:
-                typeof it.taxAmount === "number"
-                  ? it.taxAmount
-                  : Number(it.taxAmount ?? 0),
-              netAmount:
-                typeof it.netAmount === "number"
-                  ? it.netAmount
-                  : Number(it.netAmount ?? 0),
-              description: (it as { description?: string }).description ?? "",
-              totalValues: 0,
-              extraTax: Number(it.extraTax ?? 0),
-              furtherTax: Number(it.furtherTax ?? 0),
-              discount: Number(it.discount ?? 0),
-              fedPayable: Number(it.fedPayable ?? 0),
-              salesTaxWithheldAtSource: Number(
-                it.salesTaxWithheldAtSource ?? 0
-              ),
-              fixedNotifiedValueOrRetailPrice: 0,
-            })) ?? [],
-        }));
-
-        if (setAllUsersData) {
-          setAllUsersData(mapped);
-        }
-        setfirebasedata(dataArr as FirebaseInvoice[]);
-      } else {
-        console.log("No data available");
-      }
-    });
-
-    // Cleanup listener on unmount
-    return () => unsubscribe();
+    return () => {
+      if (off) off();
+      if (typeof unsubAuth === "function") unsubAuth();
+    };
   }, [setAllUsersData]);
+  // ...existing code...
 
   useEffect(() => {
     const user = auth?.currentUser;
@@ -941,7 +965,6 @@ export default function Home() {
                                 <div className="flex flex-col gap-4">
                                   <div>Company/seller details</div>
                                   <div>Buyer details</div>
-
                                 </div>
                               </div>
                               <div className="flex-1">
@@ -959,7 +982,7 @@ export default function Home() {
                                     <strong>Remarks:</strong>{" "}
                                     {data.Transactiondatendtype?.remarks}
                                   </p> */}
-                                {/* </div> */} 
+                                {/* </div> */}
 
                                 <h3 className="font-semibold text-lg text-gray-700 mt-5 mb-3">
                                   Item Details
