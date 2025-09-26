@@ -506,7 +506,7 @@ export default function Home() {
   useEffect(() => {
     const user = auth?.currentUser;
     if (!user) {
-      toast.error("User is not registered!");
+      console.log("User is not registered!");
       return;
     }
     const dataref = ref(database, `User_data/${user.uid}/companydetails`);
