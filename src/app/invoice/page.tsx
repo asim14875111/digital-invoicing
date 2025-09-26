@@ -819,40 +819,58 @@ export default function Home() {
                               <div className="text-sm font-medium text-red-500">
                                 {(() => {
                                   const resp = responses[index] ?? {};
-                                  const d = (resp as ValidationResponse).data ?? resp;
+                                  const d =
+                                    (resp as ValidationResponse).data ?? resp;
                                   const faultDesc =
-                                    (d?.fault && typeof d.fault === "object" && "description" in d.fault)
-                                      ? (d.fault as { description?: string }).description
+                                    d?.fault &&
+                                    typeof d.fault === "object" &&
+                                    "description" in d.fault
+                                      ? (d.fault as { description?: string })
+                                          .description
                                       : d?.fault ?? null;
                                   const validationError =
                                     (d?.validationResponse &&
-                                      typeof d.validationResponse === "object" &&
-                                      "error" in d.validationResponse
-                                      ? (d.validationResponse as { error?: string }).error
+                                    typeof d.validationResponse === "object" &&
+                                    "error" in d.validationResponse
+                                      ? (
+                                          d.validationResponse as {
+                                            error?: string;
+                                          }
+                                        ).error
                                       : undefined) ??
                                     (typeof d?.validationResponse === "string"
                                       ? d.validationResponse
                                       : null);
                                   const invoiceStatuses =
                                     (d?.validationResponse &&
-                                      typeof d.validationResponse === "object" &&
-                                      "invoiceStatuses" in d.validationResponse
-                                      ? (d.validationResponse as { invoiceStatuses?: unknown }).invoiceStatuses
+                                    typeof d.validationResponse === "object" &&
+                                    "invoiceStatuses" in d.validationResponse
+                                      ? (
+                                          d.validationResponse as {
+                                            invoiceStatuses?: unknown;
+                                          }
+                                        ).invoiceStatuses
                                       : undefined) ??
                                     (d && "invoiceStatuses" in d
-                                      ? (d as { invoiceStatuses?: unknown }).invoiceStatuses
+                                      ? (d as { invoiceStatuses?: unknown })
+                                          .invoiceStatuses
                                       : undefined) ??
                                     null;
                                   const invoiceStatusError = Array.isArray(
                                     invoiceStatuses
                                   )
                                     ? invoiceStatuses
-                                        .map((s: { error?: string }) => s?.error)
+                                        .map(
+                                          (s: { error?: string }) => s?.error
+                                        )
                                         .filter(Boolean)
                                         .join("; ")
-                                    : (invoiceStatuses && typeof invoiceStatuses === "object" && "error" in invoiceStatuses
-                                        ? (invoiceStatuses as { error?: string }).error
-                                        : null);
+                                    : invoiceStatuses &&
+                                      typeof invoiceStatuses === "object" &&
+                                      "error" in invoiceStatuses
+                                    ? (invoiceStatuses as { error?: string })
+                                        .error
+                                    : null;
                                   const displayError =
                                     faultDesc ||
                                     validationError ||
@@ -871,56 +889,63 @@ export default function Home() {
                         {/* COLLAPSIBLE DETAILS */}
                         {selectedCustomerIndex === index && (
                           <div className="bg-gray-50 border border-gray-200 p-5 mt-6 rounded-md">
-                            <div className="flex flex-col md:flex-row gap-8">
+                            <div className="flex flex-col md:flex-col gap-8">
                               {/* Customer Details */}
                               <div className="flex-1">
-                                <h3 className="font-semibold text-lg text-gray-700 mb-3">
+                                {/* <h3 className="font-semibold text-lg text-gray-700 mb-3">
                                   Customer / Seller Details
-                                </h3>
-                                <div className="space-y-1 text-sm text-gray-600">
-                                  <p>
-                                    <strong>Name:</strong> {data.customer?.name}
+                                </h3> */}
+                                <div className="space-y-1">
+                                  <p className="text-3xl text-gray-800 font-semibold ">
+                                    {/* <strong>Name:</strong>  */}
+                                    {companyDetails?.companyName}
                                   </p>
-                                  <p>
+                                  {/* <p>
                                     <strong>CNIC/NTN:</strong>{" "}
-                                    {data.customer?.CNIC}
-                                  </p>
-                                  <p>
+                                    {companyDetails?.ntn}
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Mobile:</strong>{" "}
                                     {data.customer?.mobileNumber}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Email:</strong>{" "}
                                     {data.customer?.email}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Status:</strong>{" "}
                                     {data.customer?.status}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Credit Limit:</strong>{" "}
                                     {data.customer?.creditLimit}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Description:</strong>{" "}
                                     {data.customer?.description}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Contact Person:</strong>{" "}
                                     {data.customer?.contactperson}
-                                  </p>
-                                  <p>
+                                  </p> */}
+                                  {/* <p>
                                     <strong>Province:</strong>{" "}
                                     {data.customer?.Site}
-                                  </p>
-                                  <p>
-                                    <strong>Address:</strong>{" "}
+                                  </p> */}
+                                  <p className="pl-2 text-sm text-gray-600">
+                                    {/* <strong>Address:</strong>{" "} */}
                                     {data.customer?.address}
                                   </p>
                                 </div>
+                                <div className="flex flex-ro"></div>
+                                <div className="flex flex-col gap-4">
+                                  <div>Company/seller details</div>
+                                  <div>Buyer details</div>
+
+                                </div>
                               </div>
                               <div className="flex-1">
-                                <h3 className="font-semibold text-lg text-gray-700 mb-3">
+                                {/* <h3 className="font-semibold text-lg text-gray-700 mb-3">
                                   Transaction
                                 </h3>
                                 <div className="space-y-1 text-sm text-gray-600">
@@ -934,7 +959,7 @@ export default function Home() {
                                     <strong>Remarks:</strong>{" "}
                                     {data.Transactiondatendtype?.remarks}
                                   </p> */}
-                                </div>
+                                {/* </div> */} 
 
                                 <h3 className="font-semibold text-lg text-gray-700 mt-5 mb-3">
                                   Item Details
